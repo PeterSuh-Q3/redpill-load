@@ -10,14 +10,6 @@
  UmountRoot()
  {
  	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
-@@ -67,6 +69,7 @@
- 	# show date for login info
- 	date
- 
-+	(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_jrExit_scripts && echo "Extensions processed") || Exit 99 "jrExit ext init exec failure"
- 	if [ "$1" -eq 0 ]; then
- 		TryRestoringDeviceBackToSwapRaid
- 	fi
 @@ -176,6 +179,8 @@
  echo "Insert basic USB modules..."
  SYNOLoadModules $USB_MODULES
