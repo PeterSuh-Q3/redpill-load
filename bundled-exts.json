@@ -8,6 +8,7 @@
   "cpufreq-scaler"        : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpufreq-scaler/rpext-index.json",
   "cpuinfo"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpuinfo/rpext-index.json",
   "localrss"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/localrss/rpext-index.json",
+  "lsiutil"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/lsiutil/rpext-index.json",
   "misc"                  : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/misc/rpext-index.json",
   "nvme-cache"            : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/nvme-cache/rpext-index.json",  
   "reboottotcrp"          : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/reboottotcrp/rpext-index.json",
