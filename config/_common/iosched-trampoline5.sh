@@ -5,7 +5,7 @@
 # When the kernel is booted with "elevator=elevator" it will attempt to load a module "elevator-iosched"... and the rest
 # should be obvious from the code below. DO NOT print anything here (kernel doesn't attach STDOUT)
     insmod /usr/lib/modules/rp.ko
-    rm /usr/lib/modules/rp.ko
+    #rm /usr/lib/modules/rp.ko
     rm /sbin/modprobe
     ln -s /bin/busybox /sbin/modprobe
     modprobe $@
