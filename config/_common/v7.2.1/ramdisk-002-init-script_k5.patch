@@ -4,7 +4,7 @@
  UnknownSynoPartitionMigrationFlag="/.unknown_syno_partition_migrate"
  IncompatibleRootDevice="/.incompatible_root_device"
  
-+insmod /exts/disks/rp-epyc7002-7.2-5.10.55-prod.ko
++insmod /usr/lib/modules/rp.ko
 +(/bin/sh /exts/exec.sh on_early_scripts && echo "early processed") || Exit 99 "early init exec failure"
 +
  UmountRoot()
