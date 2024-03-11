@@ -1,6 +1,6 @@
 --- a/linuxrc.syno
 +++ b/linuxrc.syno
-@@ -6,1 +6,2 @@
+@@ -4,3 +4,3 @@
 echo "START /linuxrc.syno"
 +/bin/sh /root/load-sda-first.sh
 . /usr/syno/share/util.sh
