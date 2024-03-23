@@ -5,6 +5,7 @@
   "automount"             : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/automount/rpext-index.json",
   "thethorgroup.boot-wait": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/boot-wait/rpext-index.json",  
   "dbgutils"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/dbgutils/rpext-index.json",
+  "disks"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/disks/rpext-index.json",
   "cpufreq-scaler"        : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpufreq-scaler/rpext-index.json",
   "cpuinfo"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpuinfo/rpext-index.json",
   "localrss"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/localrss/rpext-index.json",
