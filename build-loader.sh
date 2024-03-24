@@ -33,7 +33,7 @@ for edisk in $(sudo fdisk -l | grep "Disk /dev/sd" | awk '{print $2}' | sed 's/:
     fi    
 done
 if [ -z "${BRP_LOADER_DISK}" ]; then
-    for edisk in $(sudo fdisk -l | grep "Disk /dev/nvme" | awk '{print $2}' | sed 's/://' ); do
+    for edisk in $(sudo fdisk -l | grep -e "Disk /dev/nvme" -e "Disk /dev/mmc" | awk '{print $2}' | sed 's/://' ); do
         if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
             BRP_LOADER_DISK="$(blkid | grep ${edisk} | grep "6234-C863" | cut -c 1-12 | awk -F\/ '{print $3}')"    
         fi    
