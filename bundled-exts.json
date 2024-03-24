@@ -15,6 +15,7 @@
   "reboottotcrp"          : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/reboottotcrp/rpext-index.json",
   "sanmanager-repair"     : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/sanmanager-repair/rpext-index.json",
   "shr"                   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/shr/rpext-index.json",
+  "staticip"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/staticip/rpext-index.json",  
   "syno-hdd-db"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/syno-hdd-db/rpext-index.json",
   "nvmevolume-onthefly"   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/nvmevolume-onthefly/rpext-index.json"
 }
