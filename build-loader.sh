@@ -19,7 +19,7 @@ function getBus() {
   # usb/sata(sata/ide)/nvme
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,TRAN 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
   # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme
-  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk -F':' '{print $(NF-1)}' | sed 's/_host//') #Spaces are intentional
+  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | grep "${1} " | cut -d: -f2) #Spaces are intentional
   echo "${BUS}"
 }
 ##### CONFIGURATION YOU CAN OVERRIDE USING ENVIRONMENT #################################################################
