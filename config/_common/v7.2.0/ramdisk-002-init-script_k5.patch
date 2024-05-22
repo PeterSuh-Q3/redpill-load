@@ -19,11 +19,12 @@
  # insert Etron USB3.0 drivers
  
  if [ $KERNEL_VCODE -ge "$(KernelVersionCode "3.10")" ]; then
-@@ -224,6 +229,7 @@
+@@ -224,6 +229,8 @@
  		fi
  fi
  
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
++
  LoadBrmModules
  
- if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
+ ####################################################
