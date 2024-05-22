@@ -10,15 +10,6 @@
  UmountRoot()
  {
  	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
-@@ -67,6 +69,8 @@
- 	# show date for login info
- 	date
-
-+	rmmod rp
-+	(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_jrExit_scripts && echo "Extensions processed") || Exit 99 "jrExit ext init exec failure"
- 	UmountRoot
- 
- 	exit $1
 @@ -176,6 +179,8 @@
  echo "Insert basic USB modules..."
  SYNOLoadModules $USB_MODULES
@@ -28,12 +19,11 @@
  # insert Etron USB3.0 drivers
  
  if [ $KERNEL_VCODE -ge "$(KernelVersionCode "3.10")" ]; then
-@@ -224,6 +229,8 @@
+@@ -224,6 +229,7 @@
  		fi
  fi
  
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
-+
  LoadBrmModules
  
- ####################################################
+ if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
