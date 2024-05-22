@@ -25,6 +25,6 @@
  
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
 +
- LoadBrmModules
- 
- ####################################################
+ if [ "$SupportDualhead" = "yes" ]; then
+ 	# Run HA script
+ 	/etc.defaults/AHAtasks check_stage
