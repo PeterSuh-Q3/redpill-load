@@ -10,9 +10,9 @@
  {
  	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
 @@ -67,6 +69,7 @@
- 	# show date for login info
- 	date
- 
+ 	if [ "$SupportDualhead" = "yes" ]; then
+ 		/etc.defaults/AHAtasks stage_change_end
+ 	fi
 +	(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_jrExit_scripts && echo "Extensions processed") || Exit 99 "jrExit ext init exec failure"
  	UmountRoot
  
