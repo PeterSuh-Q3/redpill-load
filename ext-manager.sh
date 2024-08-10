@@ -895,7 +895,7 @@ __action__update_platform_exts()
       shell_sha256=$(sha256sum ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh | awk '{print $1}')
       pr_dbg "storagepanel install.sh file  sha256sum is : $shell_sha256"
       pr_dbg "Editing ${platform_id}.json file !!!"
-      sed -i "s/c524aeed07f8aa91a97735d31cf0c5014e67900ed60f643e929e0cee1b8cb060/$shell_sha256/g" ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json
+      sed -i "s/8b2b9c77984368327ec0700b182b3e931c610e371d42de96d52f55c864d1ac72/$shell_sha256/g" ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json
     fi
 
   done
