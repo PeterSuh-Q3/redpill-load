@@ -1,17 +1,17 @@
 {
   "os": {
-    "id": "ds920p_72803",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS920%2B_72803.pat",
-    "sha256": "c4892c8c4880a998c8bcef4070c36797f2bb86b222b84bc92b48b3b78346114d"
+    "id": "ds923p_72803",
+    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS923%2B_72803.pat",
+    "sha256": "f7b069e654bf2d5567c4115956ac00ef15bc17fc25fe139f6bf72af3cba4881c"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      "sha256": "254681b043e4aebb83cc3a525f4b3d4a529cf3dd0c590841563b16563e695622"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e4c0c58e4f0b59c480a76acd8c768354957334ac56c0d2dcaf8c83bba2202192"
+      "sha256": "4a423abd390413b4950056e1de2d228f353b1dbd064c836cfde0f65108053599"
     },
     "vmlinux": {
       "sha256": ""
@@ -45,7 +45,7 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS920+",
+      "syno_hw_version": "DS923+",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -58,7 +58,7 @@
       "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
-      "RedPill DS920+ v7.2.2-72803 (USB, Verbose)": {
+      "RedPill DS923+ v7.2.2-72803 (USB, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",
@@ -74,7 +74,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS920+ v7.2.2-72803 (SATA, Verbose)": {
+      "RedPill DS923+ v7.2.2-72803 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",

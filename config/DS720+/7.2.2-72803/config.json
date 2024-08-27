@@ -1,8 +1,8 @@
 {
   "os": {
-    "id": "ds920p_72803",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS920%2B_72803.pat",
-    "sha256": "c4892c8c4880a998c8bcef4070c36797f2bb86b222b84bc92b48b3b78346114d"
+    "id": "ds720p_72803",
+    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS720%2B_72803.pat",
+    "sha256": "2e4906f9c4c27b5178aa98c0a8ce77aa002b984b97840424589a80e019ba52df"
   },
   "files": {
     "zlinux": {
@@ -11,7 +11,7 @@
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e4c0c58e4f0b59c480a76acd8c768354957334ac56c0d2dcaf8c83bba2202192"
+      "sha256": "7fc6c5554ecee4dc96e76c9f5981975829067bc80c671e6e52bd55c3c50912eb"
     },
     "vmlinux": {
       "sha256": ""
@@ -45,7 +45,7 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS920+",
+      "syno_hw_version": "DS720+",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -58,7 +58,7 @@
       "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
-      "RedPill DS920+ v7.2.2-72803 (USB, Verbose)": {
+      "RedPill DS720+ v7.2.2-72803 (USB, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",
@@ -74,7 +74,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS920+ v7.2.2-72803 (SATA, Verbose)": {
+      "RedPill DS720+ v7.2.2-72803 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",

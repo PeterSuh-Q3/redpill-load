@@ -1,17 +1,17 @@
 {
   "os": {
-    "id": "ds920p_72803",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS920%2B_72803.pat",
-    "sha256": "c4892c8c4880a998c8bcef4070c36797f2bb86b222b84bc92b48b3b78346114d"
+    "id": "sa6400_72803",
+    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_SA6400_72803.pat",
+    "sha256": "f85d2e93dd010da3128e80060479f0231041f99ba9248dfeaca55628cfa2999f"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      "sha256": "ff3b4e8a0388cb589d4893a8096e91b10e02e0935842040b334f59e6925723f3"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e4c0c58e4f0b59c480a76acd8c768354957334ac56c0d2dcaf8c83bba2202192"
+      "sha256": "5fe7f872ef61689e10f2fc7ec9695fb369a6e1732c9ff219efa2584af35e066e"
     },
     "vmlinux": {
       "sha256": ""
@@ -45,7 +45,7 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS920+",
+      "syno_hw_version": "SA6400",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -58,7 +58,7 @@
       "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
-      "RedPill DS920+ v7.2.2-72803 (USB, Verbose)": {
+      "RedPill SA6400 v7.2.2-72803 (USB, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",
@@ -74,7 +74,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS920+ v7.2.2-72803 (SATA, Verbose)": {
+      "RedPill SA6400 v7.2.2-72803 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",

@@ -1,8 +1,8 @@
 {
   "os": {
-    "id": "ds920p_72803",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DS920%2B_72803.pat",
-    "sha256": "c4892c8c4880a998c8bcef4070c36797f2bb86b222b84bc92b48b3b78346114d"
+    "id": "dva1622_72803",
+    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DVA1622_72803.pat",
+    "sha256": "4f0412f4c7595ae034ff12474ba87e88b404c20efe0e77826d415473def1e2cb"
   },
   "files": {
     "zlinux": {
@@ -11,7 +11,7 @@
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e4c0c58e4f0b59c480a76acd8c768354957334ac56c0d2dcaf8c83bba2202192"
+      "sha256": "2e259291cf367aa70e2a91aaa86a28b60cadf930b5aa2ff9c0d6170f185e7f3b"
     },
     "vmlinux": {
       "sha256": ""
@@ -45,7 +45,7 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS920+",
+      "syno_hw_version": "DVA1622",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -58,7 +58,7 @@
       "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
-      "RedPill DS920+ v7.2.2-72803 (USB, Verbose)": {
+      "RedPill DVA1622 v7.2.2-72803 (USB, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",
@@ -74,7 +74,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS920+ v7.2.2-72803 (SATA, Verbose)": {
+      "RedPill DVA1622 v7.2.2-72803 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos1)",
