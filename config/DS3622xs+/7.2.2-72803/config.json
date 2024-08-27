@@ -81,13 +81,12 @@
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
           "initrd (hd0,msdos3)/initrd-dsm",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
+          "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "synoboot_satadom": 2,
+          "synoboot_satadom": 1,
           "log_buf_len": "32M"
         }
       }
