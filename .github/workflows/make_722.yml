@@ -86,9 +86,9 @@ jobs:
           workfile=/opt/dist/${file}/${DSMVER}-${REV}/config.json
           if [ $(echo ${DT_PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
             if [ ${platform_name} == "apollolake" ]; then          
-              cp -fv temp-nondt-config.json ${workfile}
-            else
               cp -fv temp-apollolake-config.json ${workfile}
+            else
+              cp -fv temp-nondt-config.json ${workfile}              
             fi
           else
             cp -fv temp-dt-config.json ${workfile}
