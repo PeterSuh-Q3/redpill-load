@@ -1,4 +1,4 @@
-name: Make kernel bs patch for 7.2.2-70000-0 formal using fb kpatch
+name: Make kernel bs patch for 7.2.2-72803-0 formal using fb kpatch
 
 on:
   workflow_dispatch:
@@ -23,8 +23,8 @@ jobs:
             ACTIONS_STEP_DEBUG: true
         run: |
           # install bsdiff
-          DSMVER="7.2.1"
-          REV="69057"
+          DSMVER="7.2.2"
+          REV="72803"
           sudo apt-get install -y bsdiff cpio xz-utils
 
           #ls -al $GITHUB_WORKSPACE/
@@ -118,7 +118,6 @@ jobs:
               },
               "add_extensions": {
                 "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
-                "dtbpatch": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/dtbpatch/rpext-index.json",
                 "powersched": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/powersched/rpext-index.json",
                 "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
               }
