@@ -41,6 +41,7 @@ jobs:
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-dt-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-nondt-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-apollolake-config.json
+          curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-denverton-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
           for file in `cat models.72`
           do
@@ -87,6 +88,8 @@ jobs:
           if [ $(echo ${DT_PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
             if [ ${platform_name} == "apollolake" ]; then          
               cp -fv temp-apollolake-config.json ${workfile}
+            elif [ ${platform_name} == "denverton" ]; then          
+              cp -fv temp-denverton-config.json ${workfile}
             else
               cp -fv temp-nondt-config.json ${workfile}              
             fi
