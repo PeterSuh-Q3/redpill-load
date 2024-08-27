@@ -89,6 +89,7 @@ jobs:
               cp -fv temp-nondt-config.json ${workfile}
             else
               cp -fv temp-apollolake-config.json ${workfile}
+            fi
           else
             cp -fv temp-dt-config.json ${workfile}
           fi
