@@ -118,10 +118,11 @@ jobs:
                     "sha256": "'$ossha256'"
                   }
                 },
-                "add_extensions": {
+                "add_extensions": [
+                {
                   "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
                   "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
-                }
+                }]
               }
             ]' /opt/dist/custom_config.json) 
           else
@@ -134,11 +135,12 @@ jobs:
                     "sha256": "'$ossha256'"
                   }
                 },
-                "add_extensions": {
+                "add_extensions": [
+                {
                   "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
                   "powersched": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/powersched/rpext-index.json",
                   "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
-                }
+                }]
               }
             ]' /opt/dist/custom_config.json) 
           fi
