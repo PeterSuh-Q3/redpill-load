@@ -44,7 +44,7 @@
       "mac1": "",
       "netif_num": 1,
       "syno_hw_version": "DVA3221",
-      "syno_hdd_powerup_seq": 1,
+      "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
@@ -85,7 +85,7 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "synoboot_satadom": 2,
+          "synoboot_satadom": 1,
           "log_buf_len": "32M"
         }
       }
