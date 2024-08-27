@@ -42,6 +42,7 @@ jobs:
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-nondt-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-apollolake-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-denverton-config.json
+          curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-epyc7002-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
           for file in `cat models.72`
           do
@@ -94,7 +95,11 @@ jobs:
               cp -fv temp-nondt-config.json ${workfile}              
             fi
           else
-            cp -fv temp-dt-config.json ${workfile}
+            if [ ${platform_name} == "epyc7002" ]; then     
+              cp -fv temp-epyc7002.json ${workfile}
+            else
+              cp -fv temp-dt-config.json ${workfile}
+            fi  
           fi
 
           jsonfile=$(jq ".os.id=\"${dsmid}_${REV}\"" ${workfile}) && echo $jsonfile | jq . > ${workfile}
