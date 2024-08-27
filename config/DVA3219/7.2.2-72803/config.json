@@ -29,10 +29,9 @@
     ]
   },
   "synoinfo": {
-    "maxdisks": "16",
-    "internalportcfg": "0xffff",
-    "esataportcfg": "0x0",
-    "buzzeroffen": "0xffff",
+    "maxdisks": "24",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7"
   },
@@ -45,16 +44,16 @@
       "mac1": "",
       "netif_num": 1,
       "syno_hw_version": "DVA3219",
-      "SMBusHddDynamicPower": 1,
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
-      "synoboot2": null,
-      "elevator": "elevator",
-      "syno_ttyS0": "serial,0x3f8",
-      "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8",
       "withefi": null,
-      "syno_ttyS1": "serial,0x2f8"
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
       "RedPill DVA3219 v7.2.2-72803 (USB, Verbose)": {
@@ -81,13 +80,12 @@
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
           "initrd (hd0,msdos3)/initrd-dsm",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
+          "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "synoboot_satadom": 2,
+          "synoboot_satadom": 1,
           "log_buf_len": "32M"
         }
       }
