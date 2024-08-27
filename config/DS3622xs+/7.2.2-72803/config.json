@@ -29,10 +29,9 @@
     ]
   },
   "synoinfo": {
-    "maxdisks": "16",
-    "internalportcfg": "0xffff",
-    "esataportcfg": "0x0",
-    "buzzeroffen": "0xffff",
+    "maxdisks": "24",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7"
   },
