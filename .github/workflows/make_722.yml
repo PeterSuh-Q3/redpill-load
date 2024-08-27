@@ -38,7 +38,7 @@ jobs:
           curl -kL https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output oldpat.tar.gz
 
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/models.72
-          curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-config.json
+          curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-dt-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-nondt-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-apollolake-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
