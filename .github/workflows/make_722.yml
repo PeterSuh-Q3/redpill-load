@@ -107,23 +107,42 @@ jobs:
           md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
           echo "" >> /opt/dist/md5-chksum
 
-          jsonfile=$(jq '.build_configs += [
-            {
-              "id": "'$dsmid'-'$DSMVER'-'$REV'",
-              "platform_name": "'$platform_name'",
-              "downloads": {
-                "os": {
-                  "sha256": "'$ossha256'"
+          PLATFORMS="apollolake geminilake r1000 v1000 epyc7002"
+          if [ $(echo ${PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
+            jsonfile=$(jq '.build_configs += [
+              {
+                "id": "'$dsmid'-'$DSMVER'-'$REV'",
+                "platform_name": "'$platform_name'",
+                "downloads": {
+                  "os": {
+                    "sha256": "'$ossha256'"
+                  }
+                },
+                "add_extensions": {
+                  "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
+                  "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
                 }
-              },
-              "add_extensions": {
-                "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
-                "powersched": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/powersched/rpext-index.json",
-                "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
               }
-            }
-          ]' /opt/dist/custom_config.json) 
-          echo $jsonfile | jq . > /opt/dist/custom_config.json
+            ]' /opt/dist/custom_config.json) 
+          else
+            jsonfile=$(jq '.build_configs += [
+              {
+                "id": "'$dsmid'-'$DSMVER'-'$REV'",
+                "platform_name": "'$platform_name'",
+                "downloads": {
+                  "os": {
+                    "sha256": "'$ossha256'"
+                  }
+                },
+                "add_extensions": {
+                  "all-modules": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
+                  "powersched": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/powersched/rpext-index.json",
+                  "storagepanel": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/storagepanel/rpext-index.json"
+                }
+              }
+            ]' /opt/dist/custom_config.json) 
+          fi
+          echo $jsonfile | jq . > /opt/dist/custom_config.json          
 
           ls -l
           echo 'Clean Directory!!!!!!!!!!!!!'
