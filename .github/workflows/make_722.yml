@@ -25,6 +25,8 @@ jobs:
           # install bsdiff
           DSMVER="7.2.2"
           REV="72803"
+          PLATFORMS="apollolake geminilake r1000 v1000 epyc7002"
+          DT_PLATFORMS="geminilake r1000 v1000 epyc7002"
           sudo apt-get install -y bsdiff cpio xz-utils
 
           #ls -al $GITHUB_WORKSPACE/
@@ -37,6 +39,7 @@ jobs:
 
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/models.72
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-config.json
+          curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-nondt-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
           for file in `cat models.72`
           do
@@ -80,7 +83,11 @@ jobs:
           # make config.json
           mkdir -p /opt/dist/${file}/${DSMVER}-${REV}
           workfile=/opt/dist/${file}/${DSMVER}-${REV}/config.json
-          cp -fv temp-config.json ${workfile}
+          if [ $(echo ${DT_PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
+            cp -fv temp-nondt-config.json ${workfile}
+          else
+            cp -fv temp-config.json ${workfile}
+          fi
 
           jsonfile=$(jq ".os.id=\"${dsmid}_${REV}\"" ${workfile}) && echo $jsonfile | jq . > ${workfile}
           jsonfile=$(jq ".os.pat_url=\"${URL}\"" ${workfile}) && echo $jsonfile | jq . > ${workfile}
@@ -107,7 +114,6 @@ jobs:
           md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
           echo "" >> /opt/dist/md5-chksum
 
-          PLATFORMS="apollolake geminilake r1000 v1000 epyc7002"
           if [ $(echo ${PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
             jsonfile=$(jq '.build_configs += [
               {
