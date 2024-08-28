@@ -44,6 +44,7 @@
       "mac1": "",
       "netif_num": 1,
       "syno_hw_version": "DS918+",
+      "synoboot2": null,
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
