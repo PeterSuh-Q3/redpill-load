@@ -30,9 +30,10 @@
     ]
   },
   "synoinfo": {
-    "maxdisks": "24",
-    "support_bde_internal_10g": "no",
-    "support_disk_compatibility": "no",
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "buzzeroffen": "0xffff",
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7"
   },
@@ -45,7 +46,6 @@
       "mac1": "",
       "netif_num": 1,
       "syno_hw_version": "DS718+",
-      "synoboot2": null,
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
