@@ -1,4 +1,4 @@
-name: Make kernel bs patch for 7.2.2-72803-0 formal using fb kpatch
+name: Make kernel bs patch for 7.2.2-72806 formal using fb kpatch
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
         run: |
           # install bsdiff
           DSMVER="7.2.2"
-          REV="72803"
+          REV="72806"
           PLATFORMS="apollolake geminilake r1000 v1000 epyc7002"
           DT_PLATFORMS="geminilake r1000 v1000 epyc7002"
           sudo apt-get install -y bsdiff cpio xz-utils
