@@ -1,0 +1,28 @@
+{
+    "version": "2.0",
+    "channel": {
+        "title": "RSS for DSM Auto Update",
+        "link": "https:\/\/update.synology.com\/autoupdate\/v2\/getList",
+        "pubDate": "Tue Sep 26 20:31:59 CST 2023",
+        "copyright": "Copyright 2023 Synology Inc",
+        "item": [
+            {
+                "title": "DSM 7.2.2-72806",
+                "MajorVer": 7,
+                "MinorVer": 2,
+                "NanoVer": 0,
+                "BuildPhase": 0,
+                "BuildNum": 72806,
+                "BuildDate": "2023\/09\/23",
+                "ReqMajorVer": 7,
+                "ReqMinorVer": 0,
+                "ReqBuildPhase": 0,
+                "ReqBuildNum": 41890,
+                "ReqBuildDate": "2021\/06\/25",
+                "isSecurityVersion": false,
+                "model": [
+               ]
+            }
+        ]
+    }
+}
