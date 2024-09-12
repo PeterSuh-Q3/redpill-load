@@ -44,6 +44,7 @@ jobs:
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-denverton-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-epyc7002-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
+          curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/rss.json -o /opt/dist/rss.json
           for file in `cat models.72`
           do
           dsmid=$(echo "$file" | sed 's/DS/ds/' | sed 's/RS/rs/' | sed 's/+/p/' | sed 's/DVA/dva/' | sed 's/FS/fs/' | sed 's/SA/sa/' )
@@ -123,10 +124,6 @@ jobs:
           echo "" >> /opt/dist/files-chksum
           echo "" >> /opt/dist/files-chksum
 
-          # md5
-          md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
-          echo "" >> /opt/dist/md5-chksum
-
           if [ $(echo ${PLATFORMS} | grep ${platform_name} | wc -l ) -eq 0 ]; then
             jsonfile=$(jq '.build_configs += [
               {
@@ -164,6 +161,10 @@ jobs:
             ]' /opt/dist/custom_config.json) 
           fi
           echo $jsonfile | jq . > /opt/dist/custom_config.json          
+
+          # md5
+          md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
+          echo "" >> /opt/dist/md5-chksum
 
           ls -l
           echo 'Clean Directory!!!!!!!!!!!!!'
