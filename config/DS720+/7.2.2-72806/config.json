@@ -2,16 +2,16 @@
   "os": {
     "id": "ds720p_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS720%2B_72806.pat",
-    "sha256": "2e4906f9c4c27b5178aa98c0a8ce77aa002b984b97840424589a80e019ba52df"
+    "sha256": "f9677792cfda844999e7a64443f0b906d7c14b8c5338f6fd817632f5635403b1"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      "sha256": "462421f5411c8ec8a3e18343d9bd085737715206a68f5db8cf6014fa2afe5d20"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "7fc6c5554ecee4dc96e76c9f5981975829067bc80c671e6e52bd55c3c50912eb"
+      "sha256": "722af1d921dfbe0b2b43d001db7214e54c0d3ec2c8617c514ec87af6a120bb7f"
     },
     "vmlinux": {
       "sha256": ""

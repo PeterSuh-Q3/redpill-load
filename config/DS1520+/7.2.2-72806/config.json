@@ -2,16 +2,16 @@
   "os": {
     "id": "ds1520p_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS1520%2B_72806.pat",
-    "sha256": "c234afa4b588ef2f51f8115de7ab929e5af0d64cb9aab48489ae12feb92e78e3"
+    "sha256": "630cdc502420742dc113413934d991d6722417664351d17a7e28ba1b17b36db8"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      "sha256": "462421f5411c8ec8a3e18343d9bd085737715206a68f5db8cf6014fa2afe5d20"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "f00a11d222dd412dbefd3ed931d3c507a9edc87d134e6d683540075921a70193"
+      "sha256": "c2720957b28fbfcebb4ff42c2a27a941e034cb8a919ceca82a2db651759f7202"
     },
     "vmlinux": {
       "sha256": ""

@@ -2,16 +2,16 @@
   "os": {
     "id": "rs1221p_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_RS1221%2B_72806.pat",
-    "sha256": "57eb454d4645665b2f00cb23fc3c562e4499bff2b1dacdd866e8b245bb8ffbdc"
+    "sha256": "54fe800e17f39fcb08ac79212f5cdb72c5d1cd3e4f1a96903af089327c2f0b2f"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "0affb1bc69c320c59ae6f26a395638897541a252eab360f43f31ba47933e66e6"
+      "sha256": "d55e3d66ae775b80c3f6d9e4db0666f5edccd67adedc570819795599dfb963da"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "199712e6d7eb5aac1e9d16906f9501c1188aa09439e076556e6d5c5ad26feebe"
+      "sha256": "256b6e8039bcdc8631e5d567cc79dd38f0c397f58aba9f3d400c0ed26d91587e"
     },
     "vmlinux": {
       "sha256": ""

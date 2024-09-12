@@ -2,16 +2,16 @@
   "os": {
     "id": "fs2500_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_FS2500_72806.pat",
-    "sha256": "f87e70debf48314802cfcfd74107c78ea3cbd37c5ebe5e01fb70929716b403af"
+    "sha256": "fd3c4736257180765be8ce4d89ee68d28e9b53a4eb752c73853f46fa001f26a1"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "0affb1bc69c320c59ae6f26a395638897541a252eab360f43f31ba47933e66e6"
+      "sha256": "d55e3d66ae775b80c3f6d9e4db0666f5edccd67adedc570819795599dfb963da"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e6936d3a287f1c4ba618c48abd420c6e75f0587e50eacca798a1ebb80fee0faa"
+      "sha256": "674c2d700aecd06262485b98dff56b5120a203690ec386a2d8de563a1c1a122c"
     },
     "vmlinux": {
       "sha256": ""

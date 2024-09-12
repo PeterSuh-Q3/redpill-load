@@ -2,16 +2,16 @@
   "os": {
     "id": "ds220p_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS220%2B_72806.pat",
-    "sha256": "3b31c815a9bb1c648ccd36ba93924667a2cd2c677b471736c51fd9e97bdea24d"
+    "sha256": "1e74937c3a7adb517167a70b604b7ff3812d4a8a5abb4cd32838fe6e22222d2f"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      "sha256": "462421f5411c8ec8a3e18343d9bd085737715206a68f5db8cf6014fa2afe5d20"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "9644556b8120b8d36cb3d2b4871721a48d5d0f472145776f755a2352fd7caadd"
+      "sha256": "90560f89df6e1165e17c433c365c597dde262eb186279eb6fd4690b00b19fa50"
     },
     "vmlinux": {
       "sha256": ""

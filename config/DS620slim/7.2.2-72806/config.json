@@ -2,16 +2,16 @@
   "os": {
     "id": "ds620slim_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS620slim_72806.pat",
-    "sha256": "05e96aabdc6172e5035c14cb5c9a34a8b623c89abffd7cec17aba31b18fa3507"
+    "sha256": "f79c0df517cd29aab51e6ffa5c894db77dd01fcff7ceb72f8b1d082f656b47fc"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "f5d68ed2c3c0a01236c5a07774f347f6ed76fa4210c405e77a1b3768873ffb44"
+      "sha256": "04b91d5667efa28398a631ef5a6c6ca6a79ed5c00ed0826c8aa4f357ab87c201"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "e6d5dd5b386ea4aefc129f246d9b5873a934a9b35df9f74a613c3530d00f1887"
+      "sha256": "3cf96c0cb8e2cce532353dcec20b4d52ab716c7534c0f7ea73eacea4c05a9b06"
     },
     "vmlinux": {
       "sha256": ""

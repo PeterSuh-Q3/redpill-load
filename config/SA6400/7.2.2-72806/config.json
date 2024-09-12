@@ -2,16 +2,16 @@
   "os": {
     "id": "sa6400_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_SA6400_72806.pat",
-    "sha256": "f85d2e93dd010da3128e80060479f0231041f99ba9248dfeaca55628cfa2999f"
+    "sha256": "6d5018bc1ebb8e612423983b8e4be9099127c45c1b523eb4929ed09024e0bf22"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "ff3b4e8a0388cb589d4893a8096e91b10e02e0935842040b334f59e6925723f3"
+      "sha256": "1d2dacb18563285285421f91e504c413c79b57af5f9bd72f8ab51ec937d21bac"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "5fe7f872ef61689e10f2fc7ec9695fb369a6e1732c9ff219efa2584af35e066e"
+      "sha256": "15cbd51070cdd8cc0535357a9f82fd54cf3cca93c9516cac7c3d3e975746580c"
     },
     "vmlinux": {
       "sha256": ""

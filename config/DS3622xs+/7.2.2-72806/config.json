@@ -2,16 +2,16 @@
   "os": {
     "id": "ds3622xsp_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS3622xs%2B_72806.pat",
-    "sha256": "b393d369d26ac179efd1ace75f470df6cbd4666baa343624cc94d4424f5edf25"
+    "sha256": "7bcea0d19b9cebc9fc009d4491e67bb9c7938c61341b5452170d2559f398c590"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "0827d230001b5c1774df6cf5197dac9729595c6ba7d59cad39758da8f0522ddb"
+      "sha256": "da4b1872638e978ec71cc06060d0b2720c5a89fb0fa668e93e8116ff8f335904"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "576ddf5733c352512e57d973c7ee03d10c2fc37a602e1f510cfd6f0234c0f190"
+      "sha256": "fdcd2873e9c96316126b567b8181d6c1f1fa9e19767a81c026c614f7a4cabc13"
     },
     "vmlinux": {
       "sha256": ""

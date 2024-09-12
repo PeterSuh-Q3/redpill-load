@@ -2,16 +2,16 @@
   "os": {
     "id": "dva3221_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DVA3221_72806.pat",
-    "sha256": "179f3b11fecefce4efb147e8fb047aa05f0e8748949297d30ef0afbec04cbb2a"
+    "sha256": "b56b2521b49e6933b7e01fc305e52b607a8747d0bcfe4f7a7522ddec53fbb3f1"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "7d3d3d125582743bc8b7215a555316c65ea79d9e78dac72525ba8791abbe1604"
+      "sha256": "b877e86010600b492e87d03838f99ab5b31247859f090950588ce5718e056cea"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "f6a97463902a014a0c2ea55c8c70833c0dc0ca1322ce79ef9bb53e04c470f187"
+      "sha256": "5aa044c123d8c117c2b10788c1a1c9793a4064be8efc59a69eaf7c177e786d55"
     },
     "vmlinux": {
       "sha256": ""

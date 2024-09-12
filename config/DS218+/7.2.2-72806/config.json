@@ -2,16 +2,16 @@
   "os": {
     "id": "ds218p_72806",
     "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS218%2B_72806.pat",
-    "sha256": "c217cdbf68f74bb6298a27c7bb10740902ddb10fa65b4a6172d93292475e853e"
+    "sha256": "15bd48bf81d6cd75c72b62a3273f9a82122de791b1dce156b4ab1b2f73acd391"
   },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "f5d68ed2c3c0a01236c5a07774f347f6ed76fa4210c405e77a1b3768873ffb44"
+      "sha256": "04b91d5667efa28398a631ef5a6c6ca6a79ed5c00ed0826c8aa4f357ab87c201"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "638386a1a803b1c1f2d225321d095e3419be99548890641c5772c829db528bd8"
+      "sha256": "d7d9a72f657aeb193a83895bd599c1d45e2c5fefe490dae15db6b1e80f54a801"
     },
     "vmlinux": {
       "sha256": ""
