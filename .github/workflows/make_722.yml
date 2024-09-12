@@ -44,7 +44,7 @@ jobs:
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-denverton-config.json
           curl -kLO https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/temp-epyc7002-config.json
           curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/custom_config.json -o /opt/dist/custom_config.json
-          curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/rss.json -o /opt/dist/rss.json
+          curl -kL https://github.com/PeterSuh-Q3/redpill-load/raw/master/config/rss.json -o /opt/dist/rss${DSMVER}.json
           for file in `cat models.72`
           do
           dsmid=$(echo "$file" | sed 's/DS/ds/' | sed 's/RS/rs/' | sed 's/+/p/' | sed 's/DVA/dva/' | sed 's/FS/fs/' | sed 's/SA/sa/' )
@@ -166,7 +166,6 @@ jobs:
           md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
           echo "" >> /opt/dist/md5-chksum
 
-          mv -v /opt/dist/rss.json /opt/dist/rss$DSMVER.json
           osmd5=$(md5sum /opt/build/ds.pat | awk '{print $1}')
           remodel=$(echo "$file" | sed 's/DS//' | sed 's/RS/rs/' | sed 's/DVA/dva/' | sed 's/FS/fs/' | sed 's/SA/sa/' )
           jsonfile=$(jq '.channel.item[].model += [
@@ -175,8 +174,8 @@ jobs:
               "mLink": "https:\/\/global.synologydownload.com\/download\/DSM\/release\/'$DSMVER'\/'$REV'\/DSM_'${file}'_'$REV'.pat",
               "mCheckSum": "'$osmd5'"
             }
-          ]' /opt/dist/rss$DSMVER.json) 
-          echo $jsonfile | jq . > /opt/dist/rss$DSMVER.json
+          ]' /opt/dist/rss${DSMVER}.json) 
+          echo $jsonfile | jq . > /opt/dist/rss${DSMVER}.json
 
           ls -l
           echo 'Clean Directory!!!!!!!!!!!!!'
