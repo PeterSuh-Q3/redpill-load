@@ -174,7 +174,7 @@ jobs:
           done
 
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kernel-bs-fb-patch-for-all
           path: /opt/dist
