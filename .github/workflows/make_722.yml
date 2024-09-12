@@ -166,8 +166,8 @@ jobs:
           md5sum /opt/build/ds.pat | awk '{print $1}' | awk '{print $1 "  '${file}' os.md5"}' >> /opt/dist/md5-chksum
           echo "" >> /opt/dist/md5-chksum
 
-	  osmd5=$(md5sum /opt/build/ds.pat | awk '{print $1}')
-	  remodel=$(echo "$file" | sed 's/DS//' | sed 's/RS/rs/' | sed 's/DVA/dva/' | sed 's/FS/fs/' | sed 's/SA/sa/' )
+          osmd5=$(md5sum /opt/build/ds.pat | awk '{print $1}')
+          remodel=$(echo "$file" | sed 's/DS//' | sed 's/RS/rs/' | sed 's/DVA/dva/' | sed 's/FS/fs/' | sed 's/SA/sa/' )
           jsonfile=$(jq '.model += [
             {
               "mUnique": "synology_'$platform_name'_'$remodel'",
