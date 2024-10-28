@@ -18,6 +18,8 @@ function getBus() {
   [ -z "${BUS}" ] && BUS=$(udevadm info --query property --name "${1}" 2>/dev/null | grep ID_BUS | cut -d= -f2 | sed 's/ata/sata/')
   # usb/sata(sata/ide)/nvme
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,TRAN 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
+  # loop block
+  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
   # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | grep "${1} " | cut -d: -f2) #Spaces are intentional
   echo "${BUS}"
@@ -39,10 +41,18 @@ if [ -z "${BRP_LOADER_DISK}" ]; then
         fi    
     done
 fi
+if [ -z "${BRP_LOADER_DISK}" ]; then
+    for edisk in $(sudo fdisk -l | grep "Disk /dev/loop" | awk '{print $2}' | sed 's/://' ); do
+        if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
+            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+        fi    
+    done
+fi
 [ -z "${BRP_LOADER_DISK}" ] && exit 1
 getBus "${BRP_LOADER_DISK}" 
 [ "${BUS}" = "nvme" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-[ "${BUS}" = "mmc"  ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+[ "${BUS}" = "mmc" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+[ "${BUS}" = "block" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
 
 BRP_USER_CFG=${BRP_USER_CFG:-"$PWD/user_config.json"}
 BRP_BUILD_DIR=${BRP_BUILD_DIR:-''} # makes sure attempts are unique; do not override this unless you're using repack
