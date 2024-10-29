@@ -12,7 +12,7 @@ readonly ASCII_BG_RED="\e[1;41m"
 readonly ASCII_BG_GREEN="\e[1;42m"
 
 # shellcheck disable=SC2046
-if [ -z "$ASCII_HAS_COLORS" ]; then
+if [ -v ASCII_HAS_COLORS ]; then
     readonly ASCII_HAS_COLORS=0
 fi
 if [ "$ASCII_HAS_COLORS" -eq 1 ]; then
