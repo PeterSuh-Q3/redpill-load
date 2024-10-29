@@ -12,11 +12,21 @@ readonly ASCII_BG_RED="\e[1;41m"
 readonly ASCII_BG_GREEN="\e[1;42m"
 
 # shellcheck disable=SC2046
-if [ $(tput colors || exit 1) -gt 0 ]; then
-    readonly ASCII_HAS_COLORS=1
-else
+if [ -z "$ASCII_HAS_COLORS" ]; then
     readonly ASCII_HAS_COLORS=0
 fi
+if [ "$ASCII_HAS_COLORS" -eq 1 ]; then
+    # Execute commands with color
+    tput setaf 1  # Example: red text
+else
+    # Alternative action when color support is unavailable
+    echo "No color support"
+fi
+#if [ $(tput colors || exit 1) -gt 0 ]; then
+#    readonly ASCII_HAS_COLORS=1
+#else
+#    readonly ASCII_HAS_COLORS=0
+#fi
 
 _BRP_LAST_PROCESS=''
 _BRP_PROCESS_WAS_LAST=0 # used a canary flag when "process" printing was interrupted
