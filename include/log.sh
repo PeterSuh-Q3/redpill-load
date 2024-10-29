@@ -12,18 +12,8 @@ readonly ASCII_BG_RED="\e[1;41m"
 readonly ASCII_BG_GREEN="\e[1;42m"
 
 # shellcheck disable=SC2046
-if [ -v ASCII_HAS_COLORS ]; then
-    readonly ASCII_HAS_COLORS=0
-fi
-if [ "$ASCII_HAS_COLORS" -eq 1 ]; then
-    # Execute commands with color
-    tput setaf 1  # Example: red text
-else
-    # Alternative action when color support is unavailable
-    echo "No color support"
-fi
 #if [ $(tput colors || exit 1) -gt 0 ]; then
-#    readonly ASCII_HAS_COLORS=1
+    readonly ASCII_HAS_COLORS=1
 #else
 #    readonly ASCII_HAS_COLORS=0
 #fi
