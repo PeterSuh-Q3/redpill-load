@@ -63,7 +63,7 @@
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage-dsm @@@CMDLINE@@@",
+          "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
           "initrd /initrd-dsm",
           "echo Starting kernel with USB boot"
@@ -79,7 +79,7 @@
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage-dsm @@@CMDLINE@@@",
+          "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
           "initrd /initrd-dsm",
           "echo Starting kernel with SATA boot"
