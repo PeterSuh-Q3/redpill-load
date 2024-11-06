@@ -63,11 +63,11 @@
       "RedPill DS1821+ v7.0.1-42218 (USB, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos1)",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -79,11 +79,11 @@
       "RedPill DS1821+ v7.0.1-42218 (SATA, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos1)",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with SATA boot"
         ],
         "cmdline": {

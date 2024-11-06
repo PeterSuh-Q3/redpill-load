@@ -59,11 +59,11 @@
       "RedPill DS220+ v7.2.2-72806 (USB, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos1)",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -75,11 +75,11 @@
       "RedPill DS220+ v7.2.2-72806 (SATA, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos1)",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with SATA boot"
         ],
         "cmdline": {

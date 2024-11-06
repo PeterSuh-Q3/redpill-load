@@ -72,9 +72,9 @@
           "savedefault",
           "set root=(hd0,msdos2)",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -88,9 +88,9 @@
           "savedefault",
           "set root=(hd0,msdos2)",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
@@ -105,9 +105,9 @@
           "savedefault",
           "set root=(hd0,msdos2)",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -122,9 +122,9 @@
           "savedefault",
           "set root=(hd0,msdos2)",
           "echo Loading Linux...",
-          "linux /zImage @@@CMDLINE@@@",
+          "linux /zImage-dsm @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd (hd0,msdos3)/initrd-dsm",
+          "initrd /initrd-dsm",
           "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
