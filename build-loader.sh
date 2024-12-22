@@ -533,6 +533,7 @@ pr_process_ok
 # BRP_KEEP_BUILD is set!
 pr_process "Removing custom ramdisk layer files"
 "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+pr_process_ok
 
 ##### PREPARE GRUB CONFIG ##############################################################################################
 readonly BRP_TMP_GRUB_CONF="${BRP_BUILD_DIR}/grub.cfg"
@@ -565,6 +566,7 @@ fi
 if [[ "$(brp_json_has_field "${BRP_USER_CFG}" 'bootp2_copy')" -eq 1 ]]; then
   brp_cp_from_list "${BRP_USER_CFG}" "bootp2_copy" BRP_RELEASE_PATHS "${BRP_OUT_P2}"
 fi
+pr_process_ok
 
 # Add patched zImage, patched ramdisk and our GRUB config
 pr_process "Copying patched files"
@@ -575,11 +577,6 @@ brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P3}/${BRP_RDMOD_NAME}"
 brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P3}/${BRP_CUSTOM_RD_NAME}"
 #brp_cp_flat "${BRP_TMP_GRUB_CONF}" "${BRP_OUT_P1}/boot/grub/grub.cfg"
 brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
-
-ls -l "${BRP_OUT_P1}"
-ls -l "${BRP_OUT_P2}"
-ls -l "${BRP_OUT_P3}"
-
 pr_process_ok
 
 ##### CLEANUP ##########################################################################################################
@@ -588,4 +585,9 @@ pr_process "Cleaning up"
 if [ "${BRP_KEEP_BUILD}" -eq 0 ]; then
   "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
 fi
+pr_process_ok
+pr_process "Path of loader disk %s" "${BRP_OUT_P3}"
+ls -l "${BRP_OUT_P1}"
+ls -l "${BRP_OUT_P2}"
+ls -l "${BRP_OUT_P3}"
 pr_process_ok
