@@ -51,10 +51,13 @@ if [ -z "${BRP_LOADER_DISK}" ]; then
     done
 fi
 [ -z "${BRP_LOADER_DISK}" ] && exit 1
+pr_info "Found loader disk at \"%s\" ( before getBus ) " "${BRP_LOADER_DISK}"
 getBus "${BRP_LOADER_DISK}" 
 [ "${BUS}" = "nvme" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
 [ "${BUS}" = "mmc" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
 [ "${BUS}" = "block" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+pr_info "Found loader disk at \"%s\" ( after getBus ) " "${BRP_LOADER_DISK}"
+pr_info "Bus type is \"%s\" " "${BUS}"
 
 BRP_USER_CFG=${BRP_USER_CFG:-"$PWD/user_config.json"}
 BRP_BUILD_DIR=${BRP_BUILD_DIR:-''} # makes sure attempts are unique; do not override this unless you're using repack
@@ -528,7 +531,7 @@ pr_process_ok
 
 # remove custom ramdisk layer in case the script is run again (to prevent stacking changes); this should happen even if
 # BRP_KEEP_BUILD is set!
-pr_dbg "Removing custom ramdisk layer files"
+pr_process "Removing custom ramdisk layer files"
 "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
 
 ##### PREPARE GRUB CONFIG ##############################################################################################
@@ -550,7 +553,7 @@ readonly BRP_ZLINMOD_NAME="zImage" # name of the linux kernel in the final image
 readonly BRP_RDMOD_NAME="rd.gz" # name of the ramdisk in the final image
 
 # Copy any config-specified extra files
-pr_dbg "Copying extra files"
+pr_process "Copying extra files"
 brp_cp_from_list "${BRP_REL_CONFIG_JSON}" "extra.bootp1_copy" BRP_RELEASE_PATHS "${BRP_OUT_P1}"
 brp_cp_from_list "${BRP_REL_CONFIG_JSON}" "extra.bootp2_copy" BRP_RELEASE_PATHS "${BRP_OUT_P2}"
 
@@ -563,7 +566,7 @@ if [[ "$(brp_json_has_field "${BRP_USER_CFG}" 'bootp2_copy')" -eq 1 ]]; then
 fi
 
 # Add patched zImage, patched ramdisk and our GRUB config
-pr_dbg "Copying patched files"
+pr_process "Copying patched files"
 brp_cp_flat "${BRP_ZLINUX_PATCHED_FILE}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
 #brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P1}/${BRP_RDMOD_NAME}"
 brp_cp_flat "${BRP_RD_REPACK}" "/mnt/${BRP_LOADER_DISK}3/${BRP_RDMOD_NAME}"
