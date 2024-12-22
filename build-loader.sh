@@ -549,6 +549,7 @@ pr_process_ok
 # Add patched zImage, patched ramdisk and our GRUB config for new mshell (dont make loader.img 2023.10.26)
 readonly BRP_OUT_P1="/mnt/${BRP_LOADER_DISK}1" 
 readonly BRP_OUT_P2="/mnt/${BRP_LOADER_DISK}2" 
+readonly BRP_OUT_P3="/mnt/${BRP_LOADER_DISK}3" 
 readonly BRP_ZLINMOD_NAME="zImage" # name of the linux kernel in the final image
 readonly BRP_RDMOD_NAME="rd.gz" # name of the ramdisk in the final image
 
@@ -569,11 +570,15 @@ fi
 pr_process "Copying patched files"
 brp_cp_flat "${BRP_ZLINUX_PATCHED_FILE}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
 #brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P1}/${BRP_RDMOD_NAME}"
-brp_cp_flat "${BRP_RD_REPACK}" "/mnt/${BRP_LOADER_DISK}3/${BRP_RDMOD_NAME}"
+brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P3}/${BRP_RDMOD_NAME}"
 #brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P1}/${BRP_CUSTOM_RD_NAME}"
-brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "/mnt/${BRP_LOADER_DISK}3/${BRP_CUSTOM_RD_NAME}"
+brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P3}/${BRP_CUSTOM_RD_NAME}"
 #brp_cp_flat "${BRP_TMP_GRUB_CONF}" "${BRP_OUT_P1}/boot/grub/grub.cfg"
 brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
+
+ls -l "${BRP_OUT_P1}"
+ls -l "${BRP_OUT_P2}"
+ls -l "${BRP_OUT_P3}"
 
 pr_process_ok
 
