@@ -22,6 +22,8 @@ function getBus() {
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
   # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | grep "${1} " | cut -d: -f2) #Spaces are intentional
+  # empty is block
+  [ -z "${BUS}" ] && BUS="block"
   echo "${BUS}"
 }
 ##### CONFIGURATION YOU CAN OVERRIDE USING ENVIRONMENT #################################################################
