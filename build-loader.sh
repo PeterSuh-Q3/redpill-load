@@ -42,10 +42,8 @@ function getBus() {
   [ -z "${BUS}" ] && BUS=$(udevadm info --query property --name "${1}" 2>/dev/null | grep ID_BUS | cut -d= -f2 | sed 's/ata/sata/')
   # usb/sata(sata/ide)/nvme
   [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,TRAN 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
-  # loop block
-  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
-  # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme
-  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | grep "${1} " | cut -d: -f2) #Spaces are intentional
+  # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme/loop block
+  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk '{print $2}' | awk -F':' '{print (NF>1) ? $2 : $0}') #Spaces are intentional
   # empty is block
   [ -z "${BUS}" ] && BUS="block"
   echo "${BUS}"
@@ -61,10 +59,7 @@ BRP_CACHE_DIR=${BRP_CACHE_DIR:-"$PWD/cache"} # cache directory where stuff is do
 
 getloaderdisk
 [ -z "${BRP_LOADER_DISK}" ] && exit 1
-pr_process "Found loader disk at \"%s\" ( before getBus ) " "${BRP_LOADER_DISK}"
 getBus "${BRP_LOADER_DISK}" 
-pr_process "Found loader disk at \"%s\" ( after getBus ) " "${BRP_LOADER_DISK}"
-pr_process "Bus type is \"%s\" " "${BUS}"
 
 BRP_USER_CFG=${BRP_USER_CFG:-"$PWD/user_config.json"}
 BRP_BUILD_DIR=${BRP_BUILD_DIR:-''} # makes sure attempts are unique; do not override this unless you're using repack
