@@ -9,6 +9,30 @@ if [ -z "${BASH_SOURCE}" ] ; then
 fi
 
 cd "${BASH_SOURCE%/*}/" || exit 1
+
+########################################################################################################################
+# get loaderdisk
+# 1 - device path
+function getloaderdisk() {
+    BRP_LOADER_DISK=""
+    while read -r edisk; do
+        if [ $(sudo fdisk -l "$edisk" | grep -c "83 Linux") -eq 3 ]; then
+            BRP_LOADER_DISK=$(sudo blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
+            [ -n "$BRP_LOADER_DISK" ] && break
+        fi
+    done < <(sudo fdisk -l | grep "Disk /dev/" | grep -v "/dev/loop" | awk '{print $2}' | sed 's/://')
+    
+    if [ -z "${BRP_LOADER_DISK}" ]; then
+        for edisk in $(sudo fdisk -l | grep "Disk /dev/loop" | awk '{print $2}' | sed 's/://' ); do
+        if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
+            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+        fi    
+        done
+    fi
+
+    echo "LOADER DISK: $BRP_LOADER_DISK"
+}
+
 ########################################################################################################################
 # get bus of disk
 # 1 - device path
@@ -25,39 +49,22 @@ function getBus() {
   # empty is block
   [ -z "${BUS}" ] && BUS="block"
   echo "${BUS}"
+
+  [ "${BUS}" = "nvme" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "mmc" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "block" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
 }
 ##### CONFIGURATION YOU CAN OVERRIDE USING ENVIRONMENT #################################################################
 BRP_JUN_MOD=${BRP_JUN_MOD:-0} # whether you want to use jun's mod
 BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 BRP_CACHE_DIR=${BRP_CACHE_DIR:-"$PWD/cache"} # cache directory where stuff is downloaded & unpacked
-BRP_LOADER_DISK=""
-for edisk in $(sudo fdisk -l | grep "Disk /dev/sd" | awk '{print $2}' | sed 's/://' ); do
-    if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
-        BRP_LOADER_DISK="$(blkid | grep ${edisk} | grep "6234-C863" | cut -c 1-8 | awk -F\/ '{print $3}')" # partition 3 of disk
-    fi    
-done
-if [ -z "${BRP_LOADER_DISK}" ]; then
-    for edisk in $(sudo fdisk -l | grep -e "Disk /dev/nvme" -e "Disk /dev/mmc" | awk '{print $2}' | sed 's/://' ); do
-        if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
-            BRP_LOADER_DISK="$(blkid | grep ${edisk} | grep "6234-C863" | cut -c 1-12 | awk -F\/ '{print $3}')"    
-        fi    
-    done
-fi
-if [ -z "${BRP_LOADER_DISK}" ]; then
-    for edisk in $(sudo fdisk -l | grep "Disk /dev/loop" | awk '{print $2}' | sed 's/://' ); do
-        if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
-            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
-        fi    
-    done
-fi
+
+getloaderdisk
 [ -z "${BRP_LOADER_DISK}" ] && exit 1
-pr_info "Found loader disk at \"%s\" ( before getBus ) " "${BRP_LOADER_DISK}"
+pr_process "Found loader disk at \"%s\" ( before getBus ) " "${BRP_LOADER_DISK}"
 getBus "${BRP_LOADER_DISK}" 
-[ "${BUS}" = "nvme" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-[ "${BUS}" = "mmc" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-[ "${BUS}" = "block" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-pr_info "Found loader disk at \"%s\" ( after getBus ) " "${BRP_LOADER_DISK}"
-pr_info "Bus type is \"%s\" " "${BUS}"
+pr_process "Found loader disk at \"%s\" ( after getBus ) " "${BRP_LOADER_DISK}"
+pr_process "Bus type is \"%s\" " "${BUS}"
 
 BRP_USER_CFG=${BRP_USER_CFG:-"$PWD/user_config.json"}
 BRP_BUILD_DIR=${BRP_BUILD_DIR:-''} # makes sure attempts are unique; do not override this unless you're using repack
