@@ -55,7 +55,18 @@ BRP_JUN_MOD=${BRP_JUN_MOD:-0} # whether you want to use jun's mod
 BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 BRP_CACHE_DIR=${BRP_CACHE_DIR:-"$PWD/cache"} # cache directory where stuff is downloaded & unpacked
 
-getloaderdisk
+if [[ "$(uname -a | grep -c tcrpfriend)" -gt 0 ]]; then
+    FRKRNL="YES"
+else
+    FRKRNL="NO"
+fi
+
+if [ "$FRKRNL" = "NO" ]; then
+    getloaderdisk
+else
+    BRP_LOADER_DISK="$(cat /tmp/loaderdisk)"
+fi
+
 [ -z "${BRP_LOADER_DISK}" ] && exit 1
 getBus "${BRP_LOADER_DISK}" 
 
