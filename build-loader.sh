@@ -17,18 +17,16 @@ function getloaderdisk() {
     BRP_LOADER_DISK=""
     while read -r edisk; do
         if [ $(sudo fdisk -l "$edisk" | grep -c "83 Linux") -eq 3 ]; then
-            BRP_LOADER_DISK=$(sudo blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
-            [ -n "$BRP_LOADER_DISK" ] && break
+            BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
+            if [ -n "$BRP_LOADER_DISK" ]; then
+                break
+            else
+                # check for the other type
+                BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+                [ -n "$BRP_LOADER_DISK" ] && break
+            fi
         fi
-    done < <(sudo fdisk -l | grep "Disk /dev/" | grep -v "/dev/loop" | awk '{print $2}' | sed 's/://')
-    
-    if [ -z "${BRP_LOADER_DISK}" ]; then
-        for edisk in $(sudo fdisk -l | grep "Disk /dev/loop" | awk '{print $2}' | sed 's/://' ); do
-        if [ $(sudo fdisk -l | grep "83 Linux" | grep ${edisk} | wc -l ) -eq 3 ]; then
-            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
-        fi    
-        done
-    fi
+    done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
 
     echo "LOADER DISK: $BRP_LOADER_DISK"
 }
