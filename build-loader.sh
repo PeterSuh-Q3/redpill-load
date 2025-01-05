@@ -265,7 +265,7 @@ readonly BRP_MODEL="${BRP_HW_PLATFORM}"
 if [ ! -d "${BRP_UPAT_DIR}" ]; then
   pr_dbg "PAT DIRECTORY %s not found - preparing" "${BRP_UPAT_DIR}"
   brp_mkdir "${BRP_UPAT_DIR}"
-  touch "${BRP_UPAT_DIR}"/GRUB_VER
+  sudo touch "${BRP_UPAT_DIR}"/GRUB_VER
   echo "MODEL=\"${BRP_MODEL}\"" >> "${BRP_UPAT_DIR}"/GRUB_VER
   echo "PLATFORM=\"${BRP_ORG_PLATFORM}\""   >> "${BRP_UPAT_DIR}"/GRUB_VER
   echo "GRUB_PROJECT=\"grub-2.x\""  >> "${BRP_UPAT_DIR}"/GRUB_VER 
