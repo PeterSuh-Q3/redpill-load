@@ -543,7 +543,11 @@ pr_process_ok
 # remove custom ramdisk layer in case the script is run again (to prevent stacking changes); this should happen even if
 # BRP_KEEP_BUILD is set!
 pr_process "Removing custom ramdisk layer files"
-"${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+if [ "$FRKRNL" = "NO" ]; then
+    "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+else
+    sudo "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+fi    
 pr_process_ok
 
 ##### PREPARE GRUB CONFIG ##############################################################################################
@@ -594,7 +598,11 @@ pr_process_ok
 pr_process "Cleaning up"
 #brp_detach_image "${BRP_OUTPUT_FILE}"
 if [ "${BRP_KEEP_BUILD}" -eq 0 ]; then
-  "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  if [ "$FRKRNL" = "NO" ]; then
+    "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  else
+    sudo "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  fi
 fi
 pr_process_ok
 pr_process "Path of loader disk %s" "${BRP_OUT_P3}"
