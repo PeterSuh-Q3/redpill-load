@@ -179,7 +179,7 @@ brp_pack_cpiord()
   local output;
   if [ "$FRKRNL" = "YES" ]; then
     output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
-             cpio -o -H newc -R root:root 2>/dev/null | gzip > "${1}")
+             cpio -o -H newc -R root:root 2> /tmp/strerr.log 1> "${1}")
   else
     output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
              cpio -o -H newc -R root:root 2>/dev/null 1> "${1}")
