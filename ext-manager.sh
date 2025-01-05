@@ -8,6 +8,12 @@ if [ -z "${BASH_SOURCE}" ] ; then
     exit 1
 fi
 
+if [[ "$(uname -a | grep -c tcrpfriend)" -gt 0 ]]; then
+    FRKRNL="YES"
+else
+    FRKRNL="NO"
+fi
+
 cd "${BASH_SOURCE%/*}/" || exit 1
 ########################################################################################################################
 
