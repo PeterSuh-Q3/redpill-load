@@ -269,8 +269,11 @@ brp_cp_flat()
   else
     brp_mkdir "$("${DIRNAME_PATH}" "${2}")"
   fi
-
-  out="$("${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
+  if [ "$FRKRNL" = "YES" ]; then
+    out="$("sudo ${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
+  else
+    out="$("${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
+  fi  
   if [ $? -ne 0 ]; then
     pr_process_err
     pr_crit "Failed to copy %s to %s\n\n%s" "${1}" "${2}" "${out}"
