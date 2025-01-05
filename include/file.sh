@@ -253,7 +253,11 @@ brp_mkdir()
 
 rpt_make_executable()
 {
+  if [ "$FRKRNL" = "YES" ]; then
+    sudo "${CHMOD_PATH}" +x "${1}" || pr_crit "Failed to make \"%s\" executable" "${1}"
+  else
     "${CHMOD_PATH}" +x "${1}" || pr_crit "Failed to make \"%s\" executable" "${1}"
+  fi
 }
 
 # Copies files while resolving all symlinks
