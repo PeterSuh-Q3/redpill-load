@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -u
 
+if [[ "$(uname -a | grep -c tcrpfriend)" -gt 0 ]]; then
+    FRKRNL="YES"
+else
+    FRKRNL="NO"
+fi
 # Resolves array relative path to a file
 #
 # Args:
@@ -172,8 +177,13 @@ brp_pack_cpiord()
   pr_dbg "Repacking %s to CPIO %s" "${2}" "${1}"
 
   local output;
-  output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
-           cpio -o -H newc -R root:root 2>/dev/null 1> "${1}")
+  if [ "$FRKRNL" = "YES" ]; then
+    output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
+             cpio -o -H newc -R root:root 2>/dev/null | gzip > "${1}")
+  else
+    output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
+             cpio -o -H newc -R root:root 2>/dev/null 1> "${1}")
+  fi           
   if [ $? -ne 0 ]; then
     pr_crit "Failed to repack flat ramdisk\n\n%s" "${output}"
   fi
