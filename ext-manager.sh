@@ -960,7 +960,11 @@ __action__dump_exts()
     fi
 
     brp_cp_flat "${platform_dir}" "${dump_ext_di}" # theoretically this will suffice, but we can cleanup a bit
-    "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    if [ "$FRKRNL" = "YES" ]; then
+      sudo "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    else
+      "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    fi
     "${FIND_PATH}" "${dump_ext_di}" -type d -empty -delete # delete all empty dirs which may resulted from unpacking
 
     # Handle kernel extensions (if any)
