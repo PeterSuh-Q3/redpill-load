@@ -270,7 +270,7 @@ brp_cp_flat()
     brp_mkdir "$("${DIRNAME_PATH}" "${2}")"
   fi
   if [ "$FRKRNL" = "YES" ]; then
-    out="$("sudo ${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
+    out="$(sudo "${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
   else
     out="$("${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
   fi  
