@@ -173,8 +173,7 @@ brp_pack_cpiord()
 
   local output;
   output=$(cd "${2}" && "${FIND_PATH}" . 2>/dev/null | \
-           cpio -o -H newc -R root:root 2>/dev/null | gzip > "${1}")
-          #cpio -o -H newc -R root:root 2>/dev/null 1> "${1}"           
+           cpio -o -H newc -R root:root 2>/dev/null 1> "${1}")
   if [ $? -ne 0 ]; then
     pr_crit "Failed to repack flat ramdisk\n\n%s" "${output}"
   fi
