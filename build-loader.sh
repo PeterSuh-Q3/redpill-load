@@ -46,9 +46,9 @@ function getBus() {
   [ -z "${BUS}" ] && BUS="block"
   echo "${BUS}"
 
-  [ "${BUS}" = "nvme" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-  [ "${BUS}" = "mmc" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
-  [ "${BUS}" = "block" ] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "nvme" ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "mmc"  ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "block" ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
 }
 ##### CONFIGURATION YOU CAN OVERRIDE USING ENVIRONMENT #################################################################
 BRP_JUN_MOD=${BRP_JUN_MOD:-0} # whether you want to use jun's mod
