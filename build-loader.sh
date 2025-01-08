@@ -597,10 +597,6 @@ pr_process_ok
 ##### CLEANUP ##########################################################################################################
 pr_process "Cleaning up"
 #brp_detach_image "${BRP_OUTPUT_FILE}"
-echo "BRP_KEEP_BUILD = ${BRP_KEEP_BUILD}"
-echo "FRKRNL = ${FRKRNL}"
-echo "RM_PATH = ${RM_PATH}"
-echo "BRP_BUILD_DIR = ${BRP_BUILD_DIR}"
 if [ "${BRP_KEEP_BUILD}" -eq 0 ]; then
   if [ "$FRKRNL" = "NO" ]; then
     "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
