@@ -82,6 +82,53 @@ brp_verify_file_sha256()
   pr_process_ok
 }
 
+# Computes MD5 hash for a file and returns it
+#
+# Args: $1 file path
+rpt_get_file_md5()
+{
+  pr_dbg "Generating MD5 for %s" "${1}"
+
+  local hash;
+  local hash_res;
+  hash=$("${MD5SUM_PATH}" "${1}" | cut -d ' ' -f1)
+  hash_res=$?
+
+  echo "${hash}"
+  return $hash_res
+}
+
+# Validates file
+#
+# Args: $1 file path | $2 expected checksum | $3 make failure non-critical [default=0]
+brp_verify_file_md5()
+{
+  pr_process "Verifying %s file" "${1}"
+
+  local hash;
+  hash=$(rpt_get_file_md5 "${1}")
+
+  if [ $? -ne 0 ]; then
+    pr_process_err
+    if [[ "${3:-1}" -eq 1 ]]; then
+      pr_err "Failed to generate checksum for file\n\n%s" "${hash}"
+    else
+      pr_crit "Failed to generate checksum for file\n\n%s" "${hash}"
+    fi
+  fi
+
+  if [ "$2" != "$hash" ]; then
+    pr_process_err
+    if [[ "${3:-1}" -ne 1 ]]; then
+      pr_err "Checksum mismatch - expected %s but computed %s" "$2" "$hash"
+    else
+      pr_crit "Checksum mismatch - expected %s but computed %s" "$2" "$hash"
+    fi
+  fi
+
+  pr_process_ok
+}
+
 # Unpacks tar-like file
 #
 # Args: $1 file path | $2 directory to unpack (must exist) | $3 should hard fail on error? [default=1]
