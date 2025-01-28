@@ -52,6 +52,24 @@ brp_json_get_field()
   fi
 }
 
+# Gets a single value of a key or exist on error
+#
+# Args: $1 file path | $2 field1 | $3 field2(startwith) | $4 field3 | $5 empty-on-error [default=0]
+brp_json_get_like_field()
+{
+  local field_val;
+  field_val=$(${JQ_PATH} -e -r ".\"$2\" | to_entries | map(select(.key | startswith(\"$3\"))) | map(.value.$4) | .[0]" "$1")
+  # "1 if the last output value was either false or null"
+  if [ $? -le 1 ]; then
+    echo $field_val
+    return 0
+  fi
+
+  if [ "${5:-'0'}" != 1 ]; then
+    pr_crit "Field \"$2\" \"$3\" \"$4\" doesn't existing in $1"
+  fi
+}
+
 # Gets a list of keys from the object
 #
 # This function GUARANTEES that keys are returned in their order in file
