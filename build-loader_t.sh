@@ -117,6 +117,7 @@ echo "platkver = ${platkver}"
 
 BRP_REL_CONFIG_BASE="$PWD/config/${BRP_HW_PLATFORM}/${BRP_SW_VERSION}"
 BRP_REL_CONFIG_JSON="${BRP_REL_CONFIG_BASE}/config.json"
+BRP_PAT_MD5_JSON="$PWD/config/pats.json"
 
 ### Some config validation
 if [ "${BRP_LINUX_PATCH_METHOD}" == "direct" ]; then
@@ -297,8 +298,8 @@ if [ ! -d "${BRP_UPAT_DIR}" ]; then
   else
     pr_dbg "Found existing PAT at %s - skipping download" "${BRP_PAT_FILE}"
   fi
-
-  brp_verify_file_sha256 "${BRP_PAT_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "os.sha256")"
+                                                                    
+  brp_verify_file_md5 "${BRP_PAT_FILE}" "$(brp_json_get_field "${BRP_PAT_MD5_JSON}" ".\"${BRP_HW_PLATFORM}\".\"${BRP_SW_VERSION}-0\".sum")"
   brp_unpack_tar "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
 else
   pr_info "Found unpacked PAT at \"%s\" - skipping unpacking" "${BRP_UPAT_DIR}"
