@@ -91,6 +91,8 @@ rpt_get_file_md5()
 
   local hash;
   local hash_res;
+  
+  MD5SUM_PATH=$(which md5sum)
   hash=$("${MD5SUM_PATH}" "${1}" | cut -d ' ' -f1)
   hash_res=$?
 
