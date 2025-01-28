@@ -9,13 +9,67 @@ if [ -z "${BASH_SOURCE}" ] ; then
 fi
 
 cd "${BASH_SOURCE%/*}/" || exit 1
-########################################################################################################################
 
+########################################################################################################################
+# get loaderdisk
+# 1 - device path
+function getloaderdisk() {
+    BRP_LOADER_DISK=""
+    while read -r edisk; do
+        if [ $(sudo fdisk -l "$edisk" | grep -c "83 Linux") -eq 3 ]; then
+            BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
+            if [ -n "$BRP_LOADER_DISK" ]; then
+                break
+            else
+                # check for the other type
+                BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+                [ -n "$BRP_LOADER_DISK" ] && break
+            fi
+        fi
+    done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
+
+    echo "LOADER DISK: $BRP_LOADER_DISK"
+}
+
+########################################################################################################################
+# get bus of disk
+# 1 - device path
+function getBus() {
+  BUS=""
+  # usb/ata(sata/ide)/scsi
+  [ -z "${BUS}" ] && BUS=$(udevadm info --query property --name "${1}" 2>/dev/null | grep ID_BUS | cut -d= -f2 | sed 's/ata/sata/')
+  # usb/sata(sata/ide)/nvme
+  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,TRAN 2>/dev/null | grep "${1} " | awk '{print $2}') #Spaces are intentional
+  # usb/scsi(sata/ide)/virtio(scsi/virtio)/mmc/nvme/loop block
+  [ -z "${BUS}" ] && BUS=$(lsblk -dpno KNAME,SUBSYSTEMS 2>/dev/null | grep "${1} " | awk '{print $2}' | awk -F':' '{print (NF>1) ? $2 : $0}') #Spaces are intentional
+  # empty is block
+  [ -z "${BUS}" ] && BUS="block"
+  echo "${BUS}"
+
+  [ "${BUS}" = "nvme" ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "mmc"  ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+  [ "${BUS}" = "block" ] && [[ "${BRP_LOADER_DISK}" != *p ]] && BRP_LOADER_DISK="${BRP_LOADER_DISK}p"
+}
 ##### CONFIGURATION YOU CAN OVERRIDE USING ENVIRONMENT #################################################################
 BRP_JUN_MOD=${BRP_JUN_MOD:-0} # whether you want to use jun's mod
 BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 BRP_CACHE_DIR=${BRP_CACHE_DIR:-"$PWD/cache"} # cache directory where stuff is downloaded & unpacked
-BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -c 1-8 | awk -F\/ '{print $3}') # partition 3 of disk
+
+if [[ "$(uname -a | grep -c tcrpfriend)" -gt 0 ]]; then
+    FRKRNL="YES"
+else
+    FRKRNL="NO"
+fi
+
+if [ "$FRKRNL" = "NO" ]; then
+    getloaderdisk
+else
+    BRP_LOADER_DISK="$(cat /tmp/loaderdisk)"
+fi
+
+[ -z "${BRP_LOADER_DISK}" ] && exit 1
+getBus "${BRP_LOADER_DISK}" 
+
 BRP_USER_CFG=${BRP_USER_CFG:-"$PWD/user_config.json"}
 BRP_BUILD_DIR=${BRP_BUILD_DIR:-''} # makes sure attempts are unique; do not override this unless you're using repack
 BRP_KEEP_BUILD=${BRP_KEEP_BUILD:-''} # will be set to 1 for repack method or 0 for direct
@@ -488,8 +542,13 @@ pr_process_ok
 
 # remove custom ramdisk layer in case the script is run again (to prevent stacking changes); this should happen even if
 # BRP_KEEP_BUILD is set!
-pr_dbg "Removing custom ramdisk layer files"
-"${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+pr_process "Removing custom ramdisk layer files"
+if [ "$FRKRNL" = "NO" ]; then
+    "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+else
+    sudo "${RM_PATH}" -rf "${BRP_CUSTOM_DIR}" || pr_warn "Failed to remove custom ramdisk layer files %s" "${BRP_CUSTOM_DIR}"
+fi    
+pr_process_ok
 
 ##### PREPARE GRUB CONFIG ##############################################################################################
 readonly BRP_TMP_GRUB_CONF="${BRP_BUILD_DIR}/grub.cfg"
@@ -498,19 +557,20 @@ brp_generate_grub_conf "${BRP_REL_CONFIG_JSON}" "${BRP_USER_CFG}" BRP_RELEASE_PA
 pr_process_ok
 
 ##### CREATE FINAL LOADER IMAGE ########################################################################################
-pr_process "Creating loader image at %s" "${BRP_OUTPUT_FILE}"
-brp_unpack_single_gz "${BRP_BOOT_IMAGE}" "${BRP_OUTPUT_FILE}"
-readonly BRP_OUT_P1="$(brp_mount_img_partitions "${BRP_OUTPUT_FILE}" 1 "${BRP_BUILD_DIR}/img-mnt")" # partition 1 of img
-readonly BRP_OUT_P2="$(brp_mount_img_partitions "${BRP_OUTPUT_FILE}" 2 "${BRP_BUILD_DIR}/img-mnt")" # partition 2 of img
+#pr_process "Creating loader image at %s" "${BRP_OUTPUT_FILE}"
+#brp_unpack_single_gz "${BRP_BOOT_IMAGE}" "${BRP_OUTPUT_FILE}"
+#readonly BRP_OUT_P1="$(brp_mount_img_partitions "${BRP_OUTPUT_FILE}" 1 "${BRP_BUILD_DIR}/img-mnt")" # partition 1 of img
+#readonly BRP_OUT_P2="$(brp_mount_img_partitions "${BRP_OUTPUT_FILE}" 2 "${BRP_BUILD_DIR}/img-mnt")" # partition 2 of img
 
 # Add patched zImage, patched ramdisk and our GRUB config for new mshell (dont make loader.img 2023.10.26)
-#readonly BRP_OUT_P1="/mnt/${BRP_LOADER_DISK}1" 
-#readonly BRP_OUT_P2="/mnt/${BRP_LOADER_DISK}2" 
+readonly BRP_OUT_P1="/mnt/${BRP_LOADER_DISK}1" 
+readonly BRP_OUT_P2="/mnt/${BRP_LOADER_DISK}2" 
+readonly BRP_OUT_P3="/mnt/${BRP_LOADER_DISK}3" 
 readonly BRP_ZLINMOD_NAME="zImage" # name of the linux kernel in the final image
 readonly BRP_RDMOD_NAME="rd.gz" # name of the ramdisk in the final image
 
 # Copy any config-specified extra files
-pr_dbg "Copying extra files"
+pr_process "Copying extra files"
 brp_cp_from_list "${BRP_REL_CONFIG_JSON}" "extra.bootp1_copy" BRP_RELEASE_PATHS "${BRP_OUT_P1}"
 brp_cp_from_list "${BRP_REL_CONFIG_JSON}" "extra.bootp2_copy" BRP_RELEASE_PATHS "${BRP_OUT_P2}"
 
@@ -521,22 +581,32 @@ fi
 if [[ "$(brp_json_has_field "${BRP_USER_CFG}" 'bootp2_copy')" -eq 1 ]]; then
   brp_cp_from_list "${BRP_USER_CFG}" "bootp2_copy" BRP_RELEASE_PATHS "${BRP_OUT_P2}"
 fi
+pr_process_ok
 
 # Add patched zImage, patched ramdisk and our GRUB config
-pr_dbg "Copying patched files"
+pr_process "Copying patched files"
 brp_cp_flat "${BRP_ZLINUX_PATCHED_FILE}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
-brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P1}/${BRP_RDMOD_NAME}"
-#brp_cp_flat "${BRP_RD_REPACK}" "/mnt/${BRP_LOADER_DISK}3/${BRP_RDMOD_NAME}"
-brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P1}/${BRP_CUSTOM_RD_NAME}"
-brp_cp_flat "${BRP_TMP_GRUB_CONF}" "${BRP_OUT_P1}/boot/grub/grub.cfg"
-#brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
-
+#brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P1}/${BRP_RDMOD_NAME}"
+brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P3}/${BRP_RDMOD_NAME}"
+#brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P1}/${BRP_CUSTOM_RD_NAME}"
+brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P3}/${BRP_CUSTOM_RD_NAME}"
+#brp_cp_flat "${BRP_TMP_GRUB_CONF}" "${BRP_OUT_P1}/boot/grub/grub.cfg"
+brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
 pr_process_ok
 
 ##### CLEANUP ##########################################################################################################
 pr_process "Cleaning up"
-brp_detach_image "${BRP_OUTPUT_FILE}"
+#brp_detach_image "${BRP_OUTPUT_FILE}"
 if [ "${BRP_KEEP_BUILD}" -eq 0 ]; then
-  "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  if [ "$FRKRNL" = "NO" ]; then
+    "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  else
+    sudo "${RM_PATH}" -rf "${BRP_BUILD_DIR}"
+  fi
 fi
+pr_process_ok
+pr_process "Path of loader disk %s" "${BRP_OUT_P3}"
+ls -l "${BRP_OUT_P1}"
+ls -l "${BRP_OUT_P2}"
+ls -l "${BRP_OUT_P3}"
 pr_process_ok
