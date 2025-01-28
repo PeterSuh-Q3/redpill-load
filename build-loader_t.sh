@@ -299,7 +299,7 @@ if [ ! -d "${BRP_UPAT_DIR}" ]; then
     pr_dbg "Found existing PAT at %s - skipping download" "${BRP_PAT_FILE}"
   fi
                                                                     
-  brp_verify_file_md5 "${BRP_PAT_FILE}" "$(brp_json_get_field "${BRP_PAT_MD5_JSON}" "\"${BRP_HW_PLATFORM}\".\"${BRP_SW_VERSION}-0\".sum")"
+  brp_verify_file_md5 "${BRP_PAT_FILE}" "$(brp_json_get_like_field "${BRP_PAT_MD5_JSON}" "${BRP_HW_PLATFORM}" "${BRP_SW_VERSION}" "sum")"
   brp_unpack_tar "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
 else
   pr_info "Found unpacked PAT at \"%s\" - skipping unpacking" "${BRP_UPAT_DIR}"
