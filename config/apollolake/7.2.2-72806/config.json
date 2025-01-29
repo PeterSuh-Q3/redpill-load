@@ -1,5 +1,18 @@
 {
-    "patches": {
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": ""
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": ""
+    },
+    "vmlinux": {
+      "sha256": ""
+    }
+  },
+  "patches": {
     "zlinux": [
       ""
     ],
