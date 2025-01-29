@@ -115,7 +115,7 @@ BPR_LOWER_PLATFORM=$(echo ${BRP_ORG_PLATFORM} | tr '[:upper:]' '[:lower:]')
 platkver="$(echo ${BPR_LOWER_PLATFORM}_${BRP_KVER} | sed 's/\.//g')"
 echo "platkver = ${platkver}"
 
-BRP_REL_CONFIG_BASE="$PWD/config/${BRP_HW_PLATFORM}/${BRP_SW_VERSION}"
+BRP_REL_CONFIG_BASE="$PWD/config/${BRP_ORG_PLATFORM}/${BRP_SW_VERSION}"
 BRP_REL_CONFIG_JSON="${BRP_REL_CONFIG_BASE}/config.json"
 BRP_PAT_MD5_JSON="$PWD/config/pats.json"
 
