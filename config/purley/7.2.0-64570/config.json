@@ -1,0 +1,124 @@
+{
+  "os": {
+    "id": "fs6400_64570",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_fs6400_64570.pat",
+    "sha256": "1cdf0a81e889a6d89d795080a9774a15ee1b56ab6c64854739a03113d8143a83"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "6fd6d57b5b856569b3c48e3a416c0a68fc8bcd45db1ebd09bdb5b79f4dfc3300"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "48227142edd6ea969ebec6c3160c9939aef5a853e1ba2556d3401a68c5953357"
+    },
+    "vmlinux": {
+      "sha256": "8bd022cbd7e5c2c3e31fc8b4d03f0ee45e4960d565594f3f78bde538b2364164"
+    }
+  },
+  "patches": {
+    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+    "zlinux": [
+      "zImage-001-fs6400-64570-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "24",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
+    "internalportcfg": "0xfffff",
+    "SasIdxMap": "0",
+    "esataportcfg": "0x00",
+    "maxlanport": "8",
+    "netif_seq": "0 1 2 3 4 5 6 7"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "SasIdxMap": "0",
+      "SataPortMap": "1",
+      "DiskIdxMap": "0",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "fs6400",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "sataboot2": null,
+      "SMBusHddDynamicPower": "0",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8"
+    },
+    "menu_entries": {
+      "RedPill fs6400 v7.1.1-64570 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
+          "echo Loading Linux...",
+          "linux /zImage-dsm @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /initrd-dsm",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill fs6400 v7.1.1-64570 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
+          "echo Loading Linux...",
+          "linux /zImage-dsm @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /initrd-dsm",
+          "echo Starting kernel with SATA boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v5.10.55+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline5.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}
