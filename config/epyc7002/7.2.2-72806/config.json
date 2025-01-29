@@ -1,17 +1,12 @@
 {
-  "os": {
-    "id": "sa6400_72806",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_SA6400_72806.pat",
-    "sha256": "6d5018bc1ebb8e612423983b8e4be9099127c45c1b523eb4929ed09024e0bf22"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "1d2dacb18563285285421f91e504c413c79b57af5f9bd72f8ab51ec937d21bac"
+      "sha256": ""
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "15cbd51070cdd8cc0535357a9f82fd54cf3cca93c9516cac7c3d3e975746580c"
+      "sha256": ""
     },
     "vmlinux": {
       "sha256": ""
@@ -43,7 +38,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "SA6400",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -60,7 +54,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill SA6400 v7.2.2-72806 (USB, Verbose)": {
+      "RedPill epyc7002 v7.2.2-72806 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -76,7 +70,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill SA6400 v7.2.2-72806 (SATA, Verbose)": {
+      "RedPill epyc7002 v7.2.2-72806 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

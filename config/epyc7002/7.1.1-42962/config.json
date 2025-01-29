@@ -1,26 +1,21 @@
 {
-  "os": {
-    "id": "sa6400_42962",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-6/DSM_SA6400_42962.pat",
-    "sha256": "5c1d59c19b032183e92efd6c82a0573bc6704b22f7c92ed2c19e0e8ca4c777d8"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "bcbb35ae4b74c0b05f0bea2d1ab5125f911475e4f963b3050d442ad25fbbdd59"
+      "sha256": ""
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "8499dfdf5c4e355455b9f802c4277f31b412f8caa8fdd8e5bb28b124e5c4dd84"
+      "sha256": ""
     },
     "vmlinux": {
-      "sha256": "6e81286c65b96c219c8fb0aa6b6fc086cdb49fd5d1195de9c343e88fadb90952"
+      "sha256": ""
     }
   },
   "patches": {
     "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
     "zlinux": [
-      "zImage-001-SA6400-42962-ramdisk-and-flag-NOP.bsp"
+      ""
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
@@ -50,7 +45,6 @@
       "DiskIdxMap": "0",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "SA6400",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -67,7 +61,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill SA6400 v7.1.1-42962 Beta (USB, Verbose)": {
+      "RedPill epyc7002 v7.1.1-42962 Beta (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -83,7 +77,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill SA6400 v7.1.1-42962 Beta (SATA, Verbose)": {
+      "RedPill epyc7002 v7.1.1-42962 Beta (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

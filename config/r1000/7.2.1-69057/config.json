@@ -1,25 +1,20 @@
 {
-  "os": {
-    "id": "ds923p_69057",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.1/69057/DSM_DS923%2B_69057.pat",
-    "sha256": "7a825f5520851ce032821c1efb5bf76f9cc9ef2435783c709e7e727b57d52909"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "44f5f510ec82463df1a39d18462f7e6a5cb2a51cc6709810c83381f9fc47c40c"
+      "sha256": ""
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "eee8af95bf7d767c6b5230cd60f3950c2d82208baa314cacf40f691aa83249a2"
+      "sha256": ""
     },
     "vmlinux": {
-      "sha256": "946d8cd97037a5ee6a755aed7c70df3ce973e3cb47c1f8a57fa37a12beef96ad"
+      "sha256": ""
     }
   },
   "patches": {
     "zlinux": [
-      "zImage-001-923p-69057-ramdisk-and-flag-NOP.bsp"
+      ""
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
@@ -40,7 +35,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS923+",
       "SMBusHddDynamicPower": 1,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
@@ -53,7 +47,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill DS923+ v7.2.1-69057 (USB, Verbose)": {
+      "RedPill r1000 v7.2.1-69057 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -69,7 +63,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS923+ v7.2.1-69057 (SATA, Verbose)": {
+      "RedPill r1000 v7.2.1-69057 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

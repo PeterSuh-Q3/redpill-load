@@ -1,17 +1,12 @@
 {
-  "os": {
-    "id": "ds1621p_72806",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS1621%2B_72806.pat",
-    "sha256": "bc5e0d099b5b75be75ba2b3da757b10d6fbe5b6e35ba5e0a3c73ecad97fdfa9a"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "d55e3d66ae775b80c3f6d9e4db0666f5edccd67adedc570819795599dfb963da"
+      "sha256": ""
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "aeef07bc64b84240e42dec42dca856d661fd8a58b896d46f441666ec8dc22fc5"
+      "sha256": ""
     },
     "vmlinux": {
       "sha256": ""
@@ -43,7 +38,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS1621+",
       "SMBusHddDynamicPower": 1,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
@@ -56,7 +50,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill DS1621+ v7.2.2-72806 (USB, Verbose)": {
+      "RedPill v1000 v7.2.2-72806 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -72,7 +66,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS1621+ v7.2.2-72806 (SATA, Verbose)": {
+      "RedPill v1000 v7.2.2-72806 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
