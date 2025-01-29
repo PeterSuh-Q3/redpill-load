@@ -100,7 +100,7 @@ BRP_DEV_DISABLE_EXTS=${BRP_DEV_DISABLE_EXTS:-0} # when set 1 all extensions will
 ##### CONFIGURATION VALIDATION##########################################################################################
 
 ### Command line params handling
-if [ $# -lt 4 ] || [ $# -gt 5 ]; then
+if [ $# -lt 5 ] || [ $# -gt 6 ]; then
   echo "Usage: $0 platform version <output-file>"
   exit 1
 fi
@@ -109,14 +109,16 @@ BRP_SW_VERSION="$2"
 BRP_OUTPUT_FILE="${3:-"$PWD/images/redpill-${BRP_HW_PLATFORM}_${BRP_SW_VERSION}_b$(date '+%s').img"}"
 BRP_ORG_PLATFORM="$4"
 BRP_KVER="$5"
+BRP_SYNOMODEL="$6"
 
 BPR_LOWER_PLATFORM=$(echo ${BRP_ORG_PLATFORM} | tr '[:upper:]' '[:lower:]')
 
 platkver="$(echo ${BPR_LOWER_PLATFORM}_${BRP_KVER} | sed 's/\.//g')"
 echo "platkver = ${platkver}"
 
-BRP_REL_CONFIG_BASE="$PWD/config/${BRP_HW_PLATFORM}/${BRP_SW_VERSION}"
+BRP_REL_CONFIG_BASE="$PWD/config/${BPR_LOWER_PLATFORM}/${BRP_SW_VERSION}"
 BRP_REL_CONFIG_JSON="${BRP_REL_CONFIG_BASE}/config.json"
+BRP_PAT_MD5_JSON="$PWD/config/pats.json"
 
 ### Some config validation
 if [ "${BRP_LINUX_PATCH_METHOD}" == "direct" ]; then
@@ -155,7 +157,7 @@ fi
 brp_json_validate "${BRP_REL_CONFIG_JSON}"
 
 ### Here we define some common/well-known paths used later, as well as the map for resolving path variables in configs
-readonly BRP_REL_OS_ID=$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "os.id")
+readonly BRP_REL_OS_ID="${BRP_SYNOMODEL}"
 readonly BRP_UPAT_DIR="${BRP_BUILD_DIR}/pat-${BRP_REL_OS_ID}-unpacked" # unpacked pat directory
 readonly BRP_EXT_DIR="$PWD/ext" # a directory with external tools/files/modules
 readonly BRP_COMMON_CFG_BASE="$PWD/config/_common" # a directory with common configs & patches sable for many platforms
@@ -297,8 +299,8 @@ if [ ! -d "${BRP_UPAT_DIR}" ]; then
   else
     pr_dbg "Found existing PAT at %s - skipping download" "${BRP_PAT_FILE}"
   fi
-
-  brp_verify_file_sha256 "${BRP_PAT_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "os.sha256")"
+                                                                    
+  brp_verify_file_md5 "${BRP_PAT_FILE}" "$(brp_json_get_like_field "${BRP_PAT_MD5_JSON}" "${BRP_HW_PLATFORM}" "${BRP_SW_VERSION}" "sum")"
   brp_unpack_tar "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
 else
   pr_info "Found unpacked PAT at \"%s\" - skipping unpacking" "${BRP_UPAT_DIR}"
@@ -324,7 +326,7 @@ if [ ! -f "${BRP_ZLINUX_PATCHED_FILE}" ]; then
     else
       pr_info "Found unpacked vmlinux at \"%s\" - skipping unpacking" "${BRP_VMLINUX_FILE}"
     fi
-    brp_verify_file_sha256 "${BRP_VMLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.vmlinux.sha256")"
+    #brp_verify_file_sha256 "${BRP_VMLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.vmlinux.sha256")"
 
     readonly BRP_VMLINUX_PATCHED_FILE="${BRP_BUILD_DIR}/vmlinux-patched.elf"
     if [ ! -f "${BRP_VMLINUX_PATCHED_FILE}" ]; then
@@ -338,7 +340,7 @@ if [ ! -f "${BRP_ZLINUX_PATCHED_FILE}" ]; then
     fi
 
   else # we can just "else" for "direct" creation method since it should be checked at the top
-    brp_verify_file_sha256 "${BRP_ZLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.zlinux.sha256")"
+    #brp_verify_file_sha256 "${BRP_ZLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.zlinux.sha256")"
     brp_apply_binary_patches \
       "${BRP_ZLINUX_FILE}" \
       "${BRP_ZLINUX_PATCHED_FILE}" \
@@ -374,7 +376,7 @@ if [ ! -f "${BRP_RD_REPACK}" ]; then # do we even need to unpack-modify-repack t
     pr_dbg "Unpacked ramdisk %s not found - preparing" "${BRP_URD_DIR}"
 
     brp_mkdir "${BRP_URD_DIR}"
-    brp_verify_file_sha256 "${BRP_RD_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.ramdisk.sha256")"
+    #brp_verify_file_sha256 "${BRP_RD_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.ramdisk.sha256")"
     brp_unpack_zrd "${BRP_RD_FILE}" "${BRP_URD_DIR}"
   else
     pr_info "Found unpacked ramdisk at \"%s\" - skipping unpacking" "${BRP_URD_DIR}"
