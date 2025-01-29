@@ -100,7 +100,7 @@ BRP_DEV_DISABLE_EXTS=${BRP_DEV_DISABLE_EXTS:-0} # when set 1 all extensions will
 ##### CONFIGURATION VALIDATION##########################################################################################
 
 ### Command line params handling
-if [ $# -lt 4 ] || [ $# -gt 5 ]; then
+if [ $# -lt 5 ] || [ $# -gt 6 ]; then
   echo "Usage: $0 platform version <output-file>"
   exit 1
 fi
@@ -109,6 +109,7 @@ BRP_SW_VERSION="$2"
 BRP_OUTPUT_FILE="${3:-"$PWD/images/redpill-${BRP_HW_PLATFORM}_${BRP_SW_VERSION}_b$(date '+%s').img"}"
 BRP_ORG_PLATFORM="$4"
 BRP_KVER="$5"
+BRP_SYNOMODEL="$6"
 
 BPR_LOWER_PLATFORM=$(echo ${BRP_ORG_PLATFORM} | tr '[:upper:]' '[:lower:]')
 
@@ -156,7 +157,7 @@ fi
 brp_json_validate "${BRP_REL_CONFIG_JSON}"
 
 ### Here we define some common/well-known paths used later, as well as the map for resolving path variables in configs
-readonly BRP_REL_OS_ID=$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "os.id")
+readonly BRP_REL_OS_ID="${BRP_SYNOMODEL}"
 readonly BRP_UPAT_DIR="${BRP_BUILD_DIR}/pat-${BRP_REL_OS_ID}-unpacked" # unpacked pat directory
 readonly BRP_EXT_DIR="$PWD/ext" # a directory with external tools/files/modules
 readonly BRP_COMMON_CFG_BASE="$PWD/config/_common" # a directory with common configs & patches sable for many platforms
