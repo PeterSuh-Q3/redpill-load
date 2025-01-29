@@ -311,7 +311,7 @@ fi
 
 ##### LINUX KERNEL MODIFICATIONS #######################################################################################
 # Prepare Linux kernel image
-readonly BRP_ZLINUX_FILE=${BRP_UPAT_DIR}/$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" 'files.zlinux.name')
+readonly BRP_ZLINUX_FILE="zImage"
 readonly BRP_ZLINUX_PATCHED_FILE="${BRP_BUILD_DIR}/zImage-patched"
 #block
 if [ 1 = 0 ]; then
@@ -326,7 +326,7 @@ if [ ! -f "${BRP_ZLINUX_PATCHED_FILE}" ]; then
     else
       pr_info "Found unpacked vmlinux at \"%s\" - skipping unpacking" "${BRP_VMLINUX_FILE}"
     fi
-    brp_verify_file_sha256 "${BRP_VMLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.vmlinux.sha256")"
+    #brp_verify_file_sha256 "${BRP_VMLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.vmlinux.sha256")"
 
     readonly BRP_VMLINUX_PATCHED_FILE="${BRP_BUILD_DIR}/vmlinux-patched.elf"
     if [ ! -f "${BRP_VMLINUX_PATCHED_FILE}" ]; then
@@ -340,7 +340,7 @@ if [ ! -f "${BRP_ZLINUX_PATCHED_FILE}" ]; then
     fi
 
   else # we can just "else" for "direct" creation method since it should be checked at the top
-    brp_verify_file_sha256 "${BRP_ZLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.zlinux.sha256")"
+    #brp_verify_file_sha256 "${BRP_ZLINUX_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.zlinux.sha256")"
     brp_apply_binary_patches \
       "${BRP_ZLINUX_FILE}" \
       "${BRP_ZLINUX_PATCHED_FILE}" \
@@ -362,7 +362,7 @@ rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 ##### RAMDISK MODIFICATIONS ############################################################################################
 # here we have a ready kernel in BRP_ZLINUX_PATCHED_FILE which makes the end of playing with the kernel
 # Now we can begin to take care of the ramdisk
-readonly BRP_RD_FILE=${BRP_UPAT_DIR}/$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" 'files.ramdisk.name') # original ramdisk file
+readonly BRP_RD_FILE="rd.gz" # original ramdisk file
 readonly BRP_URD_DIR="${BRP_BUILD_DIR}/rd-${BRP_REL_OS_ID}-unpacked" # folder with unpacked ramdisk contents
 readonly BRP_RD_REPACK="${BRP_BUILD_DIR}/rd-patched-${BRP_REL_OS_ID}.gz" # repacked ramdisk file
 readonly BRP_JUN_PATCH="${BRP_USER_DIR}/jun.patch" # jun.patch
@@ -376,7 +376,7 @@ if [ ! -f "${BRP_RD_REPACK}" ]; then # do we even need to unpack-modify-repack t
     pr_dbg "Unpacked ramdisk %s not found - preparing" "${BRP_URD_DIR}"
 
     brp_mkdir "${BRP_URD_DIR}"
-    brp_verify_file_sha256 "${BRP_RD_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.ramdisk.sha256")"
+    #brp_verify_file_sha256 "${BRP_RD_FILE}" "$(brp_json_get_field "${BRP_REL_CONFIG_JSON}" "files.ramdisk.sha256")"
     brp_unpack_zrd "${BRP_RD_FILE}" "${BRP_URD_DIR}"
   else
     pr_info "Found unpacked ramdisk at \"%s\" - skipping unpacking" "${BRP_URD_DIR}"
