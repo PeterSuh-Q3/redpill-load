@@ -31,12 +31,15 @@
     "internalportcfg": "0xFFFF",
     "esataportcfg": "0x00",
     "usbportcfg": "0x10000",
-    "updateurl": "http://example.com/",
-    "update_server": "http://example.com/",
-    "update_server_ssl": "https//example.com/",
-    "myds_region_api_base_url": "https://example.com",
     "maxlanport": "8",
-    "netif_seq": "0 1 2 3 4 5 6 7"
+    "netif_seq": "0 1 2 3 4 5 6 7",
+    "supportsas": "no",
+    "supportsas_v2_r1": "no",
+    "support_multipath": "yes",
+    "support_install_only_dev": "no",
+    "isolated_disk_system": "no",
+    "required_system_disk_number": "0",
+    "internal_disk_without_led_mask": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
