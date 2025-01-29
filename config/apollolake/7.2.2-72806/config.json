@@ -1,9 +1,4 @@
 {
-  "os": {
-    "id": "ds918p_72806",
-    "pat_url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS918%2B_72806.pat",
-    "sha256": "ae10d0e4004bc92d93dc6de1cc46b643cb9f93c24661eda6c2e7f209e81dcd17"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
