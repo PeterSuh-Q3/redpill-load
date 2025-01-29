@@ -1,18 +1,5 @@
 {
-  "files": {
-    "zlinux": {
-      "name": "zImage",
-      "sha256": "04b91d5667efa28398a631ef5a6c6ca6a79ed5c00ed0826c8aa4f357ab87c201"
-    },
-    "ramdisk": {
-      "name": "rd.gz",
-      "sha256": "81a608d50f695271ec88101f10558d39be0e647184aec950ea8a5c3e08367f1f"
-    },
-    "vmlinux": {
-      "sha256": ""
-    }
-  },
-  "patches": {
+    "patches": {
     "zlinux": [
       ""
     ],
