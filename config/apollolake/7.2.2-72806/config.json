@@ -40,7 +40,7 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS918+",
+      "syno_hw_version": "",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -51,43 +51,8 @@
       "syno_hdd_detect": 0,
       "root": "/dev/md0",
       "earlycon": "uart8250,io,0x3f8,115200n8"
-    },
-    "menu_entries": {
-      "RedPill DS918+ v7.2.2-72806 (USB, Verbose)": {
-        "options": [
-          "savedefault",
-          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
-          "echo Loading Linux...",
-          "linux /zImage-dsm @@@CMDLINE@@@",
-          "echo Loading initramfs...",
-          "initrd /initrd-dsm",
-          "echo Starting kernel with USB boot"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "log_buf_len": "32M"
-        }
-      },
-      "RedPill DS918+ v7.2.2-72806 (SATA, Verbose)": {
-        "options": [
-          "savedefault",
-          "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
-          "echo Loading Linux...",
-          "linux /zImage-dsm @@@CMDLINE@@@",
-          "echo Loading initramfs...",
-          "initrd /initrd-dsm",
-          "echo Starting kernel with SATA boot"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "synoboot_satadom": 2,
-          "log_buf_len": "32M"
-        }
-      }
     }
-  },
+  },  
   "extra": {
     "compress_rd": false,
     "ramdisk_copy": {
