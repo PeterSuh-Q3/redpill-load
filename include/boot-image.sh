@@ -153,6 +153,7 @@ brp_generate_grub_conf()
   # First generate menu entries
   pr_dbg "Generating GRUB menu entries"
   local entries_names;
+  pr_info "grub boot entries_names = %s" "$entries_names"
   brp_json_get_keys "${1}" 'grub.menu_entries' entries_names
 
   # Cmdline is constructed by applying, in order, options from the follownig sources
