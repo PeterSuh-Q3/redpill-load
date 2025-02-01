@@ -194,8 +194,8 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
 fi
 
 pr_dbg "******** Printing config variables ********"
-pr_dbg "Cache dir: %s" "$BRP_CACHE_DIR"
-pr_dbg "Build dir: %s" "$BRP_BUILD_DIR"
+pr_info "Cache dir: %s" "$BRP_CACHE_DIR"
+pr_info "Build dir: %s" "$BRP_BUILD_DIR"
 pr_dbg "Ext dir: %s" "$BRP_EXT_DIR"
 pr_dbg "User custom dir: %s" "$BRP_USER_DIR"
 pr_dbg "User config: %s" "$BRP_USER_CFG"
@@ -207,8 +207,8 @@ pr_dbg "Software version: %s" "$BRP_SW_VERSION"
 pr_dbg "Image template: %s" "$BRP_BOOT_IMAGE"
 pr_dbg "Image destination: %s" "$BRP_OUTPUT_FILE"
 pr_dbg "Common cfg base: %s" "$BRP_COMMON_CFG_BASE"
-pr_dbg "Release cfg base: %s" "$BRP_REL_CONFIG_BASE"
-pr_dbg "Release cfg JSON: %s" "$BRP_REL_CONFIG_JSON"
+pr_info "Release cfg base: %s" "$BRP_REL_CONFIG_BASE"
+pr_info "Release cfg JSON: %s" "$BRP_REL_CONFIG_JSON"
 pr_dbg "Release id: %s" "$BRP_REL_OS_ID"
 if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   pr_dbg "User extensions [empty means all]: %s" "$RPT_USER_EXTS"
