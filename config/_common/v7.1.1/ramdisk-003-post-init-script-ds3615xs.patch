@@ -1,12 +1,12 @@
---- /usr/sbin/init.post
-+++ /usr/sbin/init.post
-@@ -31,6 +31,29 @@
+--- a/usr/sbin/init.post
++++ b/usr/sbin/init.post
+@@ -31,7 +31,28 @@
  OptPrjQuota="$(GetPQMountOpt "${RootMountPath}")"
  # shellcheck disable=SC2046
- Mount "${RootMountPath}" /tmpRoot -o barrier=1 ${OptPrjQuota}
+ Mount "${RootMountPath}" /tmpRoot -o barrier=1,noatime ${OptPrjQuota}
 +############################################################################################
 +SED_PATH='/tmpRoot/usr/bin/sed'
-+
+ 
 +@@@CONFIG-MANIPULATORS-TOOLS@@@
 +
 +@@@CONFIG-GENERATED@@@
@@ -26,7 +26,6 @@
 +
 +(/bin/sh /exts/exec.sh on_os_load_scripts && echo "OS load extensions processed") || Exit 99 "rp ext post exec failure"
 +############################################################################################
-+
-
  Mkdir -p /tmpRoot/initrd
-
+ 
+ Umount /proc >/dev/null 2>&1
