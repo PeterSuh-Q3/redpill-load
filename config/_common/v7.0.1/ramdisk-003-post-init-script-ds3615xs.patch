@@ -1,6 +1,6 @@
 --- a/usr/sbin/init.post
 +++ b/usr/sbin/init.post
-@@ -18,5 +18,30 @@ if [ "$UniqueRD" = "nextkvmx64" ]; then
+@@ -22,6 +22,29 @@ if [ "$UniqueRD" = "nextkvmx64" ]; then
  fi
  Mount "$RootDevice" /tmpRoot -o barrier=1
  
