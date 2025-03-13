@@ -15,19 +15,16 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 # 1 - device path
 function getloaderdisk() {
     BRP_LOADER_DISK=""
-    while read -r edisk; do
-        if [ $(sudo fdisk -l "$edisk" | grep -c "83 Linux") -eq 3 ]; then
-            BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
-            if [ -n "$BRP_LOADER_DISK" ]; then
-                break
-            else
-                # check for the other type
-                BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
-                [ -n "$BRP_LOADER_DISK" ] && break
-            fi
-        fi
-    done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
-
+    BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
+    if [ -z "$BRP_LOADER_DISK" ]; then
+        # Iterate through available disks to find a valid disk name    
+        while read -r edisk; do
+            # check for the other type
+            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+             # Break the loop if a valid disk name is found
+             [ -n "$BRP_LOADER_DISK" ] && break
+        done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
+    fi
     echo "LOADER DISK: $BRP_LOADER_DISK"
 }
 
