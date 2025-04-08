@@ -8,6 +8,12 @@ if [ -z "${BASH_SOURCE}" ] ; then
     exit 1
 fi
 
+if [[ "$(uname -a | grep -c tcrpfriend)" -gt 0 ]]; then
+    FRKRNL="YES"
+else
+    FRKRNL="NO"
+fi
+
 cd "${BASH_SOURCE%/*}/" || exit 1
 ########################################################################################################################
 
@@ -895,7 +901,7 @@ __action__update_platform_exts()
       shell_sha256=$(sha256sum ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh | awk '{print $1}')
       pr_dbg "storagepanel install.sh file  sha256sum is : $shell_sha256"
       pr_dbg "Editing ${platform_id}.json file !!!"
-      sed -i "s/c524aeed07f8aa91a97735d31cf0c5014e67900ed60f643e929e0cee1b8cb060/$shell_sha256/g" ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json
+      sed -i "s/a724bd74ae136a77719c4443c810b35da7896ebd7b6393cf2cc9551bd043cd1e/$shell_sha256/g" ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json
     fi
 
   done
@@ -954,7 +960,11 @@ __action__dump_exts()
     fi
 
     brp_cp_flat "${platform_dir}" "${dump_ext_di}" # theoretically this will suffice, but we can cleanup a bit
-    "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    if [ "$FRKRNL" = "YES" ]; then
+      sudo "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    else
+      "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
+    fi
     "${FIND_PATH}" "${dump_ext_di}" -type d -empty -delete # delete all empty dirs which may resulted from unpacking
 
     # Handle kernel extensions (if any)
