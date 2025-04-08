@@ -15,19 +15,16 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 # 1 - device path
 function getloaderdisk() {
     BRP_LOADER_DISK=""
-    while read -r edisk; do
-        if [ $(sudo fdisk -l "$edisk" | grep -c "83 Linux") -eq 3 ]; then
-            BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
-            if [ -n "$BRP_LOADER_DISK" ]; then
-                break
-            else
-                # check for the other type
-                BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
-                [ -n "$BRP_LOADER_DISK" ] && break
-            fi
-        fi
-    done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
-
+    BRP_LOADER_DISK=$(blkid | grep "6234-C863" | cut -d ':' -f1 | sed 's/p\?3//g' | awk -F/ '{print $NF}' | head -n 1)
+    if [ -z "$BRP_LOADER_DISK" ]; then
+        # Iterate through available disks to find a valid disk name    
+        while read -r edisk; do
+            # check for the other type
+            BRP_LOADER_DISK="$(echo ${edisk} | cut -c 1-12 | awk -F\/ '{print $3}')"
+             # Break the loop if a valid disk name is found
+             [ -n "$BRP_LOADER_DISK" ] && break
+        done < <(lsblk -ndo NAME | grep -v '^loop' | grep -v '^zram' | sed 's/^/\/dev\//')
+    fi
     echo "LOADER DISK: $BRP_LOADER_DISK"
 }
 
@@ -194,8 +191,8 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
 fi
 
 pr_dbg "******** Printing config variables ********"
-pr_info "Cache dir: %s" "$BRP_CACHE_DIR"
-pr_info "Build dir: %s" "$BRP_BUILD_DIR"
+pr_dbg "Cache dir: %s" "$BRP_CACHE_DIR"
+pr_dbg "Build dir: %s" "$BRP_BUILD_DIR"
 pr_dbg "Ext dir: %s" "$BRP_EXT_DIR"
 pr_dbg "User custom dir: %s" "$BRP_USER_DIR"
 pr_dbg "User config: %s" "$BRP_USER_CFG"
@@ -207,8 +204,8 @@ pr_dbg "Software version: %s" "$BRP_SW_VERSION"
 pr_dbg "Image template: %s" "$BRP_BOOT_IMAGE"
 pr_dbg "Image destination: %s" "$BRP_OUTPUT_FILE"
 pr_dbg "Common cfg base: %s" "$BRP_COMMON_CFG_BASE"
-pr_info "Release cfg base: %s" "$BRP_REL_CONFIG_BASE"
-pr_info "Release cfg JSON: %s" "$BRP_REL_CONFIG_JSON"
+pr_dbg "Release cfg base: %s" "$BRP_REL_CONFIG_BASE"
+pr_dbg "Release cfg JSON: %s" "$BRP_REL_CONFIG_JSON"
 pr_dbg "Release id: %s" "$BRP_REL_OS_ID"
 if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   pr_dbg "User extensions [empty means all]: %s" "$RPT_USER_EXTS"
