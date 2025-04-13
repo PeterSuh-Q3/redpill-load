@@ -58,6 +58,8 @@ else
     FRKRNL="NO"
 fi
 
+BIOS_CNT="$(sudo fdisk -l | grep "BIOS" | wc -l )"
+
 if [ "$FRKRNL" = "NO" ]; then
     getloaderdisk
 else
@@ -586,10 +588,15 @@ pr_process_ok
 # Add patched zImage, patched ramdisk and our GRUB config
 pr_process "Copying patched files"
 brp_cp_flat "${BRP_ZLINUX_PATCHED_FILE}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
+if [[ $BIOS_CNT -eq 1 ]] && [ "$FRKRNL" = "YES" ]; then
+    brp_cp_flat "${BRP_RD_REPACK}" "/dev/shm/${BRP_RDMOD_NAME}"
+    brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "/dev/shm/${BRP_CUSTOM_RD_NAME}"
+else
 #brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P1}/${BRP_RDMOD_NAME}"
-brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P3}/${BRP_RDMOD_NAME}"
+    brp_cp_flat "${BRP_RD_REPACK}" "${BRP_OUT_P3}/${BRP_RDMOD_NAME}"
 #brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P1}/${BRP_CUSTOM_RD_NAME}"
-brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P3}/${BRP_CUSTOM_RD_NAME}"
+    brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "${BRP_OUT_P3}/${BRP_CUSTOM_RD_NAME}"
+fi    
 #brp_cp_flat "${BRP_TMP_GRUB_CONF}" "${BRP_OUT_P1}/boot/grub/grub.cfg"
 brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
 pr_process_ok
@@ -606,7 +613,7 @@ if [ "${BRP_KEEP_BUILD}" -eq 0 ]; then
 fi
 pr_process_ok
 pr_process "Path of loader disk %s" "${BRP_OUT_P3}"
-ls -l "${BRP_OUT_P1}"
-ls -l "${BRP_OUT_P2}"
-ls -l "${BRP_OUT_P3}"
+#ls -l "${BRP_OUT_P1}"
+#ls -l "${BRP_OUT_P2}"
+#ls -l "${BRP_OUT_P3}"
 pr_process_ok
