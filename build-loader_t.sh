@@ -59,6 +59,8 @@ else
 fi
 
 BIOS_CNT="$(sudo fdisk -l | grep "BIOS" | wc -l )"
+[ $BIOS_CNT -eq 0 ] && BIOS_CNT="$(sudo fdisk -l | grep "EFI" | grep "127M" | wc -l )"
+[ $BIOS_CNT -eq 0 ] && BIOS_CNT="$(sudo fdisk -l | grep "*" | grep "83" | grep "127M" | wc -l )"
 
 if [ "$FRKRNL" = "NO" ]; then
     getloaderdisk
