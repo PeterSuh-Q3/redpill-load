@@ -19,6 +19,16 @@
             "sum": "405090fc92572bf3439e97e3b7b04f07"
         }
     },
+    "DS916+": {
+        "7.0.1-42218-0": {
+            "url": "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_DS916%2B_42218.pat",
+            "sum": "ed7c45bef0e8a19ae4d1451745d87959"
+        },
+        "7.1.1-42962-1": {
+            "url": "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-1/DSM_DS916%2B_42962.pat",
+            "sum": "19bf342e86c825e1a676c5a7a86b353d"
+        }
+    },
     "RC18015xs+": {
         "7.0.1-42218-0": {
             "url": "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_RC18015xs%2B_42218.pat",
