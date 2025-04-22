@@ -49,6 +49,16 @@
             "sum": "ede609d18cd7ca414e85aef71ebdaa11"
         }
     },
+    "DS713+": {
+        "7.0.1-42218-0": {
+            "url": "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_DS713%2B_42218.pat",
+            "sum": "b199ed9a3253ba585e62947563ce0bdf"
+        },
+        "7.1.1-42962-1": {
+            "url": "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-1/DSM_DS713%2B_42962.pat",
+            "sum": "9bdf83b37de54cdd970df56680316e3e"
+        }
+    },    
     "RS18016xs+": {
         "7.0.1-42218-0": {
             "url": "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_RS18016xs%2B_42218.pat",
