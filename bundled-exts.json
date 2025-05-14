@@ -17,5 +17,6 @@
   "shr"                   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/shr/rpext-index.json",
   "hdddb"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/hdddb/rpext-index.json",
   "synoconfbkp"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/synoconfbkp/rpext-index.json",  
-  "nvmevolume-onthefly"   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/nvmevolume-onthefly/rpext-index.json"
+  "nvmevolume-onthefly"   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/nvmevolume-onthefly/rpext-index.json",
+  "vmtools"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/vmtools/rpext-index.json"
 }
