@@ -43,7 +43,8 @@
     "netif_seq": "0 1 2 3 4 5 6 7",
     "buzzeroffen": "0xffff",
     "maxdisks": "24",
-    "netif_seq_by_dts": "no"
+    "netif_seq_by_dts": "no",
+    "show_autoupdatetype_notify": "yes"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
