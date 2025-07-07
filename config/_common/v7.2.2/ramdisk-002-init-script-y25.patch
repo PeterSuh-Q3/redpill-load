@@ -34,3 +34,11 @@
  LoadBrmModules
  
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
+@@ -855,6 +861,8 @@
+-if [ "yes" = "${SupportAutoInstall}" ]; then
+-	CheckIfNeedToAutoInstall
+-fi
++# AutoInstall function disabled for hack purpose
++# if [ "yes" = "${SupportAutoInstall}" ]; then
++#     CheckIfNeedToAutoInstall
++# fi
