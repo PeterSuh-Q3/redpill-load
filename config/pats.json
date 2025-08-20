@@ -1495,6 +1495,12 @@
       "sum": "0e70938eae1c6fb22222a973d6d2fb3b"
     }
   },
+  "DS225+": {
+    "7.2.2-72806-0": {
+      "url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS225%2B_72806.pat",
+      "sum": "9c3bae41a595d029a15c83acbf5eb0c8"
+    }
+  },
   "DS725+": {
     "7.2.2-72806-0": {
       "url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS725%2B_72806.pat",
