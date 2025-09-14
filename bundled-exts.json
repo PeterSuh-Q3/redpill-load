@@ -7,7 +7,6 @@
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acpid/rpext-index.json",    
   "automount"             : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/automount/rpext-index.json",
   "autorecover"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/autorecover/rpext-index.json",  
-  "thethorgroup.boot-wait": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/boot-wait/rpext-index.json",  
   "disks"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/disks/rpext-index.json",
   "cpufreq-scaler"        : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpufreq-scaler/rpext-index.json",
   "cpuinfo"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/cpuinfo/rpext-index.json",
