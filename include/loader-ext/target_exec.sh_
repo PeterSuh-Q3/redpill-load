@@ -104,30 +104,20 @@ load_kmods)
 on_early_scripts)
   _run_scripts 'on_early' 'early'
   ;;
-  ip a
-  ;;
 on_jrExit_scripts)
   _run_scripts 'on_jrExit' 'jrExit'
-  ;;
-  ip a
   ;;
 on_boot_scripts)
   _run_scripts 'on_boot' 'modules'
   ;;
-  ip a
-  ;;
 on_patches_scripts)
   _run_scripts 'on_patches' 'patches'
-  ;;
-  ip a
   ;;
 on_os_load_scripts)
   _run_scripts 'on_os_load' 'late'
   ;;
 on_rcExit_scripts)
   _run_scripts 'on_rcExit' 'rcExit'
-  ;;
-  ip a
   ;;
 *)
   if [ $# -lt 1 ]; then
