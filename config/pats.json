@@ -754,6 +754,10 @@
     }
   },
   "DS920+": {
+    "7.3.0-81180-0": {
+      "url": "https://global.download.synology.com/download/DSM/release/7.3/81180/DSM_DS920%2B_81180.pat",
+      "sum": "c9fd7e59a6d7577b6ad72b20f2503c85"
+    },
     "7.2.2-72806-0": {
       "url": "https://global.download.synology.com/download/DSM/release/7.2.2/72806/DSM_DS920%2B_72806.pat",
       "sum": "4e6e9ef504996ddf0bea3de46c0879fc"
