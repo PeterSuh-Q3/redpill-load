@@ -109,7 +109,6 @@ on_jrExit_scripts)
   ;;
 on_boot_scripts)
   _run_scripts 'on_boot' 'modules'
-  ip a
   ;;
 on_patches_scripts)
   _run_scripts 'on_patches' 'patches'
