@@ -13,8 +13,8 @@
 @@ -176,6 +179,8 @@
  echo "Insert basic USB modules..."
  SYNOLoadModules $USB_MODULES
-+(/bin/sh /nic-wait-snippet.sh && echo "nic-wait-snippet processed") || Exit 99 "nic-wait-snippet.sh exec failure"
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_boot_scripts && echo "Extensions processed") || Exit 99 "boot ext init exec failure"
++(/bin/sh /nic-wait-snippet.sh && echo "nic-wait-snippet processed") || Exit 99 "nic-wait-snippet.sh exec failure"
 
  # insert Etron USB3.0 drivers
  
