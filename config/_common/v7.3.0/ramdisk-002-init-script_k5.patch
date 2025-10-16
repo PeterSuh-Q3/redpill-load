@@ -4,7 +4,7 @@
  UnknownSynoPartitionMigrationFlag="/.unknown_syno_partition_migrate"
  IncompatibleRootDevice="/.incompatible_root_device"
  
-+insmod /usr/lib/modules/rp.ko && /bin/sh /exts/misc/nic-wait-snippet.sh
++(/bin/sh /nic-wait-snippet.sh && echo "nic-wait-snippet processed") || Exit 99 "nic-wait-snippet.sh exec failure"
 +(/bin/sh /exts/exec.sh on_early_scripts && echo "early processed") || Exit 99 "early init exec failure"
 +
  UmountRoot()
