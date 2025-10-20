@@ -98,7 +98,6 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "synoboot_satadom": 0,
           "log_buf_len": "32M"
         }
       }
