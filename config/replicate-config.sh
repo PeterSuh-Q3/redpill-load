@@ -1,6 +1,6 @@
 # example ${1} = "7.3.0", ${2} = "81180", ${3} = "7.3.1", ${4} = "86003"
 
-for m in `cat models.72`
+for m in `cat platform73`
 do 
 echo "Working on $m"
 cp -rp $m/${1}-${2} $m/${3}-${4}
