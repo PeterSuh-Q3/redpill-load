@@ -65,7 +65,7 @@
       "earlycon": "uart8250,io,0x3f8,115200n8"
     },
     "menu_entries": {
-      "RedPill denverton v7.3.0-72806 (USB, Verbose)": {
+      "RedPill denverton v7.3.0-81180 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -81,7 +81,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill denverton v7.3.0-72806 (SATA, Verbose)": {
+      "RedPill denverton v7.3.0-81180 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

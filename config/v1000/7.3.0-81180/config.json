@@ -64,7 +64,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill v1000 v7.3.0-72806 (USB, Verbose)": {
+      "RedPill v1000 v7.3.0-81180 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -80,7 +80,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill v1000 v7.3.0-72806 (SATA, Verbose)": {
+      "RedPill v1000 v7.3.0-81180 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

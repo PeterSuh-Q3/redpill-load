@@ -17,9 +17,9 @@
       ""
     ],
     "ramdisk": [
-      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
@@ -40,11 +40,10 @@
     "support_fan": "no",
     "supportadt7490": "no",
     "maxlanport": "8",
-    "netif_seq": "0 1 2 3 4 5 6 7",
+    "netif_seq": "",
     "buzzeroffen": "0xffff",
     "maxdisks": "24",
-    "netif_seq_by_dts": "no",
-    "show_autoupdatetype_notify": "yes"
+    "netif_seq_by_dts": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
@@ -67,7 +66,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill geminilakenk v7.3.0-81180 (USB, Verbose)": {
+      "RedPill epyc7002 v7.3.1-86003 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -83,7 +82,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill geminilakenk v7.3.0-81180 (SATA, Verbose)": {
+      "RedPill epyc7002 v7.3.1-86003 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",

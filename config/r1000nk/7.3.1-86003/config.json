@@ -17,9 +17,9 @@
       ""
     ],
     "ramdisk": [
-      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script-y25.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
@@ -67,7 +67,7 @@
       "syno_ttyS1": "serial,0x2f8"
     },
     "menu_entries": {
-      "RedPill geminilakenk v7.3.0-81180 (USB, Verbose)": {
+      "RedPill r1000nk v7.3.1-86003 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -83,7 +83,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill geminilakenk v7.3.0-81180 (SATA, Verbose)": {
+      "RedPill r1000nk v7.3.1-86003 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
