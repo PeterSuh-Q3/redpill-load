@@ -11,9 +11,6 @@ on:
         description: 'Maximum parallel downloads'
         required: false
         default: '5'
-  schedule:
-    # Run weekly on Monday at 00:00 UTC
-    - cron: '0 0 * * 1'
 
 jobs:
   generate-md5:
@@ -39,13 +36,18 @@ jobs:
         
         echo "Fetching file list for DSM $DSM_VERSION..."
         ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/$DSM_VERSION"
-        
+
+        # 변환: 하이픈을 슬래시로 바꾸고 뒤쪽 두 번째 하이픈 이후는 따로 처리
+        # 7.3.1-86003 => 7.3.1/86003
+        DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -r 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+        echo "Arch URL 부분: $DSM_VERSION_URL"
+
         # Fetch HTML and parse PAT files
         curl -s "$ARCHIVE_URL" | \
           grep -oP 'DSM_[^"]+\.pat' | \
           sort -u | \
           while read filename; do
-            echo "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/$filename"
+            echo "https://global.synologydownload.com/download/DSM/release/$DSM_VERSION_URL/$filename"
           done > md5list
           
         FILE_COUNT=$(wc -l < md5list)
