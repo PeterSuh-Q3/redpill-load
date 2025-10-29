@@ -95,10 +95,6 @@
     "7.1.1-42962-1": {
       "url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-1/DSM_DS1520%2B_42962.pat",
       "sum": "d28994a9dcdae9730b4d1370a39d3130"
-    },
-    "7.3.1-86003-0": {
-      "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS1520%2B_86003.pat",
-      "sum": "25bced78921353d3dbb9c289c24d1b46"
     }
   },
   "DS1522+": {
@@ -121,10 +117,6 @@
     "7.1.1-42962-1": {
       "url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-1/DSM_DS1522%2B_42962.pat",
       "sum": "a116d65da8908275ea681dd7ac06b831"
-    },
-    "7.3.1-86003-0": {
-      "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS1522%2B_86003.pat",
-      "sum": "c869852eb6105d4156aed51e55bdac3f"
     }
   },
   "DS1525+": {
@@ -135,10 +127,6 @@
     "7.2.2-72806-0": {
       "url": "https://global.download.synology.com/download/DSM/release/7.2.2/72806/DSM_DS1525%2B_72806.pat",
       "sum": "c000af5015b63683cd133f955952703c"
-    },
-    "7.3.1-86003-0": {
-      "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS1525%2B_86003.pat",
-      "sum": "59fb4ff46e20cb53311f2db65a8c4de1"
     }
   },
   "DS1618+": {
@@ -2736,9 +2724,7 @@
     }
   },
   "7.3.1-86003-0": {
-    "7.3.1-86003": {
-      "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS120j_86003.pat",
-      "sum": "54f9f9ac722a21e92c2fb6d77822871a"
-    }
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS120j_86003.pat",
+    "sum": "54f9f9ac722a21e92c2fb6d77822871a"
   }
 }
