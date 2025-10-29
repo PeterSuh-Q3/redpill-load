@@ -45,7 +45,7 @@ jobs:
           grep -oP 'DSM_[^"]+\.pat' | \
           sort -u | \
           while read filename; do
-            echo "$ARCHIVE_URL/$filename"
+            echo "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/$filename"
           done > md5list
           
         FILE_COUNT=$(wc -l < md5list)
