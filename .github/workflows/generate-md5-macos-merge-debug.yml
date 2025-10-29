@@ -83,6 +83,7 @@ jobs:
       - name: Merge result.json with pats.json (maintaining structure)
         run: |
           DSM_VERSION="${{ env.DSM_VERSION }}"
+          DSM_VERSION_KEY="${DSM_VERSION}-0"
 
           echo "DSM_VERSION: $DSM_VERSION"
           
@@ -107,7 +108,7 @@ jobs:
           
           echo ""
           echo "=== DEBUG: Running merge script ===" 
-          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION" "pats_${DSM_VERSION}.json"
+          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION}.json"
           
           if [ ! -f "pats_${DSM_VERSION}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
