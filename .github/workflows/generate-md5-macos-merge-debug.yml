@@ -83,10 +83,10 @@ jobs:
       - name: Merge result.json with pats.json (maintaining structure)
         run: |
           DSM_VERSION="${{ env.DSM_VERSION }}"
-          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
           
           echo "DSM_VERSION: $DSM_VERSION"
-          echo "DSM_VERSION_DASH: $DSM_VERSION_DASH"
+          echo "DSM_VERSION: $DSM_VERSION"
           
           # pats.json 다운로드 또는 저장소에서 읽기
           if [ -f "config/pats_${PRE_DSM_VERSION}.json" ]; then
@@ -109,9 +109,9 @@ jobs:
           
           echo ""
           echo "=== DEBUG: Running merge script ===" 
-          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION" "pats_${DSM_VERSION_DASH}.json"
+          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION" "pats_${DSM_VERSION}.json"
           
-          if [ ! -f "pats_${DSM_VERSION_DASH}.json" ]; then
+          if [ ! -f "pats_${DSM_VERSION}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
             exit 1
           fi
@@ -119,19 +119,19 @@ jobs:
           echo ""
           echo "✓ Merge completed"
           echo "=== DEBUG: Merged JSON Preview ===" 
-          jq 'keys | .[0:3]' "pats_${DSM_VERSION_DASH}.json"
+          jq 'keys | .[0:3]' "pats_${DSM_VERSION}.json"
           
           # 첫 번째 모델의 버전 순서 확인
-          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION_DASH}.json")
+          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION}.json")
           echo ""
           echo "First model: $FIRST_MODEL"
           echo "Version order (should have $DSM_VERSION at top):"
-          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION_DASH}.json"
+          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION}.json"
 
       - name: Validate merged JSON
         run: |
-          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
-          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
           
           echo "=== Validating $OUTPUT_FILE ===" 
           
@@ -177,21 +177,21 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
-          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          DSM_VERSION=$(echo "$DSM_VERSION")
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
           
           # config 디렉토리에 저장
-          cp "$OUTPUT_FILE" config/pats_${DSM_VERSION_DASH}.json
+          cp "$OUTPUT_FILE" config/pats_${DSM_VERSION}.json
           
-          git add "config/pats_${DSM_VERSION_DASH}.json"
+          git add "config/pats_${DSM_VERSION}.json"
           git commit -m "Add pats.json for DSM ${{ env.DSM_VERSION }}" || echo "No changes to commit"
           git push
 
       - name: Create summary
         if: always()
         run: |
-          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
-          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
           
           echo "## Synology DSM MD5 Generation & Merge Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
