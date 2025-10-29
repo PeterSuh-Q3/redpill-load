@@ -1,0 +1,59 @@
+name: Generate Synology DSM MD5 Checksums (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dsm_version:
+        description: 'DSM Version (e.g., 7.3.1-86003)'
+        required: true
+        default: '7.3.1-86003'
+
+jobs:
+  generate-md5:
+    runs-on: macos-latest
+
+    env:
+      DSM_VERSION: ${{ github.event.inputs.dsm_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install wget jq
+          # macOS는 기본적으로 curl, md5 제공됨
+
+      - name: Prepare md5list file
+        run: |
+          # DSM_VERSION=7.3.1-86003 -> DSM_VERSION_URL=7.3.1/86003
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+
+          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          echo "Fetching file list from $ARCHIVE_URL ..."
+          curl -s "$ARCHIVE_URL" | grep -oE 'DSM_[^"]+\.pat' | sort -u | \
+            while read filename; do
+              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+            done > md5list
+          wc -l md5list
+          head md5list
+
+      - name: Run MD5 Generation Script
+        run: |
+          chmod +x config/generate_md5_json_macos.sh
+          # 만약 인자가 필요한 형태로 스크립트 수정이 필요하다면 아래처럼 사용하세요
+          ./config/generate_md5_json_macos.sh "$DSM_VERSION"
+          # 기본 형태는 환경변수 DSM_VERSION을 활용하거나, 내부에서 md5list 읽도록 구현
+
+      - name: Validate JSON
+        run: |
+          jq empty result.json
+          echo "result.json validated."
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-${{ env.DSM_VERSION }}
+          path: |
+            result.json
+            md5list
