@@ -3,9 +3,6 @@ name: Generate Synology DSM MD5 Checksums
 on:
   workflow_dispatch:
     inputs:
-on:
-  workflow_dispatch:
-    inputs:
       dsm_version:
         description: 'DSM Version (e.g., 7.3.1-86003)'
         required: true
