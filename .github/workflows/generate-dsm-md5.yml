@@ -182,6 +182,13 @@ jobs:
         
         declare -A seen_models
         urls=()
+        if [ -f "md5list" ]; then
+          while read -r line; do
+            if [[ "$line" == https://* ]]; then
+              urls+=("$line")
+            fi
+          done < md5list
+        fi        
         
         for url in "${all_urls[@]}"; do
           filename=$(basename "$url")
