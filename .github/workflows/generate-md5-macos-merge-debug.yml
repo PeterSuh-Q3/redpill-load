@@ -108,9 +108,9 @@ jobs:
           
           echo ""
           echo "=== DEBUG: Running merge script ===" 
-          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION}.json"
+          config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION_KEY}.json"
           
-          if [ ! -f "pats_${DSM_VERSION}.json" ]; then
+          if [ ! -f "pats_${DSM_VERSION_KEY}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
             exit 1
           fi
@@ -118,14 +118,14 @@ jobs:
           echo ""
           echo "✓ Merge completed"
           echo "=== DEBUG: Merged JSON Preview ===" 
-          jq 'keys | .[0:3]' "pats_${DSM_VERSION}.json"
+          jq 'keys | .[0:3]' "pats_${DSM_VERSION_KEY}.json"
           
           # 첫 번째 모델의 버전 순서 확인
-          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION}.json")
+          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION_KEY}.json")
           echo ""
           echo "First model: $FIRST_MODEL"
-          echo "Version order (should have $DSM_VERSION at top):"
-          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION}.json"
+          echo "Version order (should have $DSM_VERSION_KEY at top):"
+          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION_KEY}.json"
 
       - name: Validate merged JSON
         run: |
