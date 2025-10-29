@@ -8,7 +8,7 @@ set -euo pipefail
 #       * 앞 'DSM_' 제거
 #       * 뒤 '_<digits>.pat' 제거 (예: '_86003.pat')
 #       * '%2B' 또는 '%2b' → '+' 복원
-#   - 베이스 pats JSON에 존재하는 모델에 한해 DSM_VERSION 블록을 "맨 앞"으로 삽입
+#   - 베이스 pats JSON에 존재하는 모델에 한해 DSM_VERSION_KEY 블록을 "맨 앞"으로 삽입
 #   - 동일 버전 키가 이미 있으면 덮어쓴 뒤 선두 재배치
 #   - 최종 출력: **모델 순서 보존** (정렬하지 않음)
 #
@@ -26,12 +26,12 @@ fi
 
 PATS_FILE="$1"
 RESULT_FILE="$2"
-DSM_VERSION="$3"
+DSM_VERSION_KEY="$3"
 OUTPUT_FILE="$4"
 
 echo "[INFO] PATS_FILE   : $PATS_FILE"
 echo "[INFO] RESULT_FILE : $RESULT_FILE"
-echo "[INFO] DSM_VERSION : $DSM_VERSION"
+echo "[INFO] DSM_VERSION_KEY : $DSM_VERSION_KEY"
 echo "[INFO] OUTPUT_FILE : $OUTPUT_FILE"
 
 # ---------- 입력 파일/명령 검증 ----------
@@ -133,9 +133,9 @@ while IFS=$'\t' read -r url sum; do
     continue
   fi
 
-  # 업데이트 적용: DSM_VERSION을 첫 키로 삽입(동일 키는 제거 후 선두 재배치)
+  # 업데이트 적용: DSM_VERSION_KEY을 첫 키로 삽입(동일 키는 제거 후 선두 재배치)
   jq --arg m "$model" \
-     --arg v "$DSM_VERSION" \
+     --arg v "$DSM_VERSION_KEY" \
      --arg u "$url" \
      --arg s "$(echo -n "$sum" | tr 'A-F' 'a-f')" \
      '
@@ -156,6 +156,6 @@ jq '.' "$TMP_JSON" > "$OUTPUT_FILE"
 echo "[INFO] 업데이트된 모델 수: $updated_count"
 echo "[INFO] 완료: $OUTPUT_FILE"
 
-# 선택: 간단 검증 (예: 특정 모델 키 맨 앞이 DSM_VERSION인지 점검하고 싶다면)
-# jq -r --arg v "$DSM_VERSION" 'to_entries[0].key as $first | .["DS1019+"] | keys[0] == $v' "$OUTPUT_FILE"
+# 선택: 간단 검증 (예: 특정 모델 키 맨 앞이 DSM_VERSION_KEY인지 점검하고 싶다면)
+# jq -r --arg v "$DSM_VERSION_KEY" 'to_entries[0].key as $first | .["DS1019+"] | keys[0] == $v' "$OUTPUT_FILE"
 ``
