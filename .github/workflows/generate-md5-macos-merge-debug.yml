@@ -19,11 +19,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          brew install wget jq
-          # macOS는 기본적으로 curl, md5 제공됨
-
       - name: Prepare md5list file
         run: |
           # DSM_VERSION=7.3.1-86003 -> DSM_VERSION_URL=7.3.1/86003
