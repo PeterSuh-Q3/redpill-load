@@ -2,9 +2,8 @@
 DSM_VERSION="${1:-7.3.1-86003}"
 # macOS 호환 Synology DSM PAT File MD5 Generator
 # macOS에서 작동하도록 수정된 버전
-# md5list 파일 사전준비 필요 A.I gpt5 를 통해 생성가능.
+# md5list 파일 사전준비 필요 A.I gpt5 를 통해 생성가능.(워크플로우 로직으로 대체)
 # https://archive.synology.com/download/Os/DSM/7.3.1-86003
-# 위 링크의 파일리스트를 지난번처럼 md5list 파일로 작성해 달라.
 
 # 색상 정의 (macOS 호환)
 RED='\033[0;31m'
@@ -14,8 +13,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 설정
-MAX_PARALLEL=3  # macOS에서는 좀 더 보수적으로
-RETRY_COUNT=3
+MAX_PARALLEL=5  # macOS에서는 좀 더 보수적으로
+RETRY_COUNT=2
 TEMP_DIR="temp_downloads"
 
 echo -e "${BLUE}Synology DSM PAT File MD5 Generator (macOS)${NC}"
