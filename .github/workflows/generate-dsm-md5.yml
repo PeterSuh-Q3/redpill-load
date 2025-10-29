@@ -197,9 +197,27 @@ jobs:
           seen_models[$model_name]=1
           urls+=("$url")
         done
-        
+
         total_lines=${#urls[@]}
         echo -e "${BLUE}Processing $total_lines unique URLs (max $MAX_PARALLEL parallel)${NC}"
+
+        # Ensure urls is always defined and populate it from md5list.
+        # This prevents "unbound variable" errors when set -u is in effect.
+        urls=()
+        while IFS= read -r line; do
+          case "$line" in
+            https://*) urls+=("$line") ;;
+            *) ;; # ignore non-URL lines
+          esac
+        done < md5list
+        
+        # Prefer authoritative total_lines computed from parsed urls
+        total_lines=${#urls[@]}
+        
+        if [ "$total_lines" -eq 0 ]; then
+          echo -e "${RED}Error: md5list contains no https:// URLs${NC}"
+          exit 1
+        fi        
         
         echo "{" > result.json
         
