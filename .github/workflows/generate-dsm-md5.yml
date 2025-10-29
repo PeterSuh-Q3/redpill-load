@@ -50,9 +50,10 @@ jobs:
           
         FILE_COUNT=$(wc -l < md5list)
         echo "Generated md5list with $FILE_COUNT files"
-        echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+        echo "file_count=$FILE_COUNT" >> "$GITHUB_OUTPUT"
         
     - name: Download and calculate MD5
+      id: download-md5
       env:
         MAX_PARALLEL: ${{ github.event.inputs.max_parallel || '5' }}
       run: |
@@ -218,9 +219,12 @@ jobs:
         echo -e "${GREEN}Success: $success_count${NC}"
         echo -e "${RED}Failed: $failed_count${NC}"
         
-        # Set output for later steps
-        echo "success_count=$success_count" >> $GITHUB_OUTPUT
-        echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+        # Ensure outputs are in key=value form and never empty; append to GITHUB_OUTPUT
+        echo "success_count=${success_count:-0}" >> "$GITHUB_OUTPUT"
+        echo "failed_count=${failed_count:-0}" >> "$GITHUB_OUTPUT"
+        
+        # Also print to stdout for logs
+        echo "Outputs written: success_count=${success_count:-0}, failed_count=${failed_count:-0}"
         SCRIPT
         
     - name: Validate JSON
