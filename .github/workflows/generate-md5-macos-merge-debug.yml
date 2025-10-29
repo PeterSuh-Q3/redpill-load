@@ -83,9 +83,7 @@ jobs:
       - name: Merge result.json with pats.json (maintaining structure)
         run: |
           DSM_VERSION="${{ env.DSM_VERSION }}"
-          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
-          
-          echo "DSM_VERSION: $DSM_VERSION"
+
           echo "DSM_VERSION: $DSM_VERSION"
           
           # pats.json 다운로드 또는 저장소에서 읽기
