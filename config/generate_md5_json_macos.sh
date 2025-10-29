@@ -1,5 +1,5 @@
 #!/bin/bash
-
+DSM_VERSION="${1:-7.3.1-86003}"
 # macOS 호환 Synology DSM PAT File MD5 Generator
 # macOS에서 작동하도록 수정된 버전
 # md5list 파일 사전준비 필요 A.I gpt5 를 통해 생성가능.
@@ -115,7 +115,7 @@ process_url() {
     local index="$2"
     local filename=$(basename "$url")
     local temp_file="$TEMP_DIR/$filename"
-    local json_key="7.3.1-86003-0"
+    local json_key="${DSM_VERSION}-0"
 
     echo -e "${YELLOW}[$((index+1))/$total_lines] Processing: $filename${NC}"
 
