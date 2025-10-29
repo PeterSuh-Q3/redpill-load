@@ -32,7 +32,7 @@ jobs:
             grep -oE 'DSM_[^"]+\.pat' | \
             sed 's/%2B/+/g' | \
             sort -u | \
-            head -5 | \
+            #head -5 | \
             while read filename; do
               echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
             done > md5list
