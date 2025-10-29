@@ -3,6 +3,10 @@ name: Generate Synology DSM MD5 Checksums and Merge with pats.json (macOS)
 on:
   workflow_dispatch:
     inputs:
+      pre_dsm_version:
+        description: 'DSM Version (e.g., 7.3.0-81180)'
+        required: true
+        default: '7.3.0-81180'    
       dsm_version:
         description: 'DSM Version (e.g., 7.3.1-86003)'
         required: true
@@ -14,6 +18,7 @@ jobs:
 
     env:
       DSM_VERSION: ${{ github.event.inputs.dsm_version }}
+      PRE_DSM_VERSION: ${{ github.event.inputs.pre_dsm_version }}
 
     steps:
       - name: Checkout repository
@@ -61,18 +66,18 @@ jobs:
 
       - name: Debug - Check pats.json
         run: |
-          if [ -f "config/pats.json" ]; then
-            echo "✓ Using local config/pats.json"
+          if [ -f "config/pats_${PRE_DSM_VERSION}.json" ]; then
+            echo "✓ Using local config/pats_${PRE_DSM_VERSION}.json"
             echo ""
             echo "=== DEBUG: pats.json Structure ===" 
-            jq 'keys | .[0:5]' config/pats.json
+            jq 'keys | .[0:5]' config/pats_${PRE_DSM_VERSION}.json
             echo ""
             echo "=== DEBUG: Sample pats.json Entry ===" 
-            FIRST_MODEL=$(jq -r 'keys[0]' config/pats.json)
+            FIRST_MODEL=$(jq -r 'keys[0]' config/pats_${PRE_DSM_VERSION}.json)
             echo "First model: $FIRST_MODEL"
-            jq ".\"${FIRST_MODEL}\" | keys | .[0:3]" config/pats.json
+            jq ".\"${FIRST_MODEL}\" | keys | .[0:3]" config/pats_${PRE_DSM_VERSION}.json
           else
-            echo "⚠️  config/pats.json not found locally, will download..."
+            echo "⚠️  config/pats_${PRE_DSM_VERSION}.json not found locally, will download..."
           fi
 
       - name: Merge result.json with pats.json (maintaining structure)
@@ -84,12 +89,12 @@ jobs:
           echo "DSM_VERSION_DASH: $DSM_VERSION_DASH"
           
           # pats.json 다운로드 또는 저장소에서 읽기
-          if [ -f "config/pats.json" ]; then
+          if [ -f "config/pats_${PRE_DSM_VERSION}.json" ]; then
             echo "✓ Using local pats.json"
-            PATS_JSON="config/pats.json"
+            PATS_JSON="config/pats_${PRE_DSM_VERSION}.json"
           else
             echo "⚠️  Downloading pats.json from repository..."
-            curl -s "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/config/pats.json" -o pats.json
+            curl -s "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/config/pats_${PRE_DSM_VERSION}.json" -o pats.json
             PATS_JSON="pats.json"
           fi
           
