@@ -1,0 +1,309 @@
+name: Generate Synology DSM MD5 Checksums and Merge with pats.json (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dsm_version:
+        description: 'DSM Version (e.g., 7.3.1-86003)'
+        required: true
+        default: '7.3.1-86003'
+
+jobs:
+  generate-md5:
+    runs-on: macos-latest
+
+    env:
+      DSM_VERSION: ${{ github.event.inputs.dsm_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install wget jq
+          # macOS는 기본적으로 curl, md5 제공됨
+
+      - name: Prepare md5list file
+        run: |
+          # DSM_VERSION=7.3.1-86003 -> DSM_VERSION_URL=7.3.1/86003
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+
+          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          echo "Fetching file list from $ARCHIVE_URL ..."
+          
+          # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
+          curl -s "$ARCHIVE_URL" | \
+            grep -oE 'DSM_[^"]+\.pat' | \
+            sed 's/%2B/+/g' | \
+            sort -u | \
+            head -5 | \
+            while read filename; do
+              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+            done > md5list
+          
+          echo "✓ Generated md5list with $(wc -l < md5list) files:"
+          cat md5list
+
+      - name: Run MD5 Generation Script
+        run: |
+          echo "Running generate_md5_json_macos.sh..."
+          chmod +x config/generate_md5_json_macos.sh
+          ./config/generate_md5_json_macos.sh
+          
+          if [ ! -f "result.json" ]; then
+            echo "❌ ERROR: result.json not generated"
+            exit 1
+          fi
+          
+          echo "✓ result.json generated"
+          echo ""
+          echo "=== DEBUG: result.json Content ===" 
+          cat result.json
+          echo ""
+          echo "=== DEBUG: result.json Structure ===" 
+          jq 'keys' result.json
+
+      - name: Debug - Check pats.json
+        run: |
+          if [ -f "config/pats.json" ]; then
+            echo "✓ Using local config/pats.json"
+            echo ""
+            echo "=== DEBUG: pats.json Structure ===" 
+            jq 'keys | .[0:5]' config/pats.json
+            echo ""
+            echo "=== DEBUG: Sample pats.json Entry ===" 
+            FIRST_MODEL=$(jq -r 'keys[0]' config/pats.json)
+            echo "First model: $FIRST_MODEL"
+            jq ".\"${FIRST_MODEL}\" | keys | .[0:3]" config/pats.json
+          else
+            echo "⚠️  config/pats.json not found locally, will download..."
+          fi
+
+      - name: Merge result.json with pats.json (maintaining structure)
+        run: |
+          DSM_VERSION="${{ env.DSM_VERSION }}"
+          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          
+          echo "DSM_VERSION: $DSM_VERSION"
+          echo "DSM_VERSION_DASH: $DSM_VERSION_DASH"
+          
+          # pats.json 다운로드 또는 저장소에서 읽기
+          if [ -f "config/pats.json" ]; then
+            echo "✓ Using local pats.json"
+            PATS_JSON="config/pats.json"
+          else
+            echo "⚠️  Downloading pats.json from repository..."
+            curl -s "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/config/pats.json" -o pats.json
+            PATS_JSON="pats.json"
+          fi
+          
+          echo ""
+          echo "=== DEBUG: Before Merge ===" 
+          echo "PATS_JSON file size: $(wc -c < "$PATS_JSON") bytes"
+          echo "result.json file size: $(wc -c < result.json) bytes"
+          
+          # Merge 스크립트: pats.json 구조 유지하면서 merge
+          # 새로운 버전을 맨 위에 배치
+          cat > merge_pats.sh << 'MERGESCRIPT'
+          #!/bin/bash
+          
+          PATS_FILE="$1"
+          RESULT_FILE="$2"
+          DSM_VERSION="$3"
+          OUTPUT_FILE="$4"
+          
+          echo "DEBUG: merge_pats.sh started"
+          echo "PATS_FILE: $PATS_FILE"
+          echo "RESULT_FILE: $RESULT_FILE"
+          echo "DSM_VERSION: $DSM_VERSION"
+          echo "OUTPUT_FILE: $OUTPUT_FILE"
+          
+          # 입력 파일 검증
+          if [ ! -f "$PATS_FILE" ]; then
+            echo "ERROR: PATS_FILE not found: $PATS_FILE"
+            exit 1
+          fi
+          
+          if [ ! -f "$RESULT_FILE" ]; then
+            echo "ERROR: RESULT_FILE not found: $RESULT_FILE"
+            exit 1
+          fi
+          
+          echo "DEBUG: Input files validated"
+          
+          # jq를 사용하여 merge
+          # 새 버전을 맨 위에 오도록 정렬
+          jq_output=$(jq -s '
+            def deep_merge:
+              reduce .[] as $item ({}; . * $item);
+            
+            . as $input |
+            ($input[0] // {}) as $pats |
+            ($input[1] // {}) as $result |
+            
+            echo "DEBUG: pats keys: \($pats | keys | length)" | debug |
+            echo "DEBUG: result keys: \($result | keys | length)" | debug |
+            
+            reduce ($result | keys[]) as $model (
+              $pats;
+              if (.[$model] == null) then
+                echo "DEBUG: New model: $model" | debug |
+                . + {
+                  ($model): {
+                    ("'$DSM_VERSION'"): {
+                      "url": $result[$model].url,
+                      "sum": $result[$model].sum
+                    }
+                  }
+                }
+              else
+                echo "DEBUG: Existing model: $model" | debug |
+                # 새 버전을 맨 앞에 오도록 정렬
+                .[$model] |= (
+                  {("'$DSM_VERSION'"): {
+                    "url": $result["'$model'"].url,
+                    "sum": $result["'$model'"].sum
+                  }} + .
+                ) |
+                .
+              end
+            )
+          ' "$PATS_FILE" "$RESULT_FILE" 2>&1)
+          
+          merge_exit=$?
+          echo "DEBUG: jq exit code: $merge_exit"
+          
+          if [ $merge_exit -ne 0 ]; then
+            echo "ERROR: jq merge failed"
+            echo "jq output:"
+            echo "$jq_output"
+            exit 1
+          fi
+          
+          echo "$jq_output" > "$OUTPUT_FILE"
+          
+          if [ ! -f "$OUTPUT_FILE" ]; then
+            echo "ERROR: OUTPUT_FILE not created"
+            exit 1
+          fi
+          
+          echo "DEBUG: merge_pats.sh completed successfully"
+          MERGESCRIPT
+          
+          chmod +x merge_pats.sh
+          
+          echo ""
+          echo "=== DEBUG: Running merge script ===" 
+          ./merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION" "pats_${DSM_VERSION_DASH}.json"
+          
+          if [ ! -f "pats_${DSM_VERSION_DASH}.json" ]; then
+            echo "❌ ERROR: Merge output file not created"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✓ Merge completed"
+          echo "=== DEBUG: Merged JSON Preview ===" 
+          jq 'keys | .[0:3]' "pats_${DSM_VERSION_DASH}.json"
+          
+          # 첫 번째 모델의 버전 순서 확인
+          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION_DASH}.json")
+          echo ""
+          echo "First model: $FIRST_MODEL"
+          echo "Version order (should have $DSM_VERSION at top):"
+          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION_DASH}.json"
+
+      - name: Validate merged JSON
+        run: |
+          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          
+          echo "=== Validating $OUTPUT_FILE ===" 
+          
+          if ! jq empty "$OUTPUT_FILE"; then
+            echo "❌ ERROR: Invalid JSON"
+            exit 1
+          fi
+          
+          echo "✓ JSON is valid"
+          
+          # 구조 검증
+          echo ""
+          echo "=== Structure Validation ===" 
+          MODEL_COUNT=$(jq 'keys | length' "$OUTPUT_FILE")
+          echo "Total models: $MODEL_COUNT"
+          
+          # 샘플 모델 검증
+          SAMPLE_MODEL=$(jq -r 'keys[0]' "$OUTPUT_FILE")
+          VERSION_COUNT=$(jq ".\"${SAMPLE_MODEL}\" | keys | length" "$OUTPUT_FILE")
+          echo "Sample model ($SAMPLE_MODEL) has $VERSION_COUNT versions"
+          
+          # 새 버전이 추가되었는지 확인
+          if jq ".\"${SAMPLE_MODEL}\" | keys[0] | contains(\"${{ env.DSM_VERSION }}\")" "$OUTPUT_FILE" >/dev/null 2>&1; then
+            echo "✓ New version added at top: ${{ env.DSM_VERSION }}"
+          else
+            echo "⚠️  WARNING: New version might not be at top"
+            echo "Top version: $(jq -r ".\"${SAMPLE_MODEL}\" | keys[0]" "$OUTPUT_FILE")"
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-merged-${{ env.DSM_VERSION }}
+          path: |
+            result.json
+            md5list
+            pats_*.json
+          retention-days: 30
+
+      - name: Commit and push results
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          
+          # config 디렉토리에 저장
+          cp "$OUTPUT_FILE" config/pats_${DSM_VERSION_DASH}.json
+          
+          git add "config/pats_${DSM_VERSION_DASH}.json"
+          git commit -m "Add pats.json for DSM ${{ env.DSM_VERSION }}" || echo "No changes to commit"
+          git push
+
+      - name: Create summary
+        if: always()
+        run: |
+          DSM_VERSION_DASH=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          OUTPUT_FILE="pats_${DSM_VERSION_DASH}.json"
+          
+          echo "## Synology DSM MD5 Generation & Merge Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**DSM Version:** ${{ env.DSM_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Output File:** \`$OUTPUT_FILE\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "$OUTPUT_FILE" ]; then
+            echo "✓ Merge successful!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Merged pats.json Preview" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            jq 'to_entries | .[0:2] | from_entries' "$OUTPUT_FILE" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            
+            # 통계
+            MODEL_COUNT=$(jq 'keys | length' "$OUTPUT_FILE")
+            TOTAL_VERSIONS=0
+            for model in $(jq -r 'keys[]' "$OUTPUT_FILE" | head -5); do
+              VERSION_COUNT=$(jq ".\"${model}\" | keys | length" "$OUTPUT_FILE")
+              TOTAL_VERSIONS=$((TOTAL_VERSIONS + VERSION_COUNT))
+            done
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Total Models:** $MODEL_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Sample: Total Version Entries:** $TOTAL_VERSIONS" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Merge failed - output file not found" >> $GITHUB_STEP_SUMMARY
+          fi
