@@ -31,18 +31,14 @@ jobs:
         DSM_VERSION="${{ github.event.inputs.dsm_version || '7.3.1-86003' }}"
         echo "DSM_VERSION=$DSM_VERSION" >> $GITHUB_ENV
         
-        # Extract version number for URL
-        VERSION_NUM=$(echo $DSM_VERSION | cut -d'-' -f1,2)
+        # Convert version format: 7.3.1-86003 => 7.3.1/86003
+        DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+        echo "DSM_VERSION_URL=$DSM_VERSION_URL" >> $GITHUB_ENV
         
         echo "Fetching file list for DSM $DSM_VERSION..."
         ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/$DSM_VERSION"
-
-        # 변환: 하이픈을 슬래시로 바꾸고 뒤쪽 두 번째 하이픈 이후는 따로 처리
-        # 7.3.1-86003 => 7.3.1/86003
-        DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -r 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
-        echo "Arch URL 부분: $DSM_VERSION_URL"
-
-        # Fetch HTML and parse PAT files
+        
+        # Fetch and deduplicate PAT files
         curl -s "$ARCHIVE_URL" | \
           grep -oP 'DSM_[^"]+\.pat' | \
           sort -u | \
@@ -52,7 +48,7 @@ jobs:
           
         FILE_COUNT=$(wc -l < md5list)
         echo "Generated md5list with $FILE_COUNT files"
-        echo "file_count=$FILE_COUNT" >> "$GITHUB_OUTPUT"
+        echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
         
     - name: Download and calculate MD5
       id: download-md5
@@ -62,22 +58,26 @@ jobs:
         bash << 'SCRIPT'
         #!/bin/bash
         
-        # Color definitions
+        set -euo pipefail
+        
         RED='\033[0;31m'
         GREEN='\033[0;32m'
         YELLOW='\033[1;33m'
         BLUE='\033[0;34m'
         NC='\033[0m'
         
-        # Configuration
         RETRY_COUNT=3
         TEMP_DIR="temp_downloads"
-        MIN_FILE_SIZE=$((1 * 1024 * 1024))  # 1MB
+        MIN_FILE_SIZE=$((1 * 1024 * 1024))
         
         echo -e "${BLUE}Synology DSM PAT File MD5 Generator${NC}"
         echo "==========================================="
         
-        # Functions
+        # URL decode function
+        urldecode() {
+          echo -e "$(echo "$1" | sed 's/+/ /g;s/%\([0-9a-fA-F]\{2\}\)/\\x\1/g')"
+        }
+        
         calculate_md5() {
           local file="$1"
           md5sum "$file" | cut -d' ' -f1
@@ -108,8 +108,9 @@ jobs:
           local filename=$(basename "$url")
           local temp_file="$TEMP_DIR/$filename"
           
-          # Extract model name from filename
-          local model_name=$(echo "$filename" | sed 's/DSM_\(.*\)_[0-9]*.pat/\1/')
+          # Extract and decode model name
+          local model_name_encoded=$(echo "$filename" | sed -E 's/DSM_(.+)_[0-9]+\.pat/\1/')
+          local model_name=$(urldecode "$model_name_encoded")
           
           echo -e "${YELLOW}[$((index+1))/$total] Processing: $model_name${NC}"
           
@@ -146,7 +147,7 @@ jobs:
             echo -e "  ${RED}All attempts failed${NC}"
           fi
           
-          # Create JSON entry
+          # Create JSON entry with model name as key
           local temp_json="$TEMP_DIR/entry_$index.json"
           cat > "$temp_json" << EOF
           "$model_name": {
@@ -164,16 +165,31 @@ jobs:
           exit 1
         fi
         
-        # Create temp directory
         mkdir -p "$TEMP_DIR"
         
-        # Read URLs
-        readarray -t urls < md5list
+        # Read URLs and deduplicate
+        mapfile -t all_urls < md5list
+        declare -A seen_models
+        urls=()
+        
+        for url in "${all_urls[@]}"; do
+          filename=$(basename "$url")
+          model_name_encoded=$(echo "$filename" | sed -E 's/DSM_(.+)_[0-9]+\.pat/\1/')
+          model_name=$(urldecode "$model_name_encoded")
+          
+          # Skip if already processed
+          if [ -n "${seen_models[$model_name]:-}" ]; then
+            echo "Skipping duplicate: $model_name"
+            continue
+          fi
+          
+          seen_models[$model_name]=1
+          urls+=("$url")
+        done
+        
         total_lines=${#urls[@]}
+        echo -e "${BLUE}Processing $total_lines unique URLs (max $MAX_PARALLEL parallel)${NC}"
         
-        echo -e "${BLUE}Processing $total_lines URLs with max $MAX_PARALLEL parallel downloads${NC}"
-        
-        # Initialize result.json
         echo "{" > result.json
         
         # Process URLs in parallel
@@ -185,7 +201,6 @@ jobs:
           process_url "${urls[$i]}" "$i" "$total_lines" &
         done
         
-        # Wait for all jobs
         wait
         
         echo -e "${BLUE}Assembling final JSON...${NC}"
@@ -208,25 +223,19 @@ jobs:
         echo "" >> result.json
         echo "}" >> result.json
         
-        # Cleanup
         rm -rf "$TEMP_DIR"
         
         echo -e "${GREEN}==========================================${NC}"
         echo -e "${GREEN}Processing complete!${NC}"
         
-        # Statistics
         success_count=$(grep -c '"sum": "[a-f0-9]\{32\}"' result.json || echo "0")
         failed_count=$(grep -c '"sum": "DOWNLOAD_FAILED"' result.json || echo "0")
         
         echo -e "${GREEN}Success: $success_count${NC}"
         echo -e "${RED}Failed: $failed_count${NC}"
         
-        # Ensure outputs are in key=value form and never empty; append to GITHUB_OUTPUT
-        echo "success_count=${success_count:-0}" >> "$GITHUB_OUTPUT"
-        echo "failed_count=${failed_count:-0}" >> "$GITHUB_OUTPUT"
-        
-        # Also print to stdout for logs
-        echo "Outputs written: success_count=${success_count:-0}, failed_count=${failed_count:-0}"
+        echo "success_count=$success_count" >> $GITHUB_OUTPUT
+        echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
         SCRIPT
         
     - name: Validate JSON
@@ -235,6 +244,14 @@ jobs:
           echo "ERROR: Invalid JSON generated"
           exit 1
         fi
+        
+        # Check for duplicate keys
+        duplicate_count=$(jq -r 'keys | group_by(.) | map(select(length > 1)) | length' result.json)
+        if [ "$duplicate_count" -gt 0 ]; then
+          echo "WARNING: Found $duplicate_count duplicate keys"
+          jq -r 'keys | group_by(.) | map(select(length > 1))' result.json
+        fi
+        
         echo "JSON validation successful"
         
     - name: Create artifact directory
@@ -243,7 +260,6 @@ jobs:
         cp result.json artifacts/
         cp md5list artifacts/
         
-        # Create summary file
         cat > artifacts/summary.txt << EOF
         DSM Version: ${{ env.DSM_VERSION }}
         Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
@@ -289,6 +305,6 @@ jobs:
         if [ -f "result.json" ]; then
           echo "### Sample Results" >> $GITHUB_STEP_SUMMARY
           echo '```json' >> $GITHUB_STEP_SUMMARY
-          head -n 20 result.json >> $GITHUB_STEP_SUMMARY
+          jq 'to_entries | .[0:5] | from_entries' result.json >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         fi
