@@ -3,6 +3,9 @@ name: Generate Synology DSM MD5 Checksums
 on:
   workflow_dispatch:
     inputs:
+on:
+  workflow_dispatch:
+    inputs:
       dsm_version:
         description: 'DSM Version (e.g., 7.3.1-86003)'
         required: true
@@ -11,6 +14,10 @@ on:
         description: 'Maximum parallel downloads'
         required: false
         default: '5'
+      sample_mode:
+        description: 'Process only first N files (0 = all files)'
+        required: false
+        default: '0'
 
 jobs:
   generate-md5:
@@ -169,6 +176,13 @@ jobs:
         
         # Read URLs and deduplicate
         mapfile -t all_urls < md5list
+        
+        SAMPLE_SIZE="${{ github.event.inputs.sample_mode || '0' }}"
+        if [ "$SAMPLE_SIZE" -gt 0 ] && [ "$SAMPLE_SIZE" -lt "${#urls[@]}" ]; then
+          echo -e "${YELLOW}Sample mode: Processing only first $SAMPLE_SIZE files${NC}"
+          urls=("${urls[@]:0:$SAMPLE_SIZE}")
+        fi
+        
         declare -A seen_models
         urls=()
         
