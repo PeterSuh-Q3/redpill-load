@@ -1,0 +1,288 @@
+name: Generate Synology DSM MD5 Checksums
+
+on:
+  workflow_dispatch:
+    inputs:
+      dsm_version:
+        description: 'DSM Version (e.g., 7.3.1-86003)'
+        required: true
+        default: '7.3.1-86003'
+      max_parallel:
+        description: 'Maximum parallel downloads'
+        required: false
+        default: '5'
+  schedule:
+    # Run weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+
+jobs:
+  generate-md5:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl wget jq
+        
+    - name: Generate MD5 list file
+      id: generate-list
+      run: |
+        DSM_VERSION="${{ github.event.inputs.dsm_version || '7.3.1-86003' }}"
+        echo "DSM_VERSION=$DSM_VERSION" >> $GITHUB_ENV
+        
+        # Extract version number for URL
+        VERSION_NUM=$(echo $DSM_VERSION | cut -d'-' -f1,2)
+        
+        echo "Fetching file list for DSM $DSM_VERSION..."
+        ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/$DSM_VERSION"
+        
+        # Fetch HTML and parse PAT files
+        curl -s "$ARCHIVE_URL" | \
+          grep -oP 'DSM_[^"]+\.pat' | \
+          sort -u | \
+          while read filename; do
+            echo "$ARCHIVE_URL/$filename"
+          done > md5list
+          
+        FILE_COUNT=$(wc -l < md5list)
+        echo "Generated md5list with $FILE_COUNT files"
+        echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+        
+    - name: Download and calculate MD5
+      env:
+        MAX_PARALLEL: ${{ github.event.inputs.max_parallel || '5' }}
+      run: |
+        bash << 'SCRIPT'
+        #!/bin/bash
+        
+        # Color definitions
+        RED='\033[0;31m'
+        GREEN='\033[0;32m'
+        YELLOW='\033[1;33m'
+        BLUE='\033[0;34m'
+        NC='\033[0m'
+        
+        # Configuration
+        RETRY_COUNT=3
+        TEMP_DIR="temp_downloads"
+        MIN_FILE_SIZE=$((1 * 1024 * 1024))  # 1MB
+        
+        echo -e "${BLUE}Synology DSM PAT File MD5 Generator${NC}"
+        echo "==========================================="
+        
+        # Functions
+        calculate_md5() {
+          local file="$1"
+          md5sum "$file" | cut -d' ' -f1
+        }
+        
+        download_file() {
+          local url="$1"
+          local output="$2"
+          
+          if ! curl -f -L --max-time 120 --retry 2 -s "$url" -o "$output"; then
+            return 1
+          fi
+          
+          local actual_size
+          actual_size=$(stat -c%s "$output" 2>/dev/null)
+          if [ "$actual_size" -lt "$MIN_FILE_SIZE" ]; then
+            rm -f "$output"
+            return 1
+          fi
+          
+          return 0
+        }
+        
+        process_url() {
+          local url="$1"
+          local index="$2"
+          local total="$3"
+          local filename=$(basename "$url")
+          local temp_file="$TEMP_DIR/$filename"
+          
+          # Extract model name from filename
+          local model_name=$(echo "$filename" | sed 's/DSM_\(.*\)_[0-9]*.pat/\1/')
+          
+          echo -e "${YELLOW}[$((index+1))/$total] Processing: $model_name${NC}"
+          
+          local attempt=1
+          local md5_hash=""
+          
+          while [ $attempt -le $RETRY_COUNT ]; do
+            echo "  Attempt $attempt/$RETRY_COUNT: Downloading..."
+            
+            if download_file "$url" "$temp_file"; then
+              if [ -f "$temp_file" ] && [ -s "$temp_file" ]; then
+                echo -e "  ${GREEN}Download completed. Calculating MD5...${NC}"
+                md5_hash=$(calculate_md5 "$temp_file")
+                echo -e "  ${GREEN}MD5: $md5_hash${NC}"
+                rm -f "$temp_file"
+                break
+              else
+                echo -e "  ${RED}Downloaded file is empty${NC}"
+                rm -f "$temp_file"
+              fi
+            else
+              echo -e "  ${RED}Download failed${NC}"
+              rm -f "$temp_file"
+            fi
+            
+            attempt=$((attempt+1))
+            if [ $attempt -le $RETRY_COUNT ]; then
+              sleep 2
+            fi
+          done
+          
+          if [ -z "$md5_hash" ]; then
+            md5_hash="DOWNLOAD_FAILED"
+            echo -e "  ${RED}All attempts failed${NC}"
+          fi
+          
+          # Create JSON entry
+          local temp_json="$TEMP_DIR/entry_$index.json"
+          cat > "$temp_json" << EOF
+  "$model_name": {
+    "url": "$url",
+    "sum": "$md5_hash"
+  }
+EOF
+          
+          echo -e "  ${GREEN}Completed: $model_name${NC}"
+        }
+        
+        # Check md5list file
+        if [ ! -f "md5list" ]; then
+          echo -e "${RED}Error: md5list file not found${NC}"
+          exit 1
+        fi
+        
+        # Create temp directory
+        mkdir -p "$TEMP_DIR"
+        
+        # Read URLs
+        readarray -t urls < md5list
+        total_lines=${#urls[@]}
+        
+        echo -e "${BLUE}Processing $total_lines URLs with max $MAX_PARALLEL parallel downloads${NC}"
+        
+        # Initialize result.json
+        echo "{" > result.json
+        
+        # Process URLs in parallel
+        for i in "${!urls[@]}"; do
+          while [ $(jobs -r | wc -l) -ge $MAX_PARALLEL ]; do
+            sleep 1
+          done
+          
+          process_url "${urls[$i]}" "$i" "$total_lines" &
+        done
+        
+        # Wait for all jobs
+        wait
+        
+        echo -e "${BLUE}Assembling final JSON...${NC}"
+        
+        # Assemble JSON
+        for i in "${!urls[@]}"; do
+          temp_json="$TEMP_DIR/entry_$i.json"
+          
+          if [ -f "$temp_json" ]; then
+            cat "$temp_json" >> result.json
+            
+            if [ $i -lt $((${#urls[@]}-1)) ]; then
+              echo "," >> result.json
+            fi
+            
+            rm -f "$temp_json"
+          fi
+        done
+        
+        echo "" >> result.json
+        echo "}" >> result.json
+        
+        # Cleanup
+        rm -rf "$TEMP_DIR"
+        
+        echo -e "${GREEN}==========================================${NC}"
+        echo -e "${GREEN}Processing complete!${NC}"
+        
+        # Statistics
+        success_count=$(grep -c '"sum": "[a-f0-9]\{32\}"' result.json || echo "0")
+        failed_count=$(grep -c '"sum": "DOWNLOAD_FAILED"' result.json || echo "0")
+        
+        echo -e "${GREEN}Success: $success_count${NC}"
+        echo -e "${RED}Failed: $failed_count${NC}"
+        
+        # Set output for later steps
+        echo "success_count=$success_count" >> $GITHUB_OUTPUT
+        echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+        SCRIPT
+        
+    - name: Validate JSON
+      run: |
+        if ! jq empty result.json; then
+          echo "ERROR: Invalid JSON generated"
+          exit 1
+        fi
+        echo "JSON validation successful"
+        
+    - name: Create artifact directory
+      run: |
+        mkdir -p artifacts
+        cp result.json artifacts/
+        cp md5list artifacts/
+        
+        # Create summary file
+        cat > artifacts/summary.txt << EOF
+        DSM Version: ${{ env.DSM_VERSION }}
+        Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        Total Files: ${{ steps.generate-list.outputs.file_count }}
+        Successful: ${{ steps.download-md5.outputs.success_count }}
+        Failed: ${{ steps.download-md5.outputs.failed_count }}
+        EOF
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dsm-md5-${{ env.DSM_VERSION }}
+        path: artifacts/
+        retention-days: 90
+        
+    - name: Commit and push results
+      if: github.event_name == 'schedule' || github.event.inputs.commit == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        VERSION_DIR="results/${{ env.DSM_VERSION }}"
+        mkdir -p "$VERSION_DIR"
+        
+        cp result.json "$VERSION_DIR/"
+        cp md5list "$VERSION_DIR/"
+        
+        git add "$VERSION_DIR"
+        git commit -m "Add MD5 checksums for DSM ${{ env.DSM_VERSION }}" || echo "No changes to commit"
+        git push
+        
+    - name: Create summary
+      if: always()
+      run: |
+        echo "## Synology DSM MD5 Generation Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**DSM Version:** ${{ env.DSM_VERSION }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Total Files:** ${{ steps.generate-list.outputs.file_count }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Successful:** ${{ steps.download-md5.outputs.success_count }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Failed:** ${{ steps.download-md5.outputs.failed_count }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "result.json" ]; then
+          echo "### Sample Results" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          head -n 20 result.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
