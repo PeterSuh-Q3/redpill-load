@@ -128,7 +128,7 @@ jobs:
 
       - name: Validate merged JSON
         run: |
-          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          DSM_VERSION=$(echo "$DSM_VERSION")
           OUTPUT_FILE="pats_${DSM_VERSION}.json"
           
           echo "=== Validating $OUTPUT_FILE ===" 
@@ -188,7 +188,7 @@ jobs:
       - name: Create summary
         if: always()
         run: |
-          DSM_VERSION=$(echo "$DSM_VERSION" | sed 's/\./-/g')
+          DSM_VERSION=$(echo "$DSM_VERSION")
           OUTPUT_FILE="pats_${DSM_VERSION}.json"
           
           echo "## Synology DSM MD5 Generation & Merge Summary" >> $GITHUB_STEP_SUMMARY
