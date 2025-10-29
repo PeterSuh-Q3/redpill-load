@@ -146,11 +146,11 @@ jobs:
           # Create JSON entry
           local temp_json="$TEMP_DIR/entry_$index.json"
           cat > "$temp_json" << EOF
-  "$model_name": {
-    "url": "$url",
-    "sum": "$md5_hash"
-  }
-EOF
+          "$model_name": {
+            "url": "$url",
+            "sum": "$md5_hash"
+          }
+        EOF
           
           echo -e "  ${GREEN}Completed: $model_name${NC}"
         }
