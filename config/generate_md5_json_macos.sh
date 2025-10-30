@@ -85,6 +85,30 @@ download_file() {
     return 0
 }
 
+download_with_retries() {
+  local url="$1"
+  local out="$2"
+  local max_attempts=5
+  local attempt=1
+  local wait=2
+
+  while [ $attempt -le $max_attempts ]; do
+    echo "Attempt $attempt/$max_attempts: Downloading $url"
+    # -f: 실패시 non-zero, -S: show error, -L: follow redirect, -s: silent (optional)
+    if curl -fSL --retry 2 --retry-delay 5 -o "$out" "$url"; then
+      echo "Download succeeded: $out"
+      return 0
+    fi
+    echo "Download failed (attempt $attempt)"
+    sleep $wait
+    attempt=$((attempt+1))
+    wait=$((wait*2))
+  done
+
+  echo "All download attempts failed for $url"
+  return 1
+}
+
 check_dependencies
 
 # md5list 파일 확인
@@ -129,7 +153,7 @@ process_url() {
     while [ $attempt -le $RETRY_COUNT ]; do
         echo "  Attempt $attempt/$RETRY_COUNT: Downloading..."
 
-        if download_file "$url" "$temp_file"; then
+        if download_with_retries "$url" "$temp_file"; then
             if [ -f "$temp_file" ] && [ -s "$temp_file" ]; then
                 echo -e "  ${GREEN}Download completed. Calculating MD5...${NC}"
                 md5_hash=$(calculate_md5 "$temp_file")
