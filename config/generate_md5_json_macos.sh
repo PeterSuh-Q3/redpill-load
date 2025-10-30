@@ -254,9 +254,9 @@ if command -v jq >/dev/null 2>&1; then
         exit 1
     fi
 else
-    # basic sanity check
+    # basic sanity check - strip whitespace from tail to handle trailing newlines
     head_char=$(head -c 1 result.json 2>/dev/null || echo '')
-    tail_char=$(tail -c 1 result.json 2>/dev/null || echo '')
+    tail_char=$(tail -c 2 result.json 2>/dev/null | tr -d '\n\r\t ' | tail -c 1 || echo '')
     if [ "$head_char" != '{' ] || [ "$tail_char" != '}' ]; then
         echo -e "${RED}[ERROR] result.json appears malformed (missing braces)${NC}" >&2
         echo "PWD: $(pwd)" >&2
