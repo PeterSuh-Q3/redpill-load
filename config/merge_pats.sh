@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DEBUG="1"
+
 # Enable verbose trace when DEBUG=1
 if [ "${DEBUG:-}" = "1" ]; then
   set -x
