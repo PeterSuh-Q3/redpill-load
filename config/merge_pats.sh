@@ -1,29 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#DEBUG="1"
-
+# DEBUG="1"
 if [ "${DEBUG:-}" = "1" ]; then
   set -x
 fi
 
 # -----------------------------------------------------------------------------
-# merge_pats.sh (improved)
+# merge_pats.sh (macOS 용)
 #   - result.json에서 url/sum 페어 추출 (정상 JSON이면 jq, 아니면 fallback awk)
 #   - 모델명 도출: DSM_<MODEL>_<BUILD>.pat
 #       * 'DSM_' 제거
 #       * '_<digits>.pat' 제거
 #       * '%2B' 또는 '%2b' → '+'
-#   - 베이스에 존재하는 모델에 한해 DSM_VERSION 블록을 "맨 앞"에 삽입
-#   - 동일 버전 키가 이미 있으면 덮어쓰며 선두로 재배치
-#   - 최종 출력: 모델 순서 보존 (정렬 없음), jq로 pretty-print
+#   - 베이스에 존재하는 모델에 한해 DSM_VERSION 블록을 최상단에 삽입
+#   - 동일 버전 키 존재 시 덮어쓰기 및 선두로 재배치
+#   - 모델 순서 유지(정렬 없음), jq로 pretty-print
 #
 # Usage:
 #   ./merge_pats.sh <pats_file> <result_file> <dsm_version> <output_file>
 #
 # Dependencies:
 #   - jq (https://stedolan.github.io/jq/)
-#   - awk (fallback 파서용, macOS/Linux 기본 탑재)
+#   - awk (macOS 기본 탑재)
 # -----------------------------------------------------------------------------
 
 if [ "$#" -ne 4 ]; then
@@ -68,7 +67,7 @@ cp "$PATS_FILE" "$TMP_JSON"
 
 PAIRS_TSV="$WORKDIR/pairs.tsv"
 
-# jq로 모델명(key), url, sum 추출 (이중 레벨 구조용)
+# jq로 모델명(key), url, sum 추출 (이중 레벨 중첩 구조용)
 set +e
 jq -r '
   to_entries[]
@@ -83,7 +82,7 @@ set -e
 
 if [ $jq_status -ne 0 ] || [ ! -s "$PAIRS_TSV" ]; then
   echo "[WARN] result.json is non-standard or empty; using fallback extractor"
-  # fallback: url, sum만 추출. 모델명은 URL에서 직접 도출 필요
+  # fallback: URL과 sum만 추출, 모델명은 URL에서 도출
   awk -v IGNORECASE=1 '
     /"url"[[:space:]]*:/ {
       if (match($0, /"url"[[:space:]]*:[[:space:]]*"([^"]+)"/, a)) { url=a[1] }
@@ -108,22 +107,22 @@ fi
 
 echo "[INFO] Extracted url/sum pairs: $(wc -l < "$PAIRS_TSV" | tr -d ' ')"
 
-# 모델명 도출 함수: URL에서 모델명 추출 (DSM_ 접두사 제거, 버전 숫자 제거, %2B 치환)
+# 모델명 도출 함수: URL에서 모델명 추출 (DSM_ 접두사 제거, 빌드 번호 제거, %2B 치환)
 derive_model() {
   local url="$1"
-  local fname="${url##*/}"            # DSM_SA6400_86003.pat
-  fname="${fname#DSM_}"               # SA6400_86003.pat
-  fname="${fname%_*}"                 # SA6400
-  fname="$(echo -n "$fname" | sed -E 's/%2[Bb]/+/g')"  # DS1019+
+  local fname="${url##*/}"              # DSM_SA6400_86003.pat
+  fname="${fname#DSM_}"                 # SA6400_86003.pat
+  fname="${fname%_*}"                   # SA6400
+  fname="$(echo -n "$fname" | sed -E 's/%2[Bb]/+/g')"  # DS1019+ 등 치환
   printf '%s' "$fname"
 }
 
 updated_count=0
 
 while IFS=$'\t' read -r url sum; do
-  # fallback 케이스: 모델명이 URL일 수 있으므로 확실히 모델 도출 
+  # 모델명이 URL일 수 있으므로 안전하게 도출
   model=$(derive_model "$url")
-  
+
   jq --arg m "$model" --arg v "$DSM_VERSION" --arg u "$url" --arg s "$sum" '
     . as $root
     | ($root[$m] // {}) as $versions
@@ -135,8 +134,6 @@ while IFS=$'\t' read -r url sum; do
 
   updated_count=$((updated_count + 1))
 done < "$PAIRS_TSV"
-
-#cat "$PAIRS_TSV" | head -5
 
 jq '.' "$TMP_JSON" > "$OUTPUT_FILE"
 
