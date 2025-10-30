@@ -27,30 +27,28 @@ jobs:
         run: |
           brew update
           brew install jq gawk
-    
-      - name: Prepare md5list file (aligned with base pats.json)
-        run: |
-          set -euo pipefail
-          set -x
-          # Ensure base pats.json exists or download
-          if [ -f "config/pats_${PRE_DSM_VERSION}.json" ]; then
-            PATS_JSON="config/pats_${PRE_DSM_VERSION}.json"
-            echo "✓ Using local ${PATS_JSON}"
-          else
-            echo "⚠️  Downloading base pats.json for ${PRE_DSM_VERSION}..."
-            curl -s "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/config/pats_${PRE_DSM_VERSION}.json" -o "pats_${PRE_DSM_VERSION}.json"
-            PATS_JSON="pats_${PRE_DSM_VERSION}.json"
-          fi
-          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)$/\1\/\2/')
-          BUILD=$(echo "$DSM_VERSION" | sed -E 's/^.*-([0-9]+)$/\1/')
-          : > md5list
-          jq -r 'keys[]' "$PATS_JSON" | while read MODEL; do
-            MODEL_ENC=$(echo -n "$MODEL" | sed 's/+/%2B/g')
-            echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/DSM_${MODEL_ENC}_${BUILD}.pat" >> md5list
-          done
-          echo "✓ Generated md5list with $(wc -l < md5list) files (aligned to base pats)"
-          head -10 md5list || true
 
+      - name: Prepare md5list file
+        run: |
+          # DSM_VERSION=7.3.1-86003 -> DSM_VERSION_URL=7.3.1/86003
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+      
+          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          echo "Fetching file list from $ARCHIVE_URL ..."
+          
+          # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
+          curl -s "$ARCHIVE_URL" | \
+            grep -oE 'DSM_[^"]+\.pat' | \
+            sed 's/%2B/+/g' | \
+            sort -u | \
+            head -5 | \
+            while read filename; do
+              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+            done > md5list
+          
+          echo "Generated md5list with $(wc -l < md5list) files:"
+          cat md5list
+          
       - name: Run MD5 Generation Script
         run: |
           echo "Running generate_md5_json_macos.sh..."
