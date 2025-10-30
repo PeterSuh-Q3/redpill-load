@@ -87,14 +87,15 @@ set -e
 if [ $jq_status -ne 0 ] || [ ! -s "$PAIRS_TSV" ]; then
   echo "[WARN] result.json is non-standard or empty; using fallback extractor"
   # fallback: URL과 sum만 추출, 모델명은 URL에서 도출
-  # fallback: URL과 sum만 추출, 모델명은 URL에서 도출 (Python 사용 — macOS/Ubuntu 공통)
-  python3 - <<'PY' > "$PAIRS_TSV"
+  # Pass RESULT_FILE as argv to avoid here-doc variable expansion issues
+  python3 - "$RESULT_FILE" <<'PY' > "$PAIRS_TSV"
 import re, sys
-fn = sys.argv[1] if len(sys.argv) > 1 else None
-if not fn:
-    fn = "$RESULT_FILE"  # 이 라인은 쉘에서 치환되므로 안전함
-url_re = re.compile(r'"url"\s*:\s*"([^"]+)"', re.IGNORECASE)
-sum_re = re.compile(r'"sum"\s*:\s*"([0-9a-fA-F]{32})"', re.IGNORECASE)
+# argv[0] is '-', argv[1] is RESULT_FILE passed from the shell
+if len(sys.argv) < 2:
+    raise SystemExit("ERROR: missing result file argument")
+fn = sys.argv[1]
+url_re = re.compile(r'"url"\s*:\s*\"([^\"]+)\"', re.IGNORECASE)
+sum_re = re.compile(r'"sum"\s*:\s*\"([0-9a-fA-F]{32})\"', re.IGNORECASE)
 urls=[]
 sums=[]
 with open(fn, 'r', encoding='utf-8') as f:

@@ -219,25 +219,51 @@ wait
 
 echo -e "${BLUE}Assembling final JSON...${NC}"
 
-# JSON 파일 조립
+# Create/overwrite result.json
+printf '{\n' > result.json
+first_entry=1
 for i in "${!urls[@]}"; do
     temp_json="$TEMP_DIR/entry_$i.json"
 
     if [ -f "$temp_json" ]; then
-        cat "$temp_json" >> result.json
-
-        # 마지막 항목이 아니면 콤마 추가
-        if [ $i -lt $((${#urls[@]}-1)) ]; then
-            echo "," >> result.json
+        if [ $first_entry -eq 1 ]; then
+            # no leading comma for first entry
+            cat "$temp_json" >> result.json
+            first_entry=0
+        else
+            # prepend comma to separate JSON object entries
+            printf ',\n' >> result.json
+            cat "$temp_json" >> result.json
         fi
-
         rm -f "$temp_json"
     fi
 done
 
-# JSON 마감
-echo "" >> result.json
-echo "}" >> result.json
+# Close JSON object
+printf '\n}\n' >> result.json
+
+# Validate JSON if jq available
+if command -v jq >/dev/null 2>&1; then
+    if ! jq empty result.json >/dev/null 2>&1; then
+        echo -e "${RED}[ERROR] result.json is invalid JSON${NC}" >&2
+        echo "PWD: $(pwd)" >&2
+        echo "Listing files:" >&2
+        ls -alh >&2
+        echo "TEMP_DIR contents:" >&2
+        ls -alh "$TEMP_DIR" 2>/dev/null || true
+        exit 1
+    fi
+else
+    # basic sanity check
+    head_char=$(head -c 1 result.json 2>/dev/null || echo '')
+    tail_char=$(tail -c 1 result.json 2>/dev/null || echo '')
+    if [ "$head_char" != '{' ] || [ "$tail_char" != '}' ]; then
+        echo -e "${RED}[ERROR] result.json appears malformed (missing braces)${NC}" >&2
+        echo "PWD: $(pwd)" >&2
+        ls -alh >&2
+        exit 1
+    fi
+fi
 
 # 임시 디렉토리 정리
 rm -rf "$TEMP_DIR"
