@@ -1,4 +1,4 @@
-name: Generate Synology DSM MD5 Checksums (macOS)
+name: result.json - Generate Synology DSM MD5 (macOS)
 
 on:
   workflow_dispatch:
