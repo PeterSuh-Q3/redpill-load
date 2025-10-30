@@ -1,4 +1,4 @@
-name: Generate Synology DSM MD5 Checksums and Merge with pats.json (macOS)
+name: Generate and Merge Synology DSM MD5 (macOS)
 
 on:
   workflow_dispatch:
