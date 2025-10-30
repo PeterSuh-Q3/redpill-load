@@ -6,6 +6,10 @@ if [ "${DEBUG:-}" = "1" ]; then
   set -x
 fi
 
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[ERROR] python3 not found; install python3 or use gawk fallback."
+  exit 1
+fi
 # -----------------------------------------------------------------------------
 # merge_pats.sh (macOS 용)
 #   - result.json에서 url/sum 페어 추출 (정상 JSON이면 jq, 아니면 fallback awk)
