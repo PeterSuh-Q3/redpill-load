@@ -112,11 +112,15 @@ echo "{" > result.json
 process_url() {
     local url="$1"
     local index="$2"
-    local filename=$(basename "$url")
-    local temp_file="$TEMP_DIR/$filename"
-    local json_key="${DSM_VERSION}-0"
+    local filename=$(basename "$url")  # 예: DSM_DS1019+_86003.pat
 
-    echo -e "${YELLOW}[$((index+1))/$total_lines] Processing: $filename${NC}"
+    # 모델명 추출 (DSM_ 접두사 제거, _ 및 버전 숫자 제거)
+    local model=$(echo "$filename" | sed -E 's/^DSM_//' | sed -E 's/_[0-9]+\.pat$//')
+
+    local temp_file="$TEMP_DIR/$filename"
+    local json_key="$model"   # 모델명을 json_key로 사용
+
+    echo -e "${YELLOW}[$((index+1))/$total_lines] Processing: $filename (model: $model)${NC}"
 
     # 재시도 로직
     local attempt=1
@@ -154,7 +158,7 @@ process_url() {
         echo -e "  ${RED}All download attempts failed${NC}"
     fi
 
-    # JSON 엔트리 생성 (임시 파일에)
+    # JSON 엔트리 생성
     local temp_json="$TEMP_DIR/entry_$index.json"
     cat > "$temp_json" << EOF
   "$json_key": {
