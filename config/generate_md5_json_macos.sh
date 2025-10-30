@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 설정
-MAX_PARALLEL=5  # macOS에서는 좀 더 보수적으로
+MAX_PARALLEL=3  # macOS에서는 좀 더 보수적으로
 RETRY_COUNT=2
 TEMP_DIR="temp_downloads"
 
