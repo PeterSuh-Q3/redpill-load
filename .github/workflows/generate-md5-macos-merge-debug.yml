@@ -23,11 +23,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install tools
-        run: |
-          brew update
-          brew install jq gawk
-
+      - name: Install gawk
+        run: brew install gawk
+    
       - name: Prepare md5list file
         run: |
           # DSM_VERSION=7.3.1-86003 -> DSM_VERSION_URL=7.3.1/86003
@@ -89,6 +87,7 @@ jobs:
           chmod +x config/merge_pats.sh
           echo ""
           echo "=== DEBUG: Running merge script ==="
+          export PATH="/usr/local/bin:$PATH" # 또는 Homebrew 경로에 맞게 수정
           DEBUG=1 config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION_KEY}.json" 2>&1 | tee "merge_pats_${DSM_VERSION_KEY}.log"
           if [ ! -f "pats_${DSM_VERSION_KEY}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
