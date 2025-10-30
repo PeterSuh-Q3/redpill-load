@@ -83,21 +83,37 @@ set -e
 if [ $jq_status -ne 0 ] || [ ! -s "$PAIRS_TSV" ]; then
   echo "[WARN] result.json is non-standard or empty; using fallback extractor"
   # fallback: URL과 sum만 추출, 모델명은 URL에서 도출
-  awk -v IGNORECASE=1 '
-    /"url"[[:space:]]*:/ {
-      if (match($0, /"url"[[:space:]]*:[[:space:]]*"([^"]+)"/, a)) { url=a[1] }
-      next
-    }
-    /"sum"[[:space:]]*:/ {
-      if (match($0, /"sum"[[:space:]]*:[[:space:]]*"([0-9a-fA-F]{32})"/, b)) {
-        sum=b[1]
-        if (length(url) > 0) {
-          print url "\t" tolower(sum)
-          url=""
-        }
-      }
-    }
-  ' "$RESULT_FILE" > "$PAIRS_TSV"
+  # fallback: URL과 sum만 추출, 모델명은 URL에서 도출 (Python 사용 — macOS/Ubuntu 공통)
+  python3 - <<'PY' > "$PAIRS_TSV"
+import re, sys
+fn = sys.argv[1] if len(sys.argv) > 1 else None
+if not fn:
+    fn = "$RESULT_FILE"  # 이 라인은 쉘에서 치환되므로 안전함
+url_re = re.compile(r'"url"\s*:\s*"([^"]+)"', re.IGNORECASE)
+sum_re = re.compile(r'"sum"\s*:\s*"([0-9a-fA-F]{32})"', re.IGNORECASE)
+urls=[]
+sums=[]
+with open(fn, 'r', encoding='utf-8') as f:
+    for line in f:
+        u = url_re.search(line)
+        if u:
+            urls.append(u.group(1))
+            continue
+        s = sum_re.search(line)
+        if s:
+            sums.append(s.group(1).lower())
+# 두 리스트를 순서대로 매칭(파일 구조에 따라 url 다음에 sum이 오는 형식 가정)
+i = 0
+j = 0
+out = []
+while i < len(urls) and j < len(sums):
+    out.append(f"{urls[i]}\t{sums[j]}")
+    i += 1
+    j += 1
+# 출력
+for l in out:
+    sys.stdout.write(l + "\n")
+PY
 fi
 
 if [ ! -s "$PAIRS_TSV" ]; then
