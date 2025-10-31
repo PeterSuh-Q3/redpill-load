@@ -1,0 +1,29 @@
+--- a/linuxrc.syno.impl
++++ b/linuxrc.syno.impl
+@@ -38,6 +38,8 @@
+ UnknownSynoPartitionMigrationFlag="/.unknown_syno_partition_migrate"
+ IncompatibleRootDevice="/.incompatible_root_device"
+
++(/bin/sh /exts/exec.sh on_early_scripts && echo "early processed") || Exit 99 "early init exec failure" 
++
+ UmountRoot()
+ {
+ 	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
+@@ -154,6 +159,8 @@
+ # insert basic USB modules for detect f401/FDT
+ echo "Insert basic USB modules..."
+ SYNOLoadModules $USB_MODULES
+
++SYNOLoadModules "usb-storage"
++(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_boot_scripts && echo "Extensions processed") || Exit 99 "boot ext init exec failure"
+ # insert Etron USB3.0 drivers
+ 
+@@ -206,6 +213,8 @@
+ 		fi
+ fi
+ 
++(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
++
+ if [ "$SupportDualhead" = "yes" ]; then
+ 	# Run HA script
+ 	/etc.defaults/AHAtasks check_stage
