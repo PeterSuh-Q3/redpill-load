@@ -6,6 +6,6 @@
  
 +(/bin/sh /exts/exec.sh on_os_load_scripts && echo "OS load extensions processed") || Exit 99 "rp ext post exec failure"
 +
- Mkdir -p /tmpRoot/initrd
+ mkdir -p /tmpRoot/initrd
  
  Umount /proc >/dev/null 2>&1
