@@ -88,7 +88,7 @@ jobs:
           echo ""
           echo "=== DEBUG: Running merge script ==="
           export PATH="/usr/local/bin:$PATH" # 또는 Homebrew 경로에 맞게 수정
-          DEBUG=1 config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION_KEY}.json" 2>&1 | tee "merge_pats_${DSM_VERSION_KEY}.log"
+          DEBUG=1 config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION}.json" 2>&1 | tee "merge_pats_${DSM_VERSION_KEY}.log"
           if [ ! -f "pats_${DSM_VERSION_KEY}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
             exit 1
