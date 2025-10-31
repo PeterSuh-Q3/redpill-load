@@ -89,19 +89,19 @@ jobs:
           echo "=== DEBUG: Running merge script ==="
           export PATH="/usr/local/bin:$PATH" # 또는 Homebrew 경로에 맞게 수정
           DEBUG=1 config/merge_pats.sh "$PATS_JSON" result.json "$DSM_VERSION_KEY" "pats_${DSM_VERSION}.json" 2>&1 | tee "merge_pats_${DSM_VERSION_KEY}.log"
-          if [ ! -f "pats_${DSM_VERSION_KEY}.json" ]; then
+          if [ ! -f "pats_${DSM_VERSION}.json" ]; then
             echo "❌ ERROR: Merge output file not created"
             exit 1
           fi
           echo ""
           echo "✓ Merge completed"
           echo "=== DEBUG: Merged JSON Preview ==="
-          jq 'keys | .[0:3]' "pats_${DSM_VERSION_KEY}.json"
-          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION_KEY}.json")
+          jq 'keys | .[0:3]' "pats_${DSM_VERSION}.json"
+          FIRST_MODEL=$(jq -r 'keys[0]' "pats_${DSM_VERSION}.json")
           echo ""
           echo "First model: $FIRST_MODEL"
           echo "Version order (should have $DSM_VERSION_KEY at top):"
-          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION_KEY}.json"
+          jq ".\"${FIRST_MODEL}\" | keys | .[0:5]" "pats_${DSM_VERSION}.json"
 
       - name: Upload merge log artifact
         uses: actions/upload-artifact@v4
@@ -115,7 +115,7 @@ jobs:
           set -euo pipefail
           DSM_VERSION="${{ env.DSM_VERSION }}"
           DSM_VERSION_KEY="${DSM_VERSION}-0"
-          OUTPUT_FILE="pats_${DSM_VERSION_KEY}.json"
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
           echo "=== Validating $OUTPUT_FILE ==="
           if ! jq empty "$OUTPUT_FILE"; then
             echo "❌ ERROR: Invalid JSON"
@@ -143,9 +143,9 @@ jobs:
           git config --local user.name "github-actions[bot]"
           DSM_VERSION="${{ env.DSM_VERSION }}"
           DSM_VERSION_KEY="${DSM_VERSION}-0"
-          OUTPUT_FILE="pats_${DSM_VERSION_KEY}.json"
-          cp "$OUTPUT_FILE" config/pats_${DSM_VERSION_KEY}.json
-          git add "config/pats_${DSM_VERSION_KEY}.json"
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
+          cp "$OUTPUT_FILE" config/pats_${DSM_VERSION}.json
+          git add "config/pats_${DSM_VERSION}.json"
           git commit -m "Add pats.json for DSM ${DSM_VERSION_KEY}" || echo "No changes to commit"
           git push
 
@@ -154,7 +154,7 @@ jobs:
         run: |
           DSM_VERSION="${{ env.DSM_VERSION }}"
           DSM_VERSION_KEY="${DSM_VERSION}-0"
-          OUTPUT_FILE="pats_${DSM_VERSION_KEY}.json"
+          OUTPUT_FILE="pats_${DSM_VERSION}.json"
           echo "## Synology DSM MD5 Generation & Merge Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**DSM Version:** ${DSM_VERSION_KEY}" >> $GITHUB_STEP_SUMMARY
