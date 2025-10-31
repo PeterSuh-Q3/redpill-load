@@ -144,7 +144,7 @@ while IFS=$'\t' read -r url sum; do
   # 모델명이 URL일 수 있으므로 안전하게 도출
   model=$(derive_model "$url")
 
-  jq --arg m "$model" --arg v "$DSM_VERSION" --arg u "$url" --arg s "$sum" '
+  jq --arg m "$model" --arg v "$DSM_VERSION" --arg u "${url//+/%2B}" --arg s "$sum" '
     . as $root
     | ($root[$m] // {}) as $versions
     | .[$m] = (
