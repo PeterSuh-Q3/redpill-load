@@ -17,7 +17,7 @@
       ""
     ],
     "ramdisk": [
-      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
