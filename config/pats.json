@@ -2644,10 +2644,6 @@
     }
   },
   "SA3200D": {
-    "6.2.4-25556-0": {
-      "url": "https://global.synologydownload.com/download/DSM/release/6.2.4/25556/DSM_SA3200D_25556.pat",
-      "sum": "cfe2ff50d3fbb837565932f8893b9492"
-    },
     "7.3.1-86003-0": {
       "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_SA3200D_86003.pat",
       "sum": "b3ed7e282e527a20ff7e8b92780f4edb"
@@ -2678,10 +2674,6 @@
     }
   },
   "SA3400": {
-    "6.2.4-25556-0": {
-      "url": "https://global.synologydownload.com/download/DSM/release/6.2.4/25556/DSM_SA3400_25556.pat",
-      "sum": "c6918f2e859cb84ff7349e93cef51237"
-    },
     "7.3.1-86003-0": {
       "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_SA3400_86003.pat",
       "sum": "e32665f961d7b3bdaf3de2145ff34827"
