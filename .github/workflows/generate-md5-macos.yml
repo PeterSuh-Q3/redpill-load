@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       dsm_version:
-        description: 'DSM Version (e.g., 7.3.1-86003)'
+        description: 'DSM Version (e.g., 7.3.2-86009)'
         required: true
-        default: '7.3.1-86003'
+        default: '7.3.2-86009'
 
 jobs:
   generate-md5:
