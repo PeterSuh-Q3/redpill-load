@@ -1,7 +1,7 @@
 # example ${1} = "7.3.0", ${2} = "81180", ${3} = "7.3.1", ${4} = "86003"
-# ./replicate-config.sh 7.3.0 81180 6.2.4 25556
+# ./replicate-config.sh 7.3.1 86003 7.3.2 86009
 
-for m in `cat platform62`
+for m in `cat platform73`
 do 
 echo "Working on $m"
 cp -rp $m/${1}-${2} $m/${3}-${4}
