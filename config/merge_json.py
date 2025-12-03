@@ -7,7 +7,7 @@ from pathlib import Path
 
 def merge_json_files(result_file, pats_file, output_file):
     """
-    result.json의 URL과 sum 값을 pats.json에 7.3.2-86009-0 버전으로 병합
+    result.json의 URL과 sum 값을 pats_t.json에 7.3.2-86009-0 버전으로 병합
     """
     
     # 파일 존재 확인
@@ -36,7 +36,7 @@ def merge_json_files(result_file, pats_file, output_file):
     
     for model, model_data in result_data.items():
         if model in pats_data:
-            # pats.json에 해당 모델이 있으면 7.3.2-86009-0 엘리먼트 추가
+            # pats_t.json에 해당 모델이 있으면 7.3.2-86009-0 엘리먼트 추가
             pats_data[model]["7.3.2-86009-0"] = {
                 "url": model_data.get("url"),
                 "sum": model_data.get("sum")
@@ -44,7 +44,7 @@ def merge_json_files(result_file, pats_file, output_file):
             updated_count += 1
         else:
             skipped_count += 1
-            print(f"⚠ 경고: {model} 모델이 pats.json에 없습니다", file=sys.stderr)
+            print(f"⚠ 경고: {model} 모델이 pats_t.json에 없습니다", file=sys.stderr)
     
     # 결과 저장
     try:
@@ -77,7 +77,7 @@ def merge_json_files(result_file, pats_file, output_file):
 
 def main():
     result_file = sys.argv[1] if len(sys.argv) > 1 else "result.json"
-    pats_file = sys.argv[2] if len(sys.argv) > 2 else "pats.json"
+    pats_file = sys.argv[2] if len(sys.argv) > 2 else "pats_t.json"
     output_file = sys.argv[3] if len(sys.argv) > 3 else "pats_updated.json"
     
     success = merge_json_files(result_file, pats_file, output_file)
