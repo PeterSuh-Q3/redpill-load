@@ -49,6 +49,11 @@
     "sum": "02137b8edc088de3fb567219c9458df0"
   }
 ,
+  "DS1525+": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS1525+_86009.pat",
+    "sum": "25dc540ee1495567165bc32b22a805da"
+  }
+,
   "DS1618+": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS1618+_86009.pat",
     "sum": "b650ba396d67274d1f3b13ab2000d126"
@@ -87,6 +92,11 @@
   "DS1823xs+": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS1823xs+_86009.pat",
     "sum": "904cf8c5ce77a71e20091efe23cc8c8c"
+  }
+,
+  "DS1825+": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS1825+_86009.pat",
+    "sum": "27144a3f1375e9bce040a0ca74c3c64f"
   }
 ,
   "DS216": {
@@ -157,6 +167,11 @@
   "DS224+": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS224+_86009.pat",
     "sum": "2c404b66fd35c1540f917c8001d8db14"
+  }
+,
+  "DS225+": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS225+_86009.pat",
+    "sum": "d31a54d4551a3e6669892488078938e5"
   }
 ,
   "DS2419+": {
@@ -254,6 +269,11 @@
     "sum": "64c1845e1970a6c2fc2e0f487a837b1c"
   }
 ,
+  "DS425+": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS425+_86009.pat",
+    "sum": "29eed2651390072877cc41fccdabe00f"
+  }
+,
   "DS620slim": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS620slim_86009.pat",
     "sum": "7ac6decb9f966f51987f2a302e3fac4b"
@@ -282,6 +302,11 @@
   "DS723+": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS723+_86009.pat",
     "sum": "ca3cff14b0c2d27292a8c4c2fb0064dd"
+  }
+,
+  "DS725+": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS725+_86009.pat",
+    "sum": "ac4980279465666429037ec442aa250f"
   }
 ,
   "DS916+": {
@@ -572,6 +597,11 @@
   "SA3610": {
     "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_SA3610_86009.pat",
     "sum": "b629f3cfceec57ba73bc3e907d4d0bb6"
+  }
+,
+  "SA6400": {
+    "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_SA6400_86009.pat",
+    "sum": "2d702727789d2ec020d2ade5d6aa945a"
   }
 ,
   "VirtualDSM": {
