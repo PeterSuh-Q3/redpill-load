@@ -18,7 +18,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script-y25.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
