@@ -6,7 +6,7 @@ on:
       dsm_version:
         description: 'DSM Version (e.g., 7.2.1-69057)'
         required: true
-        default: '7.0.1-42218'
+        default: '7.2.1-69057'
 
 jobs:
   generate-md5:
@@ -46,11 +46,11 @@ jobs:
           head -5 md5list
       
           # 2차: config/model_list로 필터링
-          grep -F -f config/model_list md5list > md5list.filtered || true
-          mv md5list.filtered md5list
+          #grep -F -f config/model_list md5list > md5list.filtered || true
+          #mv md5list.filtered md5list
       
-          echo "Filtered md5list ($(wc -l < md5list) files):"
-          cat md5list
+          #echo "Filtered md5list ($(wc -l < md5list) files):"
+          #cat md5list
 
       - name: Run MD5 Generation Script
         run: |
