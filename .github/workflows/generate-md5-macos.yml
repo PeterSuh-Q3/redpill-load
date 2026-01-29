@@ -6,7 +6,7 @@ on:
       dsm_version:
         description: 'DSM Version (e.g., 7.2.1-69057)'
         required: true
-        default: '7.2.1-69057-1-NanoPacked'
+        default: '7.2.1-69057'
 
 jobs:
   generate-md5:
@@ -29,7 +29,7 @@ jobs:
           # DSM_VERSION_URL=7.2.2/72806
           DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
       
-          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}-1-NanoPacked"
           echo "Fetching file list from $ARCHIVE_URL ..."
           
           # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
