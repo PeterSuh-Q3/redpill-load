@@ -44,12 +44,14 @@ check_dependencies() {
 # MD5 계산 함수 (macOS/Linux 호환)
 calculate_md5() {
     local file="$1"
-    if command -v md5sum >/dev/null 2>&1; then
-        md5sum "$file" | cut -d' ' -f1
-    elif command -v md5 >/dev/null 2>&1; then
-        md5 -q "$file"  # macOS 기본 md5 명령어
+    
+    # .md5 파일에서 해시값 직접 읽기
+    if [ -f "$file" ]; then
+        # .md5 파일 포맷: "hash  filename" 또는 "hash filename"
+        # 첫 번째 필드(해시)만 추출
+        cat "$file" | awk '{print $1}' | head -1
     else
-        echo "MD5_COMMAND_NOT_FOUND"
+        echo "FILE_NOT_FOUND"
     fi
 }
 
@@ -138,8 +140,13 @@ process_url() {
     local index="$2"
     local filename=$(basename "$url")  # 예: DSM_DS1019+_86003.pat
 
+    # 여기서 .md5 를 붙여서 이후 로직 전체에 반영
+    url="${url}.md5"
+
+    local filename=$(basename "$url")  # 예: DSM_DS1019+_86003.pat.md5
+
     # 모델명 추출 (DSM_ 접두사 제거, _ 및 버전 숫자 제거)
-    local model=$(echo "$filename" | sed -E 's/^DSM_//' | sed -E 's/_[0-9]+\.pat$//')
+    local model=$(echo "$filename" | sed -E 's/^DSM_//' | sed -E 's/_[0-9]+\.pat\.md5$//')
 
     local temp_file="$TEMP_DIR/$filename"
     local json_key="$model"   # 모델명을 json_key로 사용
