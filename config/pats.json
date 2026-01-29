@@ -3528,6 +3528,10 @@
       "url": "https://global.synologydownload.com/download/DSM/release/6.2.4/25556/DSM_DS716%2B_25556.pat",
       "sum": "3d078b8f58b1b4f01a47370457ca67fc"
     },
+    "7.2.2-72806-0": {
+      "url": "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DS716%2B_72806.pat",
+      "sum": "6cf88ee3836019187c7a8fc6b4a9aaed"
+    },
     "7.3.1-86003-0": {
       "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DS716%2B_86003.pat",
       "sum": "b61fa2a7615edb5bb9b7ad948661727a"
