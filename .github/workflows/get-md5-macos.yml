@@ -6,7 +6,7 @@ on:
       dsm_version:
         description: 'DSM Version (e.g., 7.2.1-69057)'
         required: true
-        default: '7.2.1-69057'
+        default: '7.3.2-86009'
 
 jobs:
   Get-md5:
