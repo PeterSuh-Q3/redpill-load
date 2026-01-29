@@ -6,7 +6,7 @@ on:
       dsm_version:
         description: 'DSM Version (e.g., 7.2.1-69057)'
         required: true
-        default: '7.2/64570'
+        default: '7.2-64570'
 
 jobs:
   generate-md5:
@@ -26,8 +26,8 @@ jobs:
 
       - name: Prepare md5list file
         run: |
-          # DSM_VERSION_URL=7.2.2/72806
-          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
+          # DSM_VERSION_URL=7.2.2-72806
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\//')
       
           ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}-1-NanoPacked"
           echo "Fetching file list from $ARCHIVE_URL ..."
