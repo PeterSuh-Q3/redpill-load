@@ -1,0 +1,73 @@
+name: result.json - Get Synology DSM MD5 (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dsm_version:
+        description: 'DSM Version (e.g., 7.2.1-69057)'
+        required: true
+        default: '7.2.1-69057'
+
+jobs:
+  Get-md5:
+    runs-on: macos-latest
+
+    env:
+      DSM_VERSION: ${{ github.event.inputs.dsm_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      #- name: Install dependencies
+      #  run: |
+      #    brew install wget jq
+      #    # macOS는 기본적으로 curl, md5 제공됨
+
+      - name: Prepare md5list file
+        run: |
+          # DSM_VERSION_URL=7.2.2-72806
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\//')
+      
+          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          echo "Fetching file list from $ARCHIVE_URL ..."
+          
+          # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
+          curl -s "$ARCHIVE_URL" | \
+            grep -oE 'DSM_[^"]+\.pat' | \
+            sed 's/%2B/+/g' | \
+            sort -u | \
+            head -200 | \
+            while read filename; do
+              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+            done > md5list
+          
+          echo "Get md5list with $(wc -l < md5list) files:"
+          head -5 md5list
+      
+          # 2차: config/model_list로 필터링
+          #grep -F -f config/model_list md5list > md5list.filtered || true
+          #mv md5list.filtered md5list
+      
+          #echo "Filtered md5list ($(wc -l < md5list) files):"
+          #cat md5list
+
+      - name: Run MD5 Generation Script
+        run: |
+          chmod +x config/get_md5_json_macos.sh
+          # 만약 인자가 필요한 형태로 스크립트 수정이 필요하다면 아래처럼 사용하세요
+          ./config/Get_md5_json_macos.sh "$DSM_VERSION"
+          # 기본 형태는 환경변수 DSM_VERSION을 활용하거나, 내부에서 md5list 읽도록 구현
+
+      - name: Validate JSON
+        run: |
+          jq empty result.json
+          echo "result.json validated."
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-${{ env.DSM_VERSION }}
+          path: |
+            result.json
+            md5list
