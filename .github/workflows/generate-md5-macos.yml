@@ -26,22 +26,24 @@ jobs:
 
       - name: Prepare md5list file
         run: |
-          # DSM_VERSION_URL=7.2.2/72806
           DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/\1\/\2/')
-      
           ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
           echo "Fetching file list from $ARCHIVE_URL ..."
-          
-          # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
+      
           curl -s "$ARCHIVE_URL" | \
             grep -oE 'DSM_[^"]+\.pat' | \
             sed 's/%2B/+/g' | \
             sort -u | \
             head -200 | \
             while read filename; do
-              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+              # 모델만 추출
+              model=$(echo "$filename" | sed -E 's/DSM_([^0-9]+)[0-9._]+\.pat$/\1/' )
+      
+              # model이 config/model_list에 포함되어 있으면 출력
+              grep -qx "$model" config/model_list && \
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
             done > md5list
-          
+      
           echo "Generated md5list with $(wc -l < md5list) files:"
           cat md5list
 
