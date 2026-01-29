@@ -39,7 +39,7 @@ jobs:
             sort -u | \
             head -200 | \
             while read filename; do
-              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}-1/$filename"
             done > md5list
           
           echo "Generated md5list with $(wc -l < md5list) files:"
