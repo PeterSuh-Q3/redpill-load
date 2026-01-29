@@ -191,9 +191,10 @@ process_url() {
 
     # JSON 엔트리 생성
     local temp_json="$TEMP_DIR/entry_$index.json"
+    local original_url="${url%.md5}"  # .md5 제거
     cat > "$temp_json" << EOF
   "$json_key": {
-    "url": "$url",
+    "url": "$original_url",
     "sum": "$md5_hash"
   }
 EOF
