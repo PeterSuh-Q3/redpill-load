@@ -43,6 +43,13 @@ jobs:
             done > md5list
           
           echo "Generated md5list with $(wc -l < md5list) files:"
+          head -5 md5list
+      
+          # 2차: config/model_list로 필터링
+          grep -F -f config/model_list md5list > md5list.filtered || true
+          mv md5list.filtered md5list
+      
+          echo "Filtered md5list ($(wc -l < md5list) files):"
           cat md5list
 
       - name: Run MD5 Generation Script
