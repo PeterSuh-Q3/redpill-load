@@ -30,6 +30,7 @@ jobs:
           
     env:
       DSM_VERSION: ${{ matrix.dsm_version.version }}  # ← ${{ github.event.inputs.dsm_version }} → ${{ matrix.dsm_version }}
+      IS_NANO: ${{ matrix.dsm_version.nano }}
 
     steps:
       - name: Checkout repository
@@ -44,8 +45,13 @@ jobs:
         run: |
           # DSM_VERSION_URL=7.2.2-72806
           DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\//')
-      
-          ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+
+          if IS_NANO then
+            ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}-1-NanoPacked"
+          else
+            ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          fi
+          
           echo "Fetching file list from $ARCHIVE_URL ..."
           
           # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
@@ -55,7 +61,11 @@ jobs:
             sort -u | \
             head -200 | \
             while read filename; do
-              echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+              if IS_NANO then
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/1/$filename"
+              else
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+              fi
             done > md5list
           
           echo "Get md5list with $(wc -l < md5list) files:"
