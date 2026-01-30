@@ -36,14 +36,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Normalize DSM_VERSION
-        run: |
-          DSM_VERSION=$(echo "$DSM_VERSION" | sed -E 's/^([0-9]+\.[0-9]+)-([0-9]+)$/\1.0-\2/')
-          echo "DSM_VERSION=$DSM_VERSION" >> $GITHUB_ENV
-
       - name: Prepare md5list file
         run: |
-          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\\//')
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\//')
 
           if [ "$IS_NANO" = "true" ]; then
             ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}-1-NanoPacked"
