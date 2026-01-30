@@ -7,12 +7,12 @@ normalize_dsm_version() {
   if [[ "$DSM_VERSION" =~ ^([0-9]+\.[0-9]+)-([0-9]+)$ ]]; then
     DSM_VERSION="${BASH_REMATCH[1]}.0-${BASH_REMATCH[2]}"
   fi
-  echo "$DSM_VERSION"
+  echo "$DSM_VERSION-0"
 }
 
 DSM_VERSION="${1:-7.3.1-86003}"
 DSM_VERSION=$(normalize_dsm_version "$DSM_VERSION")
-echo "$DSM_VERSION"  # 7.2-64570 → 7.2.0-64570
+echo "$DSM_VERSION"  # 7.2-64570 → 7.2.0-64570-0
 
 # macOS 호환 Synology DSM PAT File MD5 Generator
 # macOS에서 작동하도록 수정된 버전
