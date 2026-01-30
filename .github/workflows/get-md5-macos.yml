@@ -9,18 +9,27 @@ jobs:
     strategy:  # ← 이 부분 추가
       matrix:
         dsm_version:
-          - '6.2.4-25556'
-          - '7.0.1-42218'
-          - '7.1.1-42962'
-          - '7.2-64570'
-          - '7.2.1-69057'
-          - '7.2.2-72806'
-          - '7.3-81180'
-          - '7.3.1-86003'
-          - '7.3.2-86009'
+          - version: '6.2.4-25556'
+            nano: false
+          - version: '7.0.1-42218'
+            nano: false
+          - version: '7.1.1-42962'
+            nano: true
+          - version: '7.2-64570'
+            nano: true
+          - version: '7.2.1-69057'
+            nano: true
+          - version: '7.2.2-72806'
+            nano: false
+          - version: '7.3-81180'
+            nano: false
+          - version: '7.3.1-86003'
+            nano: false
+          - version: '7.3.2-86009'
+            nano: false
           
     env:
-      DSM_VERSION: ${{ matrix.dsm_version }}  # ← ${{ github.event.inputs.dsm_version }} → ${{ matrix.dsm_version }}
+      DSM_VERSION: ${{ matrix.dsm_version.version }}  # ← ${{ github.event.inputs.dsm_version }} → ${{ matrix.dsm_version }}
 
     steps:
       - name: Checkout repository
