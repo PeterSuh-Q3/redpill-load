@@ -208,8 +208,10 @@ process_url() {
     local original_url="${url%.md5}"  # .md5 제거
     cat > "$temp_json" << EOF
   "$json_key": {
-    "url": "$original_url",
-    "sum": "$md5_hash"
+    "$DSM_VERSION": {
+      "url": "$original_url",
+      "sum": "$md5_hash"
+    }
   }
 EOF
 
