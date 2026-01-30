@@ -21,12 +21,12 @@ jobs:
             nano: true
           - version: '7.2.2-72806'
             nano: false
-          #- version: '7.3-81180'
-          #  nano: false
-          #- version: '7.3.1-86003'
-          #  nano: false
-          #- version: '7.3.2-86009'
-          #  nano: false
+          - version: '7.3-81180'
+            nano: false
+          - version: '7.3.1-86003'
+            nano: false
+          - version: '7.3.2-86009'
+            nano: false
           
     env:
       DSM_VERSION: ${{ matrix.dsm.version }}
@@ -57,7 +57,7 @@ jobs:
           # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
           curl -s "$ARCHIVE_URL" | \
             grep -oE 'DSM_[^"]+\.pat' | \
-            sed 's/%2B/+/g' | \
+            sed 's/+/\\%2B/g' | \
             sort -u | \
             head -300 | \
             while read filename; do
