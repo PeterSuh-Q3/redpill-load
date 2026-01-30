@@ -6,7 +6,7 @@ on:
 jobs:
   Get-md5:
     runs-on: macos-latest
-    strategy:  # ← 이 부분 추가
+    strategy:  
       matrix:
         dsm:
           - version: '6.2.4-25556'
@@ -29,7 +29,7 @@ jobs:
             nano: false
           
     env:
-      DSM_VERSION: ${{ matrix.dsm.version }}  # ← ${{ github.event.inputs.dsm_version }} → ${{ matrix.dsm_version }}
+      DSM_VERSION: ${{ matrix.dsm.version }}
       IS_NANO: ${{ matrix.dsm.nano }}
 
     steps:
@@ -59,7 +59,7 @@ jobs:
             grep -oE 'DSM_[^"]+\.pat' | \
             sed 's/%2B/+/g' | \
             sort -u | \
-            head -200 | \
+            head -300 | \
             while read filename; do
               if [ "$IS_NANO" = "true" ]; then
                 echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}-1/$filename"
