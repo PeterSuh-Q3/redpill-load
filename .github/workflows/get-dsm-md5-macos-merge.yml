@@ -1,0 +1,140 @@
+name: result.json - Get Synology DSM MD5 (macOS) - Merged
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Get-md5:
+    runs-on: macos-latest
+    strategy:  
+      matrix:
+        dsm:
+          - version: '6.2.4-25556'
+            nano: false
+          - version: '7.0.1-42218'
+            nano: false
+          - version: '7.1.1-42962'
+            nano: true
+          - version: '7.2-64570'
+            nano: true
+          - version: '7.2.1-69057'
+            nano: true
+          - version: '7.2.2-72806'
+            nano: false
+          - version: '7.3-81180'
+            nano: false
+          - version: '7.3.1-86003'
+            nano: false
+          - version: '7.3.2-86009'
+            nano: false
+          
+    env:
+      DSM_VERSION: ${{ matrix.dsm.version }}
+      IS_NANO: ${{ matrix.dsm.nano }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Normalize DSM_VERSION
+        run: |
+          DSM_VERSION=$(echo "$DSM_VERSION" | sed -E 's/^([0-9]+\.[0-9]+)-([0-9]+)$/\1.0-\2/')
+          echo "DSM_VERSION=$DSM_VERSION" >> $GITHUB_ENV
+
+      - name: Prepare md5list file
+        run: |
+          DSM_VERSION_URL=$(echo "$DSM_VERSION" | sed 's/-/\\//')
+
+          if [ "$IS_NANO" = "true" ]; then
+            ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}-1-NanoPacked"
+          else
+            ARCHIVE_URL="https://archive.synology.com/download/Os/DSM/${DSM_VERSION}"
+          fi
+          
+          echo "Fetching from $ARCHIVE_URL ..."
+          
+          curl -s "$ARCHIVE_URL" | \
+            grep -oE 'DSM_[^"]+\\.pat' | \
+            sed 's/%2B/+/g' | \
+            sort -u | \
+            head -300 | \
+            while read filename; do
+              if [ "$IS_NANO" = "true" ]; then
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}-1/$filename"
+              else
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
+              fi
+            done > md5list
+          
+          echo "Generated $(wc -l < md5list) files"
+
+      - name: Run MD5 Generation Script
+        run: |
+          chmod +x config/get_md5_json_macos.sh
+          ./config/get_md5_json_macos.sh "$DSM_VERSION"
+
+      - name: Rename and upload
+        run: |
+          cp result.json "result-${{ env.DSM_VERSION }}.json"
+
+      - name: Upload intermediate result
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-${{ env.DSM_VERSION }}
+          path: result-${{ env.DSM_VERSION }}.json
+
+  Merge-Results:
+    needs: Get-md5
+    runs-on: macos-latest
+    
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Merge all JSON files
+        run: |
+          cat > merge.jq << 'JQEOF'
+          # 여러 JSON 파일을 모델 단위로 merge
+          # 입력: 각 JSON 파일의 내용
+          # 출력: 병합된 단일 JSON
+          
+          reduce inputs as $input (
+            {};
+            . as $base |
+            reduce ($input | keys[]) as $model (
+              $base;
+              if has($model) then
+                # 기존 모델에 새 버전 추가
+                .[$model] += $input[$model]
+              else
+                # 새 모델 추가
+                .[$model] = $input[$model]
+              end
+            )
+          )
+          JQEOF
+
+          # 버전 순서대로 정렬된 파일 목록
+          FILES=$(find artifacts -name "result-*.json" -type f | sort -V)
+          
+          echo "Files to merge:"
+          echo "$FILES" | nl
+          
+          # jq로 순차 merge
+          echo "$FILES" | xargs jq -s -f merge.jq > result.json
+          
+          # 결과 검증
+          jq --sort-keys '.' result.json > result_sorted.json
+          mv result_sorted.json result.json
+          
+          echo "✓ Merge complete"
+          echo "Total models: $(jq 'keys | length' result.json)"
+          jq 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' result.json
+
+      - name: Upload merged result
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-merged-final
+          path: result.json
