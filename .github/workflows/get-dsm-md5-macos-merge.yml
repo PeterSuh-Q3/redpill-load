@@ -131,38 +131,48 @@ jobs:
             echo "First model: $(jq 'keys[0]' "$FILE")"
           done
 
-      - name: Merge all JSON files - BASH APPROACH
+      - name: Merge all JSON files - MACOS COMPATIBLE
         run: |
           echo "=== Starting merge process ==="
           
-          # 모든 파일 찾기
-          mapfile -t FILES < <(find artifacts -type f -name "result-*.json" | sort -V)
+          # 모든 파일 찾기 (배열 대신 변수 사용)
+          FILE_COUNT=0
+          FIRST_FILE=""
           
-          echo "Found ${#FILES[@]} files to merge"
-          echo ""
-          
-          for i in "${!FILES[@]}"; do
-            echo "[$i] ${FILES[$i]}"
+          find artifacts -type f -name "result-*.json" | sort -V | while IFS= read -r FILE; do
+            FILE_COUNT=$((FILE_COUNT + 1))
+            echo "[$FILE_COUNT] $FILE"
+            if [ $FILE_COUNT -eq 1 ]; then
+              FIRST_FILE="$FILE"
+            fi
           done
           
-          if [ ${#FILES[@]} -eq 0 ]; then
+          # 파일 목록을 임시 파일로 저장
+          find artifacts -type f -name "result-*.json" | sort -V > /tmp/file_list.txt
+          
+          FILE_COUNT=$(wc -l < /tmp/file_list.txt)
+          echo ""
+          echo "Found $FILE_COUNT files to merge"
+          
+          if [ $FILE_COUNT -eq 0 ]; then
             echo "ERROR: No result files found!"
             exit 1
           fi
           
+          # 첫 번째 파일로 시작
+          FIRST_FILE=$(head -1 /tmp/file_list.txt)
           echo ""
           echo "=== Merge process started ==="
+          echo "Base file: $FIRST_FILE"
           
-          # 첫 파일로 시작
-          cp "${FILES[0]}" result.json
-          echo "Base file: ${FILES[0]}"
-          echo "Initial model count: $(jq 'keys | length' result.json)"
+          cp "$FIRST_FILE" result.json
+          TOTAL=$(jq 'keys | length' result.json)
+          echo "Initial model count: $TOTAL"
           echo ""
           
-          # 나머지 파일 merge
-          for ((i=1; i<${#FILES[@]}; i++)); do
-            FILE="${FILES[$i]}"
-            echo "Step $i: Merging $FILE"
+          # 나머지 파일 merge (sed로 라인 번호 제거)
+          tail -n +2 /tmp/file_list.txt | nl | while IFS=$'\t' read -r STEP FILE; do
+            echo "Step $STEP: Merging $(basename "$FILE")"
             
             # 현재 파일의 모델 수
             NEW_MODELS=$(jq 'keys | length' "$FILE")
@@ -181,6 +191,11 @@ jobs:
                 end
               )
             ' result.json "$FILE" > result_temp.json
+            
+            if [ ! -s result_temp.json ]; then
+              echo "ERROR: Merge failed at step $STEP"
+              exit 1
+            fi
             
             mv result_temp.json result.json
             
