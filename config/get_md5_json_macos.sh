@@ -205,7 +205,8 @@ process_url() {
 
     # JSON 엔트리 생성
     local temp_json="$TEMP_DIR/entry_$index.json"
-    local original_url="${url%.md5}"  # .md5 제거
+    local original_url="${url%.md5}" # .md5 제거
+    original_url=$(echo "$original_url" | sed 's/+/\\%2B/g')  # + → %2B
     cat > "$temp_json" << EOF
   "$json_key": {
     "$DSM_VERSION": {
