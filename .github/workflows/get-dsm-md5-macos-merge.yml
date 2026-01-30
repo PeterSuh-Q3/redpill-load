@@ -13,6 +13,8 @@ jobs:
             nano: false
           - version: '7.0.1-42218'
             nano: false
+          - version: '7.1-42661'
+            nano: true
           - version: '7.1.1-42962'
             nano: true
           - version: '7.2-64570'
