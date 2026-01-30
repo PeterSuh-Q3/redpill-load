@@ -148,7 +148,8 @@ jobs:
           
           echo "✓ Merge complete"
           echo "Total models: $(jq 'keys | length' result.json)"
-          jq 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' pats.json
+          jq 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' result.json
+          cp result.json pats.json
 
       - name: Upload merged result
         uses: actions/upload-artifact@v4
