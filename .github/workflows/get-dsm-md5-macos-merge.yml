@@ -57,9 +57,9 @@ jobs:
           # PAT 파일 목록 가져오기 -> URL 디코딩으로 정규화 -> 중복 제거 -> 상위 5개만
           curl -s "$ARCHIVE_URL" | \
             grep -oE 'DSM_[^"]+\.pat' | \
-            sed 's/+_/\\%2B_/g' | \
+            sed -E 's/\+_/%2B_/g' | \
             sort -u | \
-            head -300 | \
+            head -5 | \
             while read filename; do
               if [ "$IS_NANO" = "true" ]; then
                 echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}-1/$filename"
