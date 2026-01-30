@@ -97,4 +97,62 @@ jobs:
           name: dsm-md5-${{ env.DSM_VERSION }}
           path: |
             result-${{ env.DSM_VERSION }}.json
-            md5list
+            #md5list
+
+
+  Merge-Results:
+    needs: Get-md5
+    runs-on: macos-latest
+    
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Merge all JSON files
+        run: |
+          cat > merge.jq << 'JQEOF'
+          # 여러 JSON 파일을 모델 단위로 merge
+          # 입력: 각 JSON 파일의 내용
+          # 출력: 병합된 단일 JSON
+          
+          reduce inputs as $input (
+            {};
+            . as $base |
+            reduce ($input | keys[]) as $model (
+              $base;
+              if has($model) then
+                # 기존 모델에 새 버전 추가
+                .[$model] += $input[$model]
+              else
+                # 새 모델 추가
+                .[$model] = $input[$model]
+              end
+            )
+          )
+          JQEOF
+
+          # 버전 순서대로 정렬된 파일 목록
+          FILES=$(find artifacts -name "result-*.json" -type f | sort -V)
+          
+          echo "Files to merge:"
+          echo "$FILES" | nl
+          
+          # jq로 순차 merge
+          echo "$FILES" | xargs jq -s -f merge.jq > result.json
+          
+          # 결과 검증
+          jq --sort-keys '.' result.json > result_sorted.json
+          mv result_sorted.json result.json
+          
+          echo "✓ Merge complete"
+          echo "Total models: $(jq 'keys | length' result.json)"
+          jq 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' pats.json
+
+      - name: Upload merged result
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsm-md5-merged-final
+          path: pats.json
+            
