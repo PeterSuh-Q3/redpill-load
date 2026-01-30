@@ -62,7 +62,7 @@ jobs:
             head -200 | \
             while read filename; do
               if IS_NANO then
-                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/1/$filename"
+                echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}-1/$filename"
               else
                 echo "https://global.synologydownload.com/download/DSM/release/${DSM_VERSION_URL}/$filename"
               fi
