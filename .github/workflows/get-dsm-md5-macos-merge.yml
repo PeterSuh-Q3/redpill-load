@@ -99,7 +99,6 @@ jobs:
             result-${{ env.DSM_VERSION }}.json
             #md5list
 
-
   Merge-Results:
     needs: Get-md5
     runs-on: macos-latest
@@ -110,50 +109,116 @@ jobs:
         with:
           path: artifacts
 
-      - name: Merge all JSON files
+      - name: Debug - List downloaded files
         run: |
-          cat > merge.jq << 'JQEOF'
-          # 여러 JSON 파일을 모델 단위로 merge
-          # 입력: 각 JSON 파일의 내용
-          # 출력: 병합된 단일 JSON
-          
-          reduce inputs as $input (
-            {};
-            . as $base |
-            reduce ($input | keys[]) as $model (
-              $base;
-              if has($model) then
-                # 기존 모델에 새 버전 추가
-                .[$model] += $input[$model]
-              else
-                # 새 모델 추가
-                .[$model] = $input[$model]
-              end
-            )
-          )
-          JQEOF
+          echo "=== All downloaded files ==="
+          find artifacts -type f -name "*.json" | sort -V
+          echo ""
+          echo "=== Directory structure ==="
+          find artifacts -type d | head -20
+          echo ""
+          echo "=== Total JSON files ==="
+          find artifacts -type f -name "*.json" | wc -l
 
-          # 버전 순서대로 정렬된 파일 목록
-          FILES=$(find artifacts -name "result-*.json" -type f | sort -V)
+      - name: Debug - Check individual file contents
+        run: |
+          echo "=== Checking first few files ==="
+          find artifacts -type f -name "result-*.json" | sort -V | head -3 | while read FILE; do
+            echo ""
+            echo "File: $FILE"
+            echo "Size: $(wc -c < "$FILE") bytes"
+            echo "Keys count: $(jq 'keys | length' "$FILE")"
+            echo "First model: $(jq 'keys[0]' "$FILE")"
+          done
+
+      - name: Merge all JSON files - BASH APPROACH
+        run: |
+          echo "=== Starting merge process ==="
           
-          echo "Files to merge:"
-          echo "$FILES" | nl
+          # 모든 파일 찾기
+          mapfile -t FILES < <(find artifacts -type f -name "result-*.json" | sort -V)
           
-          # jq로 순차 merge
-          echo "$FILES" | xargs jq -s -f merge.jq > result.json
+          echo "Found ${#FILES[@]} files to merge"
+          echo ""
           
-          # 결과 검증
+          for i in "${!FILES[@]}"; do
+            echo "[$i] ${FILES[$i]}"
+          done
+          
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "ERROR: No result files found!"
+            exit 1
+          fi
+          
+          echo ""
+          echo "=== Merge process started ==="
+          
+          # 첫 파일로 시작
+          cp "${FILES[0]}" result.json
+          echo "Base file: ${FILES[0]}"
+          echo "Initial model count: $(jq 'keys | length' result.json)"
+          echo ""
+          
+          # 나머지 파일 merge
+          for ((i=1; i<${#FILES[@]}; i++)); do
+            FILE="${FILES[$i]}"
+            echo "Step $i: Merging $FILE"
+            
+            # 현재 파일의 모델 수
+            NEW_MODELS=$(jq 'keys | length' "$FILE")
+            echo "  - New file has $NEW_MODELS models"
+            
+            # merge 실행
+            jq -s '
+              .[0] as $base |
+              .[1] as $new |
+              reduce ($new | keys[]) as $model (
+                $base;
+                if has($model) then
+                  .[$model] += $new[$model]
+                else
+                  .[$model] = $new[$model]
+                end
+              )
+            ' result.json "$FILE" > result_temp.json
+            
+            mv result_temp.json result.json
+            
+            TOTAL=$(jq 'keys | length' result.json)
+            echo "  - After merge: $TOTAL models total"
+            echo ""
+          done
+          
+          echo "=== Merge completed ==="
+          echo "Final model count: $(jq 'keys | length' result.json)"
+          
+          # 최종 정렬
           jq --sort-keys '.' result.json > result_sorted.json
           mv result_sorted.json result.json
           
-          echo "✓ Merge complete"
-          echo "Total models: $(jq 'keys | length' result.json)"
-          jq 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' result.json
+          # 최종 검증
+          echo ""
+          echo "=== Final validation ==="
+          jq empty result.json && echo "✓ JSON is valid"
+          
           cp result.json pats.json
+
+      - name: Debug - Show merge summary
+        run: |
+          echo "=== Merge Summary ==="
+          echo "Total models: $(jq 'keys | length' pats.json)"
+          echo ""
+          echo "=== Models and version counts ==="
+          jq -r 'to_entries | map("\(.key): \(.value | keys | length) versions") | .[]' pats.json | head -20
+          echo ""
+          echo "=== Sample data (DS1019+) ==="
+          jq '.["DS1019+"] | keys' pats.json 2>/dev/null || echo "DS1019+ not found"
+          echo ""
+          echo "=== File size ==="
+          ls -lh pats.json
 
       - name: Upload merged result
         uses: actions/upload-artifact@v4
         with:
           name: dsm-md5-merged-final
           path: pats.json
-            
