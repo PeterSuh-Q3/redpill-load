@@ -1,5 +1,19 @@
 #!/bin/bash
+
+# DSM_VERSION 패턴에 .0 추가하는 함수 (스크립트 맨 위에 추가)
+normalize_dsm_version() {
+  DSM_VERSION="$1"
+  # 패턴: X.Y-##### → X.Y.0-#####
+  if [[ "$DSM_VERSION" =~ ^([0-9]+\.[0-9]+)-([0-9]+)$ ]]; then
+    DSM_VERSION="${BASH_REMATCH[1]}.0-${BASH_REMATCH[2]}"
+  fi
+  echo "$DSM_VERSION"
+}
+
 DSM_VERSION="${1:-7.3.1-86003}"
+DSM_VERSION=$(normalize_dsm_version "$DSM_VERSION")
+echo "$DSM_VERSION"  # 7.2-64570 → 7.2.0-64570
+
 # macOS 호환 Synology DSM PAT File MD5 Generator
 # macOS에서 작동하도록 수정된 버전
 # md5list 파일 사전준비 필요 A.I gpt5 를 통해 생성가능.(워크플로우 로직으로 대체)
