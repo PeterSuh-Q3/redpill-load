@@ -5585,8 +5585,8 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_SA6400_86003.pat"
     },
     "7.3.2-86009-0": {
-      "sum": "d6c45e7af197dad85a4dae98069b6f54",
-      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_SA6400_86009.pat"
+      "sum": "5810c8a42bce232961d4cc6adce965fb",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009-1/DSM_SA6400_86009.pat"
     }
   },
   "VirtualDSM": {
