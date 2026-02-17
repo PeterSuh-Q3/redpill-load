@@ -30,7 +30,8 @@
     "esataportcfg": "0x0",
     "usbportcfg": "0x8700",
     "maxlanport": "8",
-    "netif_seq": "0 1 2 3 4 5 6 7"
+    "netif_seq": "0 1 2 3 4 5 6 7",
+    "supportsas": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
@@ -40,7 +41,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS3615xs",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
