@@ -47,7 +47,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "syno_hw_version": "DS3615xs",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
@@ -60,7 +59,7 @@
       "withefi": null
     },
     "menu_entries": {
-      "RedPill DS3615xs v7.1.1-42962 (USB, Verbose)": {
+      "RedPill bromolow v7.1.1-42962 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -76,7 +75,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill DS3615xs v7.1.1-42962 (SATA, Verbose)": {
+      "RedPill bromolow v7.1.1-42962 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
