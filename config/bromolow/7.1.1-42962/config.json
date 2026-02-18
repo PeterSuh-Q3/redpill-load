@@ -1,26 +1,20 @@
 {
-  "os": {
-    "id": "ds3615xs_42962",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-1/DSM_DS3615xs_42962.pat",
-    "sha256": "f01a17d73e2594b0b31f134bfe023dccc0bb9389a462f9918080573134093023"
-  },
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "3c8d6692eec9f8dcbf3224e73f3442244d53112f5522c3dfb2af280714a7a84c"
+      "sha256": ""
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "7e0001a66de6d21484cc3c4326021603c9b2f2a38a14799d7f8575af91c2d2a1"
+      "sha256": ""
     },
     "vmlinux": {
-      "sha256": "8a53e1f60367997e3b54cce40d08a7f2f209b1f0a69e1006cfd03ffa7532436c"
+      "sha256": ""
     }
   },
   "patches": {
-    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
     "zlinux": [
-      "zImage-001-3615xs-42962-ramdisk-and-header.bsp"
+      ""
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
