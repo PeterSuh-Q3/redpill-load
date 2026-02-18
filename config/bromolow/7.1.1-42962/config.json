@@ -36,7 +36,8 @@
     "esataportcfg": "0x0",
     "usbportcfg": "0x8700",
     "maxlanport": "8",
-    "netif_seq": "0 1 2 3 4 5 6 7"
+    "netif_seq": "0 1 2 3 4 5 6 7",
+    "supportsas": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
