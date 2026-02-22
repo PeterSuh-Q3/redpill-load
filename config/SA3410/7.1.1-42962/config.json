@@ -34,9 +34,7 @@
     "maxdisks": "24",
     "support_bde_internal_10g": "no",
     "support_disk_compatibility": "no",
-    "internalportcfg": "0xfffff",
     "SasIdxMap": "0",
-    "esataportcfg": "0x00",
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7"
   },

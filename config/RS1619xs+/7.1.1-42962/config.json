@@ -28,8 +28,7 @@
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
-  "synoinfo": {
-  },
+  "synoinfo": {},
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {
@@ -44,7 +43,7 @@
       "syno_hdd_detect": 0,
       "syno_hdd_powerup_seq": 0,
       "vender_format_version": 2,
-      "elevator": "elevator",      
+      "elevator": "elevator",
       "console": "ttyS0,115200n8",
       "synoboot2": null,
       "syno_ttyS0": "serial,0x3f8",

@@ -30,8 +30,6 @@
   },
   "synoinfo": {
     "maxdisks": "16",
-    "internalportcfg": "0xffff",
-    "esataportcfg": "0x0",
     "HddHotplug": "",
     "support_led_brightness_adjustment": "",
     "support_leds_lp3943": "",

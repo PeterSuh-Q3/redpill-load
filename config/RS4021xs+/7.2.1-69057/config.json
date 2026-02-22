@@ -37,7 +37,6 @@
     "supportraidgroup": "no",
     "support_syno_hybrid_raid": "yes",
     "SasIdxMap": "0",
-    "esataportcfg": "0x0000000000",
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7"
   },

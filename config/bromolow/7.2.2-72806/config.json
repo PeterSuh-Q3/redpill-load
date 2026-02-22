@@ -20,18 +20,18 @@
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
-      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",      
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
   "synoinfo": {
     "supportext4": "yes",
-    "support_uasp": "yes",  
+    "support_uasp": "yes",
     "maxdisks": "24",
-    "maxlanport": "4", 
+    "maxlanport": "4",
     "netif_seq": "0 1 2 3",
     "support_disk_compatibility": "no",
-    "support_syno_hybrid_raid": "no", 
+    "support_syno_hybrid_raid": "no",
     "supportraidgroup": "no",
     "supportsas": "no"
   },
@@ -55,7 +55,7 @@
       "withefi": null
     },
     "menu_entries": {
-      "RedPill bromlow v7.2.2-72806 (USB, Verbose)": {      
+      "RedPill bromlow v7.2.2-72806 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
