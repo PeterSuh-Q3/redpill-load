@@ -892,31 +892,27 @@ __action__update_platform_exts()
     mrp_fill_recipe "${ext_id}" "${platform_id}" "${new_recipe_file}"
     "${RM_PATH}" "${new_recipe_file}" || pr_warn "Failed to remove temp file %s" "${new_recipe_file}"
 
-    # 기본/커스텀 플랫폼이 모두 있을 때, 기본 디렉토리 자체를 제거
-    # 예: epyc7002_72_51055 (base) + epyc7002_72_51055_custom (custom)
-    local base_platform
-    local base_dir
-    local custom_dir
-
+    # *_custom 플랫폼 디렉토리가 있을 경우, 기본 플랫폼 이름으로 디렉토리 rename
+    # 예: epyc7002_72_51055_custom -> epyc7002_72_51055
     if [[ "${platform_id}" == *_custom ]]; then
-      # 플랫폼 ID가 *_custom 로 들어온 경우
-      base_platform="${platform_id%_custom}"
-      base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
-      custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
-    else
-      # 플랫폼 ID가 기본인 경우
-      base_platform="${platform_id}"
-      base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
-      custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
-    fi
+      local base_platform="${platform_id%_custom}"
+      local base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
+      local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
 
-    if [[ -d "${base_dir}" && -d "${custom_dir}" ]]; then
-      pr_dbg "Both base(%s) and custom(%s) exist for %s, removing base dir entirely" \
-             "${base_dir}" "${custom_dir}" "${ext_id}"
-      "${RM_PATH}" -rf "${base_dir}"
-      # brp_mkdir 호출 없음: 디렉토리 자체를 제거한 상태로 둔다
+      if [[ -d "${custom_dir}" ]]; then
+        pr_dbg "Renaming custom platform dir %s to base %s for %s" \
+               "${custom_dir}" "${base_dir}" "${ext_id}"
+
+        # 기존 기본 디렉토리가 있으면 제거
+        if [[ -d "${base_dir}" ]]; then
+          "${RM_PATH}" -rf "${base_dir}"
+        fi
+
+        # 커스텀 디렉토리를 기본 디렉토리 이름으로 rename
+        "${MV_PATH}" "${custom_dir}" "${base_dir}"
+      fi
     fi
-    
+        
     # Modify storagepanel addon scripts & sha256 2023.08.24
     if [[ "${ext_id}" == "storagepanel" ]]; then
       BAYSIZE=$(jq -r -e '.general.bay' "/home/tc/user_config.json")
