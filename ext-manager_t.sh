@@ -971,6 +971,16 @@ __action__dump_exts()
     fi
 
     brp_cp_flat "${platform_dir}" "${dump_ext_di}" # theoretically this will suffice, but we can cleanup a bit
+
+    # custom_dir에서 가져온 경우, *_custom.json 파일이 있으면
+    # _custom 을 제거한 이름의 json 파일을 하나 더 복사 생성
+    for f in "${dump_ext_di}"/*_custom.json; do
+      [ -e "${f}" ] || continue   # 매칭 파일이 없을 때를 대비
+      new="${f%_custom.json}.json"
+      pr_dbg "Duplicating custom json %s to %s" "${f}" "${new}"
+      brp_cp_flat "${f}" "${new}"
+    done
+
     if [ "$FRKRNL" = "YES" ]; then
       sudo "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
     else
