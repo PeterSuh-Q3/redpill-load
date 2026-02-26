@@ -892,6 +892,46 @@ __action__update_platform_exts()
     mrp_fill_recipe "${ext_id}" "${platform_id}" "${new_recipe_file}"
     "${RM_PATH}" "${new_recipe_file}" || pr_warn "Failed to remove temp file %s" "${new_recipe_file}"
 
+    # *_custom 플랫폼 처리: 기본 디렉터리를 비우고, 커스텀 내용을 mv 하며 이름 변경
+    if [[ "${platform_id}" == *_custom ]]; then
+      local base_platform="${platform_id%_custom}"
+      local base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
+      local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
+
+      if [[ -d "${base_dir}" ]]; then
+        pr_dbg "Replacing base dir %s with custom %s for %s" "${base_dir}" "${custom_dir}" "${ext_id}"
+
+        # 기본 디렉터리 비우기
+        "${RM_PATH}" -rf "${base_dir}"
+        brp_mkdir "${base_dir}"
+
+        # 커스텀 디렉터리의 파일들을 mv 하면서 이름 변경
+        for f in "${custom_dir}"/*; do
+          [ -e "${f}" ] || continue
+          fname="$(basename "${f}")"
+          newname="${fname}"
+
+          case "${fname}" in
+            firmware-custom.tgz)
+              newname="firmware.tgz"
+              ;;
+            modules-*.tgz)
+              # 파일 이름에서 'modules-' 접두어 제거
+              newname="${fname#modules-}"
+              ;;
+          esac
+
+          "${MV_PATH}" "${f}" "${base_dir}/${newname}"
+        done
+
+        # (원하면 커스텀 디렉토리 자체도 삭제)
+        "${RM_PATH}" -rf "${custom_dir}" || pr_warn "Failed to remove custom dir %s" "${custom_dir}"
+      else
+        pr_warn "Base platform %s for %s not found; cannot replace with custom %s" \
+                "${base_platform}" "${ext_id}" "${platform_id}"
+      fi
+    fi
+
     # Modify storagepanel addon scripts & sha256 2023.08.24
     if [[ "${ext_id}" == "storagepanel" ]]; then
       BAYSIZE=$(jq -r -e '.general.bay' "/home/tc/user_config.json")
