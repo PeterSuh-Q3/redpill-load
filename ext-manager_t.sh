@@ -892,31 +892,46 @@ __action__update_platform_exts()
     mrp_fill_recipe "${ext_id}" "${platform_id}" "${new_recipe_file}"
     "${RM_PATH}" "${new_recipe_file}" || pr_warn "Failed to remove temp file %s" "${new_recipe_file}"
 
-    # 기본/커스텀 플랫폼이 모두 있을 때, 기본 디렉토리 자체를 제거
-    # 예: epyc7002_72_51055 (base) + epyc7002_72_51055_custom (custom)
-    local base_platform
-    local base_dir
-    local custom_dir
-
+    # *_custom 플랫폼 처리: 기본 디렉터리를 비우고, 커스텀 내용을 mv 하며 이름 변경
     if [[ "${platform_id}" == *_custom ]]; then
-      # 플랫폼 ID가 *_custom 로 들어온 경우
-      base_platform="${platform_id%_custom}"
-      base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
-      custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
-    else
-      # 플랫폼 ID가 기본인 경우
-      base_platform="${platform_id}"
-      base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
-      custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
+      local base_platform="${platform_id%_custom}"
+      local base_dir="${RPT_EXTS_DIR}/${ext_id}/${base_platform}"
+      local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
+
+      if [[ -d "${base_dir}" ]]; then
+        pr_dbg "Replacing base dir %s with custom %s for %s" "${base_dir}" "${custom_dir}" "${ext_id}"
+
+        # 기본 디렉터리 비우기
+        "${RM_PATH}" -rf "${base_dir}"
+        brp_mkdir "${base_dir}"
+
+        # 커스텀 디렉터리의 파일들을 mv 하면서 이름 변경
+        for f in "${custom_dir}"/*; do
+          [ -e "${f}" ] || continue
+          fname="$(basename "${f}")"
+          newname="${fname}"
+
+          case "${fname}" in
+            firmware-custom.tgz)
+              newname="firmware.tgz"
+              ;;
+            modules-*.tgz)
+              # 파일 이름에서 'modules-' 접두어 제거
+              newname="${fname#modules-}"
+              ;;
+          esac
+
+          "${MV_PATH}" "${f}" "${base_dir}/${newname}"
+        done
+
+        # (원하면 커스텀 디렉토리 자체도 삭제)
+        "${RM_PATH}" -rf "${custom_dir}" || pr_warn "Failed to remove custom dir %s" "${custom_dir}"
+      else
+        pr_warn "Base platform %s for %s not found; cannot replace with custom %s" \
+                "${base_platform}" "${ext_id}" "${platform_id}"
+      fi
     fi
 
-    if [[ -d "${base_dir}" && -d "${custom_dir}" ]]; then
-      pr_dbg "Both base(%s) and custom(%s) exist for %s, removing base dir entirely" \
-             "${base_dir}" "${custom_dir}" "${ext_id}"
-      "${RM_PATH}" -rf "${base_dir}"
-      # brp_mkdir 호출 없음: 디렉토리 자체를 제거한 상태로 둔다
-    fi
-    
     # Modify storagepanel addon scripts & sha256 2023.08.24
     if [[ "${ext_id}" == "storagepanel" ]]; then
       BAYSIZE=$(jq -r -e '.general.bay' "/home/tc/user_config.json")
