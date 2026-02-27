@@ -388,7 +388,7 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "
   fi
 
   if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
-    pr_process "Using custom bzImage for %s" "${BRP_ZLINMOD_NAME}"
+    pr_process "Using custom bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
     "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
       || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
     pr_process_ok
