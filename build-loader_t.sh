@@ -604,6 +604,7 @@ BRP_ZLINUX_FINAL_SRC="${BRP_ZLINUX_PATCHED_FILE}"
 
 # If an extension "_custom" directory is present and the repo provides a custom kernel image,
 # use it for zImage. Otherwise, fall back to the patched zImage.
+pr_process "BPR_LOWER_PLATFORM: %s" "$BPR_LOWER_PLATFORM"
 if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "epyc7002" ]]; then
   BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
   BRP_OLD_IFS="${IFS}"
@@ -612,6 +613,10 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "
   BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custum-zImage"
   BRP_CUST_ZIMG_GZ=""
+
+pr_process "BRP_DSM_VER_FULL: %s" "$BRP_DSM_VER_FULL"
+pr_process "BRP_REVISION: %s" "$BRP_REVISION"
+
   if [[ "${BRP_DSM_VER_MM}" == "7.2" ]]; then
     BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.2-5.10.55.gz"
   elif [[ "${BRP_DSM_VER_MM}" == "7.3" ]]; then
