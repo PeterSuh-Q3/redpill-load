@@ -354,11 +354,50 @@ else
 fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
+
+# Track whether any extension provided a platform-specific "_custom" override directory.
+# We detect this BEFORE the custom initramfs layer is packed/removed.
+BRP_HAS_EXT_CUSTOM_DIR=0
+shopt -s nullglob
+for _d in "${BRP_USER_DIR}"/extensions/*/*_custom/; do
+  BRP_HAS_EXT_CUSTOM_DIR=1
+  break
+done
+shopt -u nullglob
+pr_process "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
 $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINUX_FILE}" "${BRP_CACHE_DIR}/vmlinux"
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
-$PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+# If an extension "_custom" directory is present and the repo provides a custom kernel image,
+# use it for zImage. Otherwise, fall back to the patched zImage.
+if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "epyc7002" ]]; then
+  BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
+  BRP_OLD_IFS="${IFS}"
+  IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
+  IFS="${BRP_OLD_IFS}"
+  BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
+  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
+  BRP_CUST_ZIMG_GZ=""
+
+  if [[ "${BRP_DSM_VER_MM}" == "7.2" ]]; then
+    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.2-5.10.55.gz"
+  elif [[ "${BRP_DSM_VER_MM}" == "7.3" ]]; then
+    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.3-5.10.55.gz"
+  fi
+
+  if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
+    pr_process "Using custom bzImage for %s" "${BRP_ZLINMOD_NAME}"
+    "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
+      || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
+    pr_process_ok
+  elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
+    pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
+  fi
+else
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
+fi
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 ##### RAMDISK MODIFICATIONS ############################################################################################
@@ -519,17 +558,6 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   pr_process_ok
 fi
 
-# Track whether any extension provided a platform-specific "_custom" override directory.
-# We detect this BEFORE the custom initramfs layer is packed/removed.
-BRP_HAS_EXT_CUSTOM_DIR=0
-shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/*/*_custom/; do
-  BRP_HAS_EXT_CUSTOM_DIR=1
-  break
-done
-shopt -u nullglob
-pr_process "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
-
 if [ "${BRP_JUN_MOD}" -eq 1 ]; then
   brp_mkdir "${BRP_CUSTOM_DIR}/usr/bin"
   brp_mkdir "${BRP_CUSTOM_DIR}/etc"
@@ -600,37 +628,7 @@ pr_process_ok
 
 # Add patched zImage, patched ramdisk and our GRUB config
 pr_process "Copying patched files"
-BRP_ZLINUX_FINAL_SRC="${BRP_ZLINUX_PATCHED_FILE}"
-
-# If an extension "_custom" directory is present and the repo provides a custom kernel image,
-# use it for zImage. Otherwise, fall back to the patched zImage.
-if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "epyc7002" ]]; then
-  BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
-  BRP_OLD_IFS="${IFS}"
-  IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
-  IFS="${BRP_OLD_IFS}"
-  BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
-  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_CUST_ZIMG_GZ=""
-
-  if [[ "${BRP_DSM_VER_MM}" == "7.2" ]]; then
-    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.2-5.10.55.gz"
-  elif [[ "${BRP_DSM_VER_MM}" == "7.3" ]]; then
-    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.3-5.10.55.gz"
-  fi
-
-  if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
-    pr_process "Using custom bzImage for %s" "${BRP_ZLINMOD_NAME}"
-    BRP_ZLINUX_FINAL_SRC="${BRP_BUILD_DIR}/${BRP_ZLINMOD_NAME}.custom"
-    "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_FINAL_SRC}" \
-      || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
-    pr_process_ok
-  elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
-    pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
-  fi
-fi
-brp_cp_flat "${BRP_ZLINUX_FINAL_SRC}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
-
+brp_cp_flat "${BRP_ZLINUX_PATCHED_FILE}" "${BRP_OUT_P1}/${BRP_ZLINMOD_NAME}"
 if [[ $BIOS_CNT -eq 1 ]] && [ "$FRKRNL" = "YES" ]; then
     brp_cp_flat "${BRP_RD_REPACK}" "/dev/shm/${BRP_RDMOD_NAME}"
     brp_cp_flat "${BRP_CUSTOM_RD_PATH}" "/dev/shm/${BRP_CUSTOM_RD_NAME}"
