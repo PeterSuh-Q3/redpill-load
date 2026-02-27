@@ -523,7 +523,7 @@ fi
 # We detect this BEFORE the custom initramfs layer is packed/removed.
 BRP_HAS_EXT_CUSTOM_DIR=0
 shopt -s nullglob
-for _d in "${RPT_IMG_EXTS_DIR}"/*/*_custom/; do
+for _d in "${BRP_USER_DIR}"/extensions/*/*_custom/; do
   BRP_HAS_EXT_CUSTOM_DIR=1
   break
 done
