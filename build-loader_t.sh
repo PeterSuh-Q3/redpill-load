@@ -610,18 +610,14 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "
   IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
   IFS="${BRP_OLD_IFS}"
   BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
-  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custum-zImage"
+  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
-pr_process "BRP_DSM_VER_MM: %s" "$BRP_DSM_VER_MM"
 
   if [[ "${BRP_DSM_VER_MM}" == "7.2" ]]; then
     BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.2-5.10.55.gz"
   elif [[ "${BRP_DSM_VER_MM}" == "7.3" ]]; then
     BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.3-5.10.55.gz"
   fi
-
-pr_process "BRP_CUST_ZIMG_GZ: %s" "$BRP_CUST_ZIMG_GZ"
-pr_process "BRP_CUST_ZIMG_DIR: %s" "$BRP_CUST_ZIMG_DIR"
 
   if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_process "Using custom bzImage for %s" "${BRP_ZLINMOD_NAME}"
