@@ -528,7 +528,7 @@ for _d in "${RPT_IMG_EXTS_DIR}"/*/*_custom/; do
   break
 done
 shopt -u nullglob
-pr_dbg "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+pr_process "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
 
 if [ "${BRP_JUN_MOD}" -eq 1 ]; then
   brp_mkdir "${BRP_CUSTOM_DIR}/usr/bin"
