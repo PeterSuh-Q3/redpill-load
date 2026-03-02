@@ -891,7 +891,7 @@ __action__update_platform_exts()
 
     mrp_fill_recipe "${ext_id}" "${platform_id}" "${new_recipe_file}"
     "${RM_PATH}" "${new_recipe_file}" || pr_warn "Failed to remove temp file %s" "${new_recipe_file}"
-
+        
     # Modify storagepanel addon scripts & sha256 2023.08.24
     if [[ "${ext_id}" == "storagepanel" ]]; then
       BAYSIZE=$(jq -r -e '.general.bay' "/home/tc/user_config.json")
@@ -949,7 +949,18 @@ __action__dump_exts()
   local kmod_counter;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
     ((ext_counter++))
-    platform_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
+
+    # 기본/커스텀 디렉터리 결정: 커스텀이 있으면 그것을 우선 사용
+    local base_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
+    local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
+    if [[ -d "${custom_dir}" ]]; then
+      platform_dir="${custom_dir}"
+      pr_dbg "Using custom platform dir %s for %s (platform %s)" \
+            "${platform_dir}" "${ext_id}" "${platform_id}"
+    else
+      platform_dir="${base_dir}"
+    fi
+
     dump_ext_di="${dump_dir}/${ext_id}"
     pr_dbg "Dumping platform %s extension %s from %s to %s" "${platform_id}" "${ext_id}" "${platform_dir}" "${dump_ext_di}"
 
@@ -960,6 +971,16 @@ __action__dump_exts()
     fi
 
     brp_cp_flat "${platform_dir}" "${dump_ext_di}" # theoretically this will suffice, but we can cleanup a bit
+
+    # custom_dir에서 가져온 경우, *_custom.json 파일이 있으면
+    # _custom 을 제거한 이름의 json 파일을 하나 더 복사 생성
+    for f in "${dump_ext_di}"/*_custom.json; do
+      [ -e "${f}" ] || continue   # 매칭 파일이 없을 때를 대비
+      new="${f%_custom.json}.json"
+      pr_dbg "Duplicating custom json %s to %s" "${f}" "${new}"
+      brp_cp_flat "${f}" "${new}"
+    done
+
     if [ "$FRKRNL" = "YES" ]; then
       sudo "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
     else
