@@ -1,6 +1,7 @@
 {
   "ddsml"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/ddsml/rpext-index.json",    
   "eudev"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/eudev/rpext-index.json",
+  "redpill"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/redpill/rpext-index.json",
   "acovermissingbin"      : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acovermissingbin/rpext-index.json",
   "apppatch"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/apppatch/rpext-index.json",
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acpid/rpext-index.json",    
