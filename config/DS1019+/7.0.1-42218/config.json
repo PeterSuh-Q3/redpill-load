@@ -14751,7 +14751,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -14873,7 +14873,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -14994,7 +14994,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -18568,7 +18568,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -18690,7 +18690,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -18812,7 +18812,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -18933,7 +18933,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -28510,7 +28510,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -28636,7 +28636,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -28762,7 +28762,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -28888,7 +28888,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -32333,7 +32333,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -32469,7 +32469,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -32604,7 +32604,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -32736,7 +32736,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -32868,7 +32868,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -33000,7 +33000,7 @@
     ],
     "ramdisk": [
       "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script_k5.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
