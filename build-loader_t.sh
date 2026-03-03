@@ -372,7 +372,7 @@ $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINU
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 # If an extension "_custom" directory is present and the repo provides a custom kernel image,
 # use it for zImage. Otherwise, fall back to the patched zImage.
-if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "epyc7002" ]]; then
+if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
   BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
   BRP_OLD_IFS="${IFS}"
   IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
@@ -381,11 +381,7 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 ]] && [[ "${BPR_LOWER_PLATFORM}" == "
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
 
-  if [[ "${BRP_DSM_VER_MM}" == "7.2" ]]; then
-    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.2-5.10.55.gz"
-  elif [[ "${BRP_DSM_VER_MM}" == "7.3" ]]; then
-    BRP_CUST_ZIMG_GZ="bzImage-epyc7002-7.3-5.10.55.gz"
-  fi
+  BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
 
   if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_process "Using custom bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
