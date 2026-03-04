@@ -61,6 +61,7 @@
       "syno_port_thaw": 1,
       "root": "/dev/md0",
       "earlycon": "uart8250,io,0x3f8,115200n8",
+      "sataboot2": null,      
       "syno_ttyS0": "serial,0x3f8",
       "syno_ttyS1": "serial,0x2f8"
     },
