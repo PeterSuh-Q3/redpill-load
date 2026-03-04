@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ead_u8() {
+read_u8() {
   dd if="${1}" bs=1 skip="$((${2}))" count=1 2>/dev/null | od -An -tu1 | grep -Eo '[0-9]+'
 }
 read_u32() {
