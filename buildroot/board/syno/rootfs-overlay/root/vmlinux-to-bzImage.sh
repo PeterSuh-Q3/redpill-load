@@ -9,6 +9,10 @@
 
 [ -z "${WORK_PATH}" ] || [ ! -d "${WORK_PATH}/include" ] && WORK_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+crc32() {
+  gzip -c $1 | tail -c8 | od -t x4 -N 4 -A n
+}
+
 calc_run_size() {
   NUM='\([0-9a-fA-F]*[ \t]*\)'
   OUT=$(sed -n 's/^[ \t0-9]*.b[sr][sk][ \t]*'"${NUM}${NUM}${NUM}${NUM}"'.*/0x\1 0x\4/p')
