@@ -991,37 +991,43 @@ __action__dump_exts()
     # 커스텀 디렉토리가 존재하고, 현재 처리 중인 확장이 'all-modules'인 경우 동적 로딩 목록에서 제외
     if [[ -d "${custom_dir}" ]] && [[ "${ext_id}" == "all-modules" ]]; then
       pr_dbg "Custom directory exists. Skipping dynamic loading of ${ext_id} for static initrd."
-      # continue를 사용해 아래 로직을 무시하고 다음 확장 모듈(루프)로 넘어갑니다.
-      continue
-    fi
+      
+      # continue를 하지 않고, 이번 확장에 대해 할당되었던 인덱스 카운터를 원복시킵니다.
+      # 이렇게 해야 다음 모듈이 현재 인덱스를 이어받아 빈틈없이 변수(EXT_x_...)가 채워집니다.
+      ((ext_counter--))
+      
+    else
+      # 제외 대상이 아닐 때만 정상적으로 확장 리스트와 변수를 채웁니다.
+      
+      # Handle kernel extensions (if any)
+      target_extensions+="${ext_id} " # POSIX shells don't care about leading/trailing whitespaces in IFS
+      if [[ "$(brp_json_has_field "${platform_rcp_file}" 'kmods')" -eq 1 ]]; then # not all extensions must have *.ko
+        pr_dbg "Extension has kernel modules - dumping"
+        brp_read_ordered_kv "${platform_rcp_file}" "kmods" files_keys files_kv
+        kmod_counter=0
+        for ko_name in ${files_keys[@]+"${files_keys[@]}"}; do
+          pr_dbg "Adding %s kmod (args: %s) from %s extension" "${ko_name}" "${files_kv[${ko_name}]}" "${ext_id}"
+          target_vars["EXT_${ext_counter}_kmod_files"]+="${ko_name} "
+          if [[ ! -z "${files_kv[${ko_name}]}" ]]; then
+            target_vars["EXT_${ext_counter}_kmod_${kmod_counter}_args"]="${files_kv[${ko_name}]}"
+          fi
+          ((kmod_counter++))
+        done
+      fi
+
+      # Handle scripts (if any)
+      if [[ "$(brp_json_has_field "${platform_rcp_file}" 'scripts')" -eq 1 ]]; then # not all extensions must have scripts
+        pr_dbg "Extension has scripts - dumping"
+        brp_read_kv_to_array "${platform_rcp_file}" "scripts" files_kv # we don't care about the order read here
+        for script_action in "${!files_kv[@]}"; do
+          pr_dbg "Adding %s script for action %s from %s extension" \
+                 "${script_action}" "${files_kv[${script_action}]}" "${ext_id}"
+
+          target_vars["EXT_${ext_counter}_scripts_${script_action}"]="${files_kv[${script_action}]}"
+        done
+      fi
+    fi 
     
-    # Handle kernel extensions (if any)
-    target_extensions+="${ext_id} " # POSIX shells don't care about leading/trailing whitespaces in IFS
-    if [[ "$(brp_json_has_field "${platform_rcp_file}" 'kmods')" -eq 1 ]]; then # not all extensions must have *.ko
-      pr_dbg "Extension has kernel modules - dumping"
-      brp_read_ordered_kv "${platform_rcp_file}" "kmods" files_keys files_kv
-      kmod_counter=0
-      for ko_name in ${files_keys[@]+"${files_keys[@]}"}; do
-        pr_dbg "Adding %s kmod (args: %s) from %s extension" "${ko_name}" "${files_kv[${ko_name}]}" "${ext_id}"
-        target_vars["EXT_${ext_counter}_kmod_files"]+="${ko_name} "
-        if [[ ! -z "${files_kv[${ko_name}]}" ]]; then
-          target_vars["EXT_${ext_counter}_kmod_${kmod_counter}_args"]="${files_kv[${ko_name}]}"
-        fi
-        ((kmod_counter++))
-      done
-    fi
-
-    # Handle scripts (if any)
-    if [[ "$(brp_json_has_field "${platform_rcp_file}" 'scripts')" -eq 1 ]]; then # not all extensions must have scripts
-      pr_dbg "Extension has scripts - dumping"
-      brp_read_kv_to_array "${platform_rcp_file}" "scripts" files_kv # we don't care about the order read here
-      for script_action in "${!files_kv[@]}"; do
-        pr_dbg "Adding %s script for action %s from %s extension" \
-               "${script_action}" "${files_kv[${script_action}]}" "${ext_id}"
-
-        target_vars["EXT_${ext_counter}_scripts_${script_action}"]="${files_kv[${script_action}]}"
-      done
-    fi
   done
 
   # Copy bootstrap files
