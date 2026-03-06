@@ -988,6 +988,13 @@ __action__dump_exts()
     fi
     "${FIND_PATH}" "${dump_ext_di}" -type d -empty -delete # delete all empty dirs which may resulted from unpacking
 
+    # 커스텀 디렉토리가 존재하고, 현재 처리 중인 확장이 'all-modules'인 경우 동적 로딩 목록에서 제외
+    if [[ -d "${custom_dir}" ]] && [[ "${ext_id}" == "all-modules" ]]; then
+      pr_dbg "Custom directory exists. Skipping dynamic loading of ${ext_id} for static initrd."
+      # continue를 사용해 아래 로직을 무시하고 다음 확장 모듈(루프)로 넘어갑니다.
+      continue
+    fi
+    
     # Handle kernel extensions (if any)
     target_extensions+="${ext_id} " # POSIX shells don't care about leading/trailing whitespaces in IFS
     if [[ "$(brp_json_has_field "${platform_rcp_file}" 'kmods')" -eq 1 ]]; then # not all extensions must have *.ko
