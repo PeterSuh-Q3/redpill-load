@@ -521,7 +521,8 @@ brp_mkdir "${RPT_IMG_EXTS_DIR}"
 # Copy any extra files to the ramdisk
 brp_cp_from_list "${BRP_REL_CONFIG_JSON}" "extra.ramdisk_copy" BRP_RELEASE_PATHS "${BRP_CUSTOM_DIR}"
 if [[ "$(brp_json_has_field "${BRP_USER_CFG}" 'ramdisk_copy')" -eq 1 ]]; then
-  brp_cp_from_list "${BRP_USER_CFG}" "ramdisk_copy" BRP_USER_PATHS "${BRP_CUSTOM_DIR}"
+  brp_cp_from_list "${BRP_USER_CFG}" "ramdisk_copy" BRP_USER_PATHS "${BRP_CUSTOM_DIR}" \
+  || pr_crit "Failed to copy RedPill LKM ${BRP_CUSTOM_DIR}"
 fi
 
 # Handle debug flags for custom ramdisk
