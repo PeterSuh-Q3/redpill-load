@@ -94,7 +94,7 @@
     "compress_rd": false,
     "ramdisk_copy": {
       "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.108.ko": "usr/lib/modules/rp.ko",
-      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+      "@@@COMMON@@@/iosched-trampoline5.sh": "usr/sbin/modprobe"
     },
     "bootp1_copy": {
       "@@@PAT@@@/GRUB_VER": "GRUB_VER",
