@@ -187,21 +187,11 @@ brp_unpack_zrd()
   pr_process "Unpacking %s file to %s" "${1}" "${2}"
 
   local output;
-  
-  # 파일 확장자로 압축 형식 자동 감지
-  if [[ "${1}" == *.gz ]]; then
-    # gzip + cpio 파이프라인
-    output=$(cd "${2}" && gunzip -c "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
-  elif [[ "${1}" == *.lzma ]]; then
-    # LZMA + cpio 파이프라인  
-    output=$(cd "${2}" && "${XZ_PATH}" -dc "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
-  else
-    # 기본 xz 처리
-    output=$(cd "${2}" && "${XZ_PATH}" -dc "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
-  fi
+  output=$(cd "${2}" && "${XZ_PATH}" -dc < "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
 
-  # 언팩 성공 여부 확인 (기존 로직 유지)
-  if [ "$(ls -A "${2}")" ]; then
+  # Sadly we cannot check exit code of the unpacking as xz will always error out array as ramdisks have appended
+  # checksum, so we can check if something unpacked instead
+  if [ "$(ls -A ${2})" ]; then
     pr_process_ok
     return
   fi
