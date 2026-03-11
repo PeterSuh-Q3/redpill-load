@@ -186,36 +186,27 @@ brp_unpack_zrd()
 {
   pr_process "Unpacking %s file to %s" "${1}" "${2}"
 
-  local output temp_cpio;
-  temp_cpio="/tmp/rd.cpio"
+  local output;
   
-  # 1단계: 압축 해제 (파일 형식 자동 감지)
-  # Download file
-  if [ "$(which file)_" == "_" ]; then  
-    echo "file does not exist, install from tinycore"
-    tce-load -iw file 
-  fi
-  
-  if /usr/local/bin/file "${1}" | grep -q gzip; then
-    gunzip -c "${1}" > "${temp_cpio}" 2>/dev/null
-  elif /usr/local/bin/file "${1}" | grep -q LZMA; then
-    "${XZ_PATH}" -d -c "${1}" > "${temp_cpio}" 2>/dev/null
+  # 파일 확장자로 압축 형식 자동 감지
+  if [[ "${1}" == *.gz ]]; then
+    # gzip + cpio 파이프라인
+    output=$(cd "${2}" && gunzip -c "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
+  elif [[ "${1}" == *.lzma ]]; then
+    # LZMA + cpio 파이프라인  
+    output=$(cd "${2}" && "${XZ_PATH}" -dc "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
   else
-    "${XZ_PATH}" -dc "${1}" > "${temp_cpio}" 2>/dev/null
-  fi
-  
-  # 2단계: cpio 언팩 (단계별 검증)
-  if [ -s "${temp_cpio}" ]; then
-    output=$(cd "${2}" && "${CPIO_PATH}" -idm < "${temp_cpio}" 2>&1)
-    rm -f "${temp_cpio}"
-    
-    if [ "$(ls -A "${2}")" ]; then
-      pr_process_ok
-      return
-    fi
+    # 기본 xz 처리
+    output=$(cd "${2}" && "${XZ_PATH}" -dc "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
   fi
 
-  pr_process_err  
+  # 언팩 성공 여부 확인 (기존 로직 유지)
+  if [ "$(ls -A "${2}")" ]; then
+    pr_process_ok
+    return
+  fi
+
+  pr_process_err
   pr_crit "Failed to unpack compressed ramdisk\n\n%s" "${output}"
 }
 
