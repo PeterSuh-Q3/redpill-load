@@ -186,17 +186,30 @@ brp_unpack_zrd()
 {
   pr_process "Unpacking %s file to %s" "${1}" "${2}"
 
-  local output;
-  output=$(cd "${2}" && "${XZ_PATH}" -dc < "${1}" 2>/dev/null | "${CPIO_PATH}" -idm 2>&1)
-
-  # Sadly we cannot check exit code of the unpacking as xz will always error out array as ramdisks have appended
-  # checksum, so we can check if something unpacked instead
-  if [ "$(ls -A ${2})" ]; then
-    pr_process_ok
-    return
+  local output temp_cpio;
+  temp_cpio="/tmp/rd.cpio"
+  
+  # 1단계: 압축 해제 (파일 형식 자동 감지)
+  if file "${1}" | grep -q gzip; then
+    gunzip -c "${1}" > "${temp_cpio}" 2>/dev/null
+  elif file "${1}" | grep -q LZMA; then
+    "${XZ_PATH}" -d -c "${1}" > "${temp_cpio}" 2>/dev/null
+  else
+    "${XZ_PATH}" -dc "${1}" > "${temp_cpio}" 2>/dev/null
+  fi
+  
+  # 2단계: cpio 언팩 (단계별 검증)
+  if [ -s "${temp_cpio}" ]; then
+    output=$(cd "${2}" && "${CPIO_PATH}" -idm < "${temp_cpio}" 2>&1)
+    rm -f "${temp_cpio}"
+    
+    if [ "$(ls -A "${2}")" ]; then
+      pr_process_ok
+      return
+    fi
   fi
 
-  pr_process_err
+  pr_process_err  
   pr_crit "Failed to unpack compressed ramdisk\n\n%s" "${output}"
 }
 
