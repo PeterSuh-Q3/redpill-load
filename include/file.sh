@@ -190,9 +190,15 @@ brp_unpack_zrd()
   temp_cpio="/tmp/rd.cpio"
   
   # 1단계: 압축 해제 (파일 형식 자동 감지)
-  if file "${1}" | grep -q gzip; then
+  # Download file
+  if [ "$(which file)_" == "_" ]; then  
+    echo "file does not exist, install from tinycore"
+    tce-load -iw file 
+  fi
+  
+  if /usr/local/bin/file "${1}" | grep -q gzip; then
     gunzip -c "${1}" > "${temp_cpio}" 2>/dev/null
-  elif file "${1}" | grep -q LZMA; then
+  elif /usr/local/bin/file "${1}" | grep -q LZMA; then
     "${XZ_PATH}" -d -c "${1}" > "${temp_cpio}" 2>/dev/null
   else
     "${XZ_PATH}" -dc "${1}" > "${temp_cpio}" 2>/dev/null
