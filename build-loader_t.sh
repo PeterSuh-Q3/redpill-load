@@ -355,6 +355,17 @@ fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
+# Track whether any extension provided a platform-specific "_amdgpu" override directory.
+# We detect this BEFORE the custom initramfs layer is packed/removed.
+BRP_HAS_EXT_AMDGPU_DIR=0
+shopt -s nullglob
+for _d in "${BRP_USER_DIR}"/extensions/*/*_amdgpu/; do
+  BRP_HAS_EXT_AMDGPU_DIR=1
+  break
+done
+shopt -u nullglob
+pr_process "Found *_amdgpu extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
+
 # Track whether any extension provided a platform-specific "_custom" override directory.
 # We detect this BEFORE the custom initramfs layer is packed/removed.
 BRP_HAS_EXT_CUSTOM_DIR=0
