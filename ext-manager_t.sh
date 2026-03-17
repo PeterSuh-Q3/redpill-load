@@ -953,33 +953,43 @@ __action__dump_exts()
     # 기본/커스텀 디렉터리 결정: 커스텀이 있으면 그것을 우선 사용
     local base_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
     local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
+    local amdgpu_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_amdgpu"
+    
     if [[ -d "${custom_dir}" ]]; then
-      platform_dir="${custom_dir}"
-      pr_dbg "Using custom platform dir %s for %s (platform %s)" \
-            "${platform_dir}" "${ext_id}" "${platform_id}"
+        platform_dir="${custom_dir}"
+        pr_dbg "Using custom platform dir %s for %s (platform %s)" \
+               "${platform_dir}" "${ext_id}" "${platform_id}"
+    elif [[ -d "${amdgpu_dir}" ]]; then
+        platform_dir="${amdgpu_dir}"
+        pr_dbg "Using amdgpu platform dir %s for %s (platform %s)" \
+               "${platform_dir}" "${ext_id}" "${platform_id}"
     else
-      platform_dir="${base_dir}"
+        platform_dir="${base_dir}"
     fi
-
+    
     dump_ext_di="${dump_dir}/${ext_id}"
     pr_dbg "Dumping platform %s extension %s from %s to %s" "${platform_id}" "${ext_id}" "${platform_dir}" "${dump_ext_di}"
-
+    
     platform_rcp_file=$(mrp_get_existing_recipe_file_path "${ext_id}" "${platform_id}")
     if [[ $? -ne 0 ]]; then
-      pr_crit "Failed to dump extension %s for platform %s as its recipe file cannot be retrieved. Isn't the extension misspelled or not supported on that platform?" \
-              "${ext_id}" "${platform_id}"
+        pr_crit "Failed to dump extension %s for platform %s as its recipe file cannot be retrieved. Isn't the extension misspelled or not supported on that platform?" \
+                "${ext_id}" "${platform_id}"
     fi
-
-    brp_cp_flat "${platform_dir}" "${dump_ext_di}" # theoretically this will suffice, but we can cleanup a bit
-
-    # custom_dir에서 가져온 경우, *_custom.json 파일이 있으면
-    # _custom 을 제거한 이름의 json 파일을 하나 더 복사 생성
-    for f in "${dump_ext_di}"/*_custom.json; do
-      [ -e "${f}" ] || continue   # 매칭 파일이 없을 때를 대비
-      new="${f%_custom.json}.json"
-      pr_dbg "Duplicating custom json %s to %s" "${f}" "${new}"
-      brp_cp_flat "${f}" "${new}"
+    
+    brp_cp_flat "${platform_dir}" "${dump_ext_di}"
+    
+    # _custom 또는 _amdgpu 디렉터리에서 가져온 경우,
+    # *_custom.json 또는 *_amdgpu.json 파일이 있으면
+    # suffix를 제거한 이름의 json 파일을 하나 더 복사 생성
+    for suffix in "_custom" "_amdgpu"; do
+        for f in "${dump_ext_di}"/*${suffix}.json; do
+            [ -e "${f}" ] || continue
+            new="${f%${suffix}.json}.json"
+            pr_dbg "Duplicating %s json %s to %s" "${suffix}" "${f}" "${new}"
+            brp_cp_flat "${f}" "${new}"
+        done
     done
+
 
     if [ "$FRKRNL" = "YES" ]; then
       sudo "${RM_PATH}" "${dump_ext_di}/${platform_id}.json" || true #this may safely fail (it shouldn't thou)
