@@ -409,7 +409,7 @@ else
   IFS="${BRP_OLD_IFS}"
   BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_CUST_ZIMG="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55"
+  BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55"
   "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
     || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   pr_process_ok
