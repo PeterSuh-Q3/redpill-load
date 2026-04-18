@@ -413,7 +413,7 @@ else
   "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
     || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   pr_process_ok
-
+  file "${BRP_ZLINUX_PATCHED_FILE}"
   $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-chk.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
 fi
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
