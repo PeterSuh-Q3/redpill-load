@@ -403,7 +403,7 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
 else
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-chk.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
 fi
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
