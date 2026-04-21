@@ -403,18 +403,7 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
 else
-  BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
-  BRP_OLD_IFS="${IFS}"
-  IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
-  IFS="${BRP_OLD_IFS}"
-  BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
-  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55"
-  "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
-    || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
-  pr_process_ok
-  file "${BRP_ZLINUX_PATCHED_FILE}"
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-chk.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
 fi
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
