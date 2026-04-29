@@ -649,6 +649,14 @@ fi
 brp_cp_flat "${BRP_TMP_GRUB_CONF}" "/tmp/grub.cfg"
 pr_process_ok
 
+# Create BIOS stub files on synoboot1 for RS18016xs+ (and similar models) updater validation.
+# The DSM updater calls access("bios.ROM", F_OK) and access("platform.ini", F_OK) on the boot
+# partition; without these files the firmware update step fails with error -21.
+pr_process "Creating BIOS stub files on synoboot1"
+touch "${BRP_OUT_P1}/bios.ROM"
+touch "${BRP_OUT_P1}/platform.ini"
+pr_process_ok
+
 ##### CLEANUP ##########################################################################################################
 pr_process "Cleaning up"
 #brp_detach_image "${BRP_OUTPUT_FILE}"
