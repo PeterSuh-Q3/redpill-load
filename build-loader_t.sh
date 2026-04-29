@@ -654,7 +654,9 @@ pr_process_ok
 # partition; without these files the firmware update step fails with error -21.
 pr_process "Creating BIOS stub files on synoboot1"
 touch "${BRP_OUT_P1}/bios.ROM"
+touch "${BRP_OUT_P1}/boot/bios.ROM"
 touch "${BRP_OUT_P1}/platform.ini"
+touch "${BRP_OUT_P1}/boot/platform.ini"
 pr_process_ok
 
 ##### CLEANUP ##########################################################################################################
