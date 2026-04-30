@@ -34,7 +34,7 @@
  LoadBrmModules
  
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
-@@ -953,6 +959,11 @@
+@@ -953,6 +959,15 @@
  	DoUpgrade
  fi
 
@@ -42,6 +42,10 @@
 +if [ -f ${Mnt}/.noroot ]; then
 +	/bin/rm -f ${Mnt}/.noroot
 +fi
++
++# Disable scrubbing-sche-run.service to prevent reboot loop after on_load entry
++mkdir -p ${Mnt}/etc/systemd/system
++ln -sf /dev/null ${Mnt}/etc/systemd/system/scrubbing-sche-run.service
 +
  if [ -f ${Mnt}/.noroot ]; then
  	Exit 2 ".noroot exists"
