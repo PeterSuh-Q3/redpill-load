@@ -34,3 +34,15 @@
  LoadBrmModules
  
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
+@@ -953,6 +959,11 @@
+ 	DoUpgrade
+ fi
+
++# Remove .noroot marker file if boot reached this point (upgrade completed or skipped normally)
++if [ -f ${Mnt}/.noroot ]; then
++	/bin/rm -f ${Mnt}/.noroot
++fi
++
+ if [ -f ${Mnt}/.noroot ]; then
+ 	Exit 2 ".noroot exists"
+ fi
