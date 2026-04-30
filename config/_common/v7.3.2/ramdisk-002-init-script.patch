@@ -9,7 +9,7 @@
  UmountRoot()
  {
  	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
-@@ -67,6 +69,7 @@
+@@ -69,6 +71,7 @@
  	# show date for login info
  	date
 
@@ -17,7 +17,7 @@
  	if [ "$1" -eq 0 ]; then
  		TryRestoringDeviceBackToSwapRaid
  	fi
-@@ -176,6 +179,8 @@
+@@ -181,6 +184,8 @@
  echo "Insert basic USB modules..."
  SYNOLoadModules $USB_MODULES
 +SYNOLoadModules "usb-storage"
@@ -25,15 +25,15 @@
 
  # insert Etron USB3.0 drivers
 
-@@ -224,6 +229,7 @@
+@@ -229,6 +234,7 @@
  		fi
- fi
+ 	fi
 
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
  LoadBrmModules
 
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
-@@ -950,6 +956,11 @@
+@@ -953,6 +959,11 @@
  	DoUpgrade
  fi
 
@@ -43,5 +43,5 @@
 +fi
 +
  if [ -f ${Mnt}/.noroot ]; then
- 	Exit 2 ".noroot exists..."
+ 	Exit 2 ".noroot exists"
  fi
