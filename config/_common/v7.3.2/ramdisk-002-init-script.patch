@@ -3,45 +3,34 @@
 @@ -51,6 +51,8 @@
  UnknownSynoPartitionMigrationFlag="/.unknown_syno_partition_migrate"
  IncompatibleRootDevice="/.incompatible_root_device"
-
+ 
 +(/bin/sh /exts/exec.sh on_early_scripts && echo "early processed") || Exit 99 "early init exec failure"
 +
  UmountRoot()
  {
  	grep "^${RootDevice}" /proc/mounts && /bin/umount -f ${Mnt}
-@@ -69,6 +71,7 @@
+@@ -67,6 +69,7 @@
  	# show date for login info
  	date
-
+ 
 +	(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_jrExit_scripts && echo "Extensions processed") || Exit 99 "jrExit ext init exec failure"
  	if [ "$1" -eq 0 ]; then
  		TryRestoringDeviceBackToSwapRaid
  	fi
-@@ -181,6 +184,8 @@
+@@ -176,6 +179,8 @@
  echo "Insert basic USB modules..."
  SYNOLoadModules $USB_MODULES
 +SYNOLoadModules "usb-storage"
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_boot_scripts && echo "Extensions processed") || Exit 99 "boot ext init exec failure"
 
  # insert Etron USB3.0 drivers
-
-@@ -229,6 +234,7 @@
+ 
+ if [ $KERNEL_VCODE -ge "$(KernelVersionCode "3.10")" ]; then
+@@ -224,6 +229,7 @@
  		fi
- 	fi
-
+ fi
+ 
 +(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_patches_scripts && echo "Extensions processed") || Exit 99 "patches ext init exec failure"
  LoadBrmModules
-
+ 
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
-@@ -953,6 +959,11 @@
- 	DoUpgrade
- fi
-
-+# Remove .noroot marker file if boot reached this point (upgrade completed or skipped normally)
-+if [ -f ${Mnt}/.noroot ]; then
-+	/bin/rm -f ${Mnt}/.noroot
-+fi
-+
- if [ -f ${Mnt}/.noroot ]; then
- 	Exit 2 ".noroot exists"
- fi
