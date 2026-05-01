@@ -34,32 +34,3 @@
  LoadBrmModules
  
  if [ "$KERNEL_VCODE" -ge "$(KernelVersionCode "5.10")" ]; then
-@@ -953,6 +959,28 @@
- 	DoUpgrade
- fi
-
-+# Remove .noroot marker file if boot reached this point (upgrade completed or skipped normally)
-+if [ -f ${Mnt}/.noroot ]; then
-+	/bin/rm -f ${Mnt}/.noroot
-+fi
-+
-+# Disable scrubbing-sche-run.service to prevent reboot loop after on_load entry
-+mkdir -p ${Mnt}/etc/systemd/system
-+ln -sf /dev/null ${Mnt}/etc/systemd/system/scrubbing-sche-run.service
-+
-+# Replace swap-on.sh with a no-op script to prevent reboot trigger on swap failure
-+# The original swap-on.sh touches /.noroot and calls reboot when swapon fails on emulated HW
-+for SWAP_SH in $(find ${Mnt} -name "swap-on.sh" -type f 2>/dev/null); do
-+	echo "#!/bin/sh" > "$SWAP_SH"
-+	echo "exit 0" >> "$SWAP_SH"
-+	/bin/chmod +x "$SWAP_SH"
-+done
-+
-+# Mask syno-swap-on service entirely to prevent any reboot trigger via OnFailure
-+ln -sf /dev/null ${Mnt}/etc/systemd/system/syno-swap-on.service
-+mkdir -p ${Mnt}/usr/lib/systemd/system
-+ln -sf /dev/null ${Mnt}/usr/lib/systemd/system/syno-swap-on.service.disabled
-+
- if [ -f ${Mnt}/.noroot ]; then
- 	Exit 2 ".noroot exists"
- fi
