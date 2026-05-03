@@ -1,9 +1,9 @@
 --- a/usr/sbin/init.post
 +++ b/usr/sbin/init.post
 @@ -23,6 +23,29 @@
-
+ 
  Mount "$(GetRootMountOpt)" "$(GetRootMountPath)" /tmpRoot
-
+ 
 +############################################################################################
 +SED_PATH='/tmpRoot/usr/bin/sed'
 +
@@ -27,7 +27,6 @@
 +(/bin/sh /exts/exec.sh on_os_load_scripts && echo "OS load extensions processed") || Exit 99 "rp ext post exec failure"
 +############################################################################################
 +
-
  Mkdir -p /tmpRoot/initrd
-
+ 
  Umount /proc >/dev/null 2>&1
