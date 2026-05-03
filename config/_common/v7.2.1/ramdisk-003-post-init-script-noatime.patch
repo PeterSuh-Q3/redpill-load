@@ -1,9 +1,9 @@
 --- a/usr/sbin/init.post
 +++ b/usr/sbin/init.post
 @@ -23,6 +23,29 @@
-
+ 
  Mount "$(GetRootMountOpt)" "$(GetRootMountPath)" /tmpRoot
-
+ 
 +############################################################################################
 +SED_PATH='/tmpRoot/usr/bin/sed'
 +
@@ -28,5 +28,5 @@
 +############################################################################################
 +
  Mkdir -p /tmpRoot/initrd
-
+ 
  Umount /proc >/dev/null 2>&1
