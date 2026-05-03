@@ -1,6 +1,6 @@
 --- a/usr/sbin/init.post
 +++ b/usr/sbin/init.post
-@@ -23,6 +23,29 @@
+@@ -24,6 +24,29 @@
  
  Mount "$(GetRootMountOpt)" "$(GetRootMountPath)" /tmpRoot
  
