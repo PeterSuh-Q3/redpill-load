@@ -42,7 +42,8 @@
     "maxlanport": "8",
     "netif_seq": "0 1 2 3 4 5 6 7",
     "buzzeroffen": "0xffff",
-    "maxdisks": "24"
+    "maxdisks": "24",
+    "supportsas": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
