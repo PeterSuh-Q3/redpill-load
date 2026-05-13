@@ -919,12 +919,12 @@ __action__update_platform_exts()
 
 __action__dump_exts()
 {
-  if [[ "$#" -lt 2 ]] || [[ "$#" -gt 3 ]]; then
-    pr_crit "\"%s _dump\" expected 2-3 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
+  if [[ "$#" -lt 4 ]] || [[ "$#" -gt 5 ]]; then
+    pr_crit "\"%s _dump\" expected 4-5 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
   fi
 
-  local platform_id="${1}"
-  local dump_dir="${2}"
+  local platform_id="${1}_${2}_${3}"
+  local dump_dir="${4}"
   pr_process "Dumping %s platform extensions to %s" "${platform_id}" "${dump_dir}"
 
   if ! mrp_validate_platform_id "${platform_id}"; then
@@ -938,12 +938,12 @@ __action__dump_exts()
   fi
 
   local -a extensions
-  if [[ -z "${3+0}" ]]; then # no extensions list passed - use all
+  if [[ -z "${5+0}" ]]; then # no extensions list passed - use all
     pr_dbg "No extensions list passed - getting all"
     mrp_get_all_extensions extensions
   else # passed list of extensions - split them (we don't need to verify if they exist - we will try to read them anyway)
     pr_dbg "Extensions list passed - splitting"
-    rpt_text_to_array ',' "${3}" extensions
+    rpt_text_to_array ',' "${5}" extensions
   fi
 
   local platform_dir;
@@ -957,7 +957,15 @@ __action__dump_exts()
   local kmod_counter;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
     ((ext_counter++))
-
+    if [[ "${ext_id}" == "all-modules" ]]; then
+        platform_id="${1}_${2}_${3}"
+    else    
+        if echo ${kver5platforms} | grep -qw ${1}; then
+            platform_id="${1}_${2}_${3}"
+        else
+            platform_id="${1}_${3}"
+        fi
+    fi  
     # 기본/커스텀 디렉터리 결정: 커스텀이 있으면 그것을 우선 사용
     local base_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
     local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
