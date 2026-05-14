@@ -113,13 +113,18 @@ BRP_KVER="$5"
 BRP_SYNOMODEL="$6"
 
 BPR_LOWER_PLATFORM=$(echo ${BRP_ORG_PLATFORM} | tr '[:upper:]' '[:lower:]')
-
-platkver="$(echo ${BPR_LOWER_PLATFORM}_${BRP_KVER} | sed 's/\.//g')"
-echo "platkver = ${platkver}"
+BRP_NKVER="$(echo ${BRP_KVER} | sed 's/\.//g')"
+echo "BRP_NKVER = ${BRP_NKVER}"
 
 BRP_REL_CONFIG_BASE="$PWD/config/${BPR_LOWER_PLATFORM}/${BRP_SW_VERSION}"
 BRP_REL_CONFIG_JSON="${BRP_REL_CONFIG_BASE}/config.json"
 BRP_PAT_MD5_JSON="$PWD/config/pats.json"
+
+BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
+BRP_OLD_IFS="${IFS}"
+IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
+IFS="${BRP_OLD_IFS}"
+BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
 
 ### Some config validation
 if [ "${BRP_LINUX_PATCH_METHOD}" == "direct" ]; then
@@ -235,16 +240,16 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
     fi
   done
   rpt_update_ext_indexes
-
+  
   if [[ -z "${RPT_BUILD_EXTS}" ]]; then
     pr_dbg "Updating & downloading all extensions for %s" "${BRP_REL_OS_ID}"
-    ( ./ext-manager.sh _update_platform_exts "${platkver}")
+    ( ./ext-manager.sh _update_platform_exts "${BPR_LOWER_PLATFORM}" "${_brp_dsm_mm1}${_brp_dsm_mm2}" "${BRP_NKVER}")
     if [[ $? -ne 0 ]]; then
       pr_crit "Failed to update all extensions for %s platform - see errors above" "${BRP_REL_OS_ID}"
     fi
   else
     pr_dbg "Updating & downloading selected extensions (%s) for %s" "${RPT_BUILD_EXTS}" "${BRP_REL_OS_ID}"
-    ( ./ext-manager.sh _update_platform_exts "${platkver}" "${RPT_BUILD_EXTS}")
+    ( ./ext-manager.sh _update_platform_exts "${BPR_LOWER_PLATFORM}" "${_brp_dsm_mm1}${_brp_dsm_mm2}" "${BRP_NKVER}" "${RPT_BUILD_EXTS}")
     if [[ $? -ne 0 ]]; then
       pr_crit "Failed to update extensions selected (%s) for %s platform - see errors above" \
               "${RPT_BUILD_EXTS}" "${BRP_REL_OS_ID}"
@@ -384,11 +389,6 @@ $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" 
 # If an extension "_custom" directory is present and the repo provides a custom kernel image,
 # use it for zImage. Otherwise, fall back to the patched zImage.
 if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
-  BRP_DSM_VER_FULL="${BRP_SW_VERSION%%-*}" # e.g. 7.2.1
-  BRP_OLD_IFS="${IFS}"
-  IFS='.' read -r _brp_dsm_mm1 _brp_dsm_mm2 _brp_dsm_rest <<< "${BRP_DSM_VER_FULL}"
-  IFS="${BRP_OLD_IFS}"
-  BRP_DSM_VER_MM="${_brp_dsm_mm1}.${_brp_dsm_mm2}"
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
 
@@ -550,16 +550,16 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   brp_mkdir "${RPT_IMG_EXTS_DIR}"
   if [[ -z "${RPT_BUILD_EXTS}" ]]; then
     pr_dbg "Dumping all extensions for %s to %s" "${BRP_REL_OS_ID}" "${RPT_IMG_EXTS_DIR}"
-    ( ./ext-manager.sh _dump_exts "${platkver}" "${RPT_IMG_EXTS_DIR}")
+    ( ./ext-manager.sh _dump_exts "${BPR_LOWER_PLATFORM}" "${_brp_dsm_mm1}${_brp_dsm_mm2}" "${BRP_NKVER}" "${RPT_IMG_EXTS_DIR}")
     if [[ $? -ne 0 ]]; then
       pr_crit "Failed to dump all extensions for %s platform to %s - see errors above" "${BRP_REL_OS_ID}" "${RPT_IMG_EXTS_DIR}"
     fi
   else
     pr_dbg "Dumping selected extensions (%s) for %s to %s" "${RPT_BUILD_EXTS}" "${BRP_REL_OS_ID}" "${RPT_IMG_EXTS_DIR}"
-    ( ./ext-manager.sh _dump_exts "${platkver}" "${RPT_IMG_EXTS_DIR}" "${RPT_BUILD_EXTS}")
+    ( ./ext-manager.sh _dump_exts "${BPR_LOWER_PLATFORM}" "${_brp_dsm_mm1}${_brp_dsm_mm2}" "${BRP_NKVER}" "${RPT_IMG_EXTS_DIR}" "${RPT_BUILD_EXTS}")
     if [[ $? -ne 0 ]]; then
       pr_crit "Failed to dump extensions selected (%s) for %s platform to %s - see errors above" \
-              "${RPT_BUILD_EXTS}" "${platkver}" "${RPT_IMG_EXTS_DIR}"
+              "${RPT_BUILD_EXTS}" "${BPR_LOWER_PLATFORM}" "${_brp_dsm_mm1}${_brp_dsm_mm2}" "${BRP_NKVER}" "${RPT_IMG_EXTS_DIR}"
     fi
   fi
   pr_process_ok
