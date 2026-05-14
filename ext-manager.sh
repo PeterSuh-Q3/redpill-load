@@ -21,6 +21,7 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 readonly BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 readonly MRP_SRC_NAME=${MRP_SRC_NAME:-$(basename "$0")}
 readonly RPT_EXTS_DIR=${RPT_EXTS_DIR:-"$PWD/custom/extensions"}
+readonly kver5platforms="epyc7002 v1000nk r1000nk geminilakenk"
 ########################################################################################################################
 
 ##### INCLUDES #########################################################################################################
@@ -776,27 +777,25 @@ __action_update()
 # Args: $1 platform id | $2 extensions ID list [optional]
 __action__update_platform_exts()
 {
-  if [[ "$#" -lt 1 ]] || [[ "$#" -gt 2 ]]; then
-    pr_crit "\"%s _update_platform_exts\" expected 1-2 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
+  if [[ "$#" -lt 1 ]] || [[ "$#" -gt 4 ]]; then
+    pr_crit "\"%s _update_platform_exts\" expected 1-4 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
   fi
 
-  pr_process "Updating %s platforms extensions" "${1}"
-
-  local platform_id="${1}"
+  pr_process "Updating %s platforms extensions" "${1} ${2} ${3}"
+  local platform_id="${1}_${2}_${3}"
   if ! mrp_validate_platform_id "${platform_id}"; then
     pr_err "Platform ID %s is not valid" "${platform_id}"
     return 1
   fi
 
   local -a extensions
-  if [[ -z "${2+0}" ]]; then # no extensions list passed - use all
+  if [[ -z "${4+0}" ]]; then # no extensions list passed - use all
     pr_dbg "No extensions list passed - getting all"
     mrp_get_all_extensions extensions
   else # passed list of extensions - split them (we don't need to verify if they exist - we will try to read them anyway)
     pr_dbg "Extensions list passed - splitting"
-    rpt_text_to_array ',' "${2}" extensions
+    rpt_text_to_array ',' "${4}" extensions
   fi
-
 
   local cur_recipe_file;
   local cur_recipe_sha256;
@@ -806,6 +805,15 @@ __action__update_platform_exts()
   local platform_dir;
   local hard_fail=0;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
+    if [[ "${ext_id}" == "all-modules" ]]; then
+        platform_id="${1}_${2}_${3}"
+    else    
+        if echo ${kver5platforms} | grep -qw ${1}; then
+            platform_id="${1}_${2}_${3}"
+        else
+            platform_id="${1}_${3}"
+        fi
+    fi  
     pr_dbg "Processing extension %s for %s platform" "${ext_id}" "${platform_id}"
     if ! mrp_has_extension "${ext_id}"; then
       pr_crit "Extension \"%s\" is not added/installed - did you misspell the name or forgot to do \"%s add <URL>\" first?" \
@@ -911,12 +919,12 @@ __action__update_platform_exts()
 
 __action__dump_exts()
 {
-  if [[ "$#" -lt 2 ]] || [[ "$#" -gt 3 ]]; then
-    pr_crit "\"%s _dump\" expected 2-3 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
+  if [[ "$#" -lt 4 ]] || [[ "$#" -gt 5 ]]; then
+    pr_crit "\"%s _dump\" expected 4-5 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
   fi
 
-  local platform_id="${1}"
-  local dump_dir="${2}"
+  local platform_id="${1}_${2}_${3}"
+  local dump_dir="${4}"
   pr_process "Dumping %s platform extensions to %s" "${platform_id}" "${dump_dir}"
 
   if ! mrp_validate_platform_id "${platform_id}"; then
@@ -930,12 +938,12 @@ __action__dump_exts()
   fi
 
   local -a extensions
-  if [[ -z "${3+0}" ]]; then # no extensions list passed - use all
+  if [[ -z "${5+0}" ]]; then # no extensions list passed - use all
     pr_dbg "No extensions list passed - getting all"
     mrp_get_all_extensions extensions
   else # passed list of extensions - split them (we don't need to verify if they exist - we will try to read them anyway)
     pr_dbg "Extensions list passed - splitting"
-    rpt_text_to_array ',' "${3}" extensions
+    rpt_text_to_array ',' "${5}" extensions
   fi
 
   local platform_dir;
@@ -949,7 +957,15 @@ __action__dump_exts()
   local kmod_counter;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
     ((ext_counter++))
-
+    if [[ "${ext_id}" == "all-modules" ]]; then
+        platform_id="${1}_${2}_${3}"
+    else    
+        if echo ${kver5platforms} | grep -qw ${1}; then
+            platform_id="${1}_${2}_${3}"
+        else
+            platform_id="${1}_${3}"
+        fi
+    fi  
     # 기본/커스텀 디렉터리 결정: 커스텀이 있으면 그것을 우선 사용
     local base_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}"
     local custom_dir="${RPT_EXTS_DIR}/${ext_id}/${platform_id}_custom"
