@@ -1,5 +1,5 @@
 {
-  "all-modules"           : "https://raw.githubusercontent.com/PeterSuh-Q3/arpl-modules/main/rpext-index.json",  
+  "all-modules"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
   "acovermissingbin"      : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acovermissingbin/rpext-index.json",  
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acpid/rpext-index.json",      
   "apppatch"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/apppatch/rpext-index.json",
