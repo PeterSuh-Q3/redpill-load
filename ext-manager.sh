@@ -805,7 +805,7 @@ __action__update_platform_exts()
   local platform_dir;
   local hard_fail=0;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
-    if [[ "${ext_id}" == "all-modules" ]]; then
+    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" ]]; then
         platform_id="${1}_${2}_${3}"
     else    
         if echo ${kver5platforms} | grep -qw ${1}; then
@@ -957,7 +957,7 @@ __action__dump_exts()
   local kmod_counter;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
     ((ext_counter++))
-    if [[ "${ext_id}" == "all-modules" ]]; then
+    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" ]]; then
         platform_id="${1}_${2}_${3}"
     else    
         if echo ${kver5platforms} | grep -qw ${1}; then
