@@ -364,7 +364,7 @@ fi
 # We detect this BEFORE the custom initramfs layer is packed/removed.
 BRP_HAS_EXT_ALL_DIR=0
 shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/all-modules/; do
+for _d in "${BRP_USER_DIR}"/extensions/*/all-modules/; do
   BRP_HAS_EXT_ALL_DIR=1
   break
 done
@@ -373,7 +373,7 @@ pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DI
 
 BRP_HAS_EXT_AMDGPU_DIR=0
 shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/amd-modules/; do
+for _d in "${BRP_USER_DIR}"/extensions/*/amd-modules/; do
   BRP_HAS_EXT_AMDGPU_DIR=1
   break
 done
@@ -384,7 +384,7 @@ pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU
 # We detect this BEFORE the custom initramfs layer is packed/removed.
 BRP_HAS_EXT_CUSTOM_DIR=0
 shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/custom-modules/; do
+for _d in "${BRP_USER_DIR}"/extensions/*/custom-modules/; do
   BRP_HAS_EXT_CUSTOM_DIR=1
   break
 done
