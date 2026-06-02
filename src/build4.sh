@@ -35,6 +35,7 @@ scripts/config --disable MODULE_SIG_ALL --disable MODULE_SIG_FORCE --disable MOD
 scripts/config --disable SYSTEM_TRUSTED_KEYS --disable SYSTEM_REVOCATION_KEYS
 scripts/config --disable DEBUG_INFO_BTF
 scripts/config --disable SYNO_RAMDISK_INTEGRITY_CHECK
+scripts/config --enable DEBUG_ATOMIC_SLEEP
 # ★ STACK_VALIDATION / UNWINDER_ORC 는 원본 synoconfig 그대로 유지 (비활성화 안 함)
 
 make olddefconfig 2>&1 | tail -3
