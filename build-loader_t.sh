@@ -393,6 +393,29 @@ fi
 BRP_EFFECTIVE_EXTS+=","
 pr_dbg "Effective extensions for kernel branch: %s" "${BRP_EFFECTIVE_EXTS}"
 
+# ---- DEBUG: dump every input that drives the kernel-image branch selection ----
+pr_process "[zImg-branch] ===== kernel image branch decision ====="
+pr_process "[zImg-branch] BRP_USER_DIR            = %s" "${BRP_USER_DIR}"
+pr_process "[zImg-branch] BRP_EXT_DIR             = %s" "${BRP_EXT_DIR}"
+pr_process "[zImg-branch] BPR_LOWER_PLATFORM      = '%s'" "${BPR_LOWER_PLATFORM}"
+pr_process "[zImg-branch] BRP_DSM_VER_MM          = '%s'" "${BRP_DSM_VER_MM}"
+pr_process "[zImg-branch] BRP_HAS_EXT_ALL_DIR     = %s" "${BRP_HAS_EXT_ALL_DIR}"
+pr_process "[zImg-branch] BRP_HAS_EXT_AMDGPU_DIR  = %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
+pr_process "[zImg-branch] BRP_HAS_EXT_CUSTOM_DIR  = %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+if [[ "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  pr_process "[zImg-branch] platform regex match    = YES (%s)" "${BPR_LOWER_PLATFORM}"
+else
+  pr_process "[zImg-branch] platform regex match    = NO  (%s)" "${BPR_LOWER_PLATFORM}"
+fi
+pr_process "[zImg-branch] expected gz filename     = bzImage-%s-%s-5.10.55.gz" "${BPR_LOWER_PLATFORM}" "${BRP_DSM_VER_MM}"
+pr_process "[zImg-branch] official gz full path    = %s" "${BRP_EXT_DIR}/official-zImage/bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+if [[ -f "${BRP_EXT_DIR}/official-zImage/bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz" ]]; then
+  pr_process "[zImg-branch] official gz exists?       = YES"
+else
+  pr_process "[zImg-branch] official gz exists?       = NO"
+fi
+pr_process "[zImg-branch] ============================================"
+
 # Branch selection for the final zImage:
 #   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
 #   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
@@ -400,10 +423,12 @@ pr_dbg "Effective extensions for kernel branch: %s" "${BRP_EFFECTIVE_EXTS}"
 #       Cannot be combined with custom-modules; the (1) custom path takes precedence.)
 #   3) default: repack the kpatch'd vmlinux
 if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  pr_process "[zImg-branch] >>> ENTER branch (1) custom-modules -> ext/custom-zImage"
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
 
   BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+  pr_process "[zImg-branch] custom gz path = %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
 
   if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_process "Using custom bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
@@ -413,24 +438,29 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
   elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
-elif [[ "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 \
+elif [[ ( "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 ) \
      && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  pr_process "[zImg-branch] >>> ENTER branch (2) all-modules/amd-modules -> ext/official-zImage"
   # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
   BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/official-zImage"
   BRP_OFF_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+  pr_process "[zImg-branch] official gz path = %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
 
   if [[ -f "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" ]]; then
     pr_process "Using official-zImage (Ivy-Bridge compat) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
     "${GZIP_PATH}" -dc "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
       || pr_crit "Failed to decompress %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
     pr_process_ok
+    pr_process "[zImg-branch] official zImage written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
   else
     pr_warn "Official kernel requested but missing: %s (falling back to patched zImage)" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
     $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
   fi
 else
+  pr_process "[zImg-branch] >>> ENTER branch (3) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
   $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
 fi
+pr_process "[zImg-branch] final zImage-patched = %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 ##### RAMDISK MODIFICATIONS ############################################################################################
