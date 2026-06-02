@@ -386,8 +386,12 @@ pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
 $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINUX_FILE}" "${BRP_CACHE_DIR}/vmlinux"
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
-# If an extension "_custom" directory is present and the repo provides a custom kernel image,
-# use it for zImage. Otherwise, fall back to the patched zImage.
+# Branch selection for the final zImage:
+#   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
+#   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
+#      (Ivy-Bridge-compatible kernel built from GPL source with KCFLAGS=-march=ivybridge.
+#       Cannot be combined with custom-modules; the (1) custom path takes precedence.)
+#   3) default: repack the kpatch'd vmlinux
 if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
@@ -402,8 +406,23 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
   elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
+elif [[ ( ",${RPT_BUILD_EXTS}," == *",all-modules,"* || ",${RPT_BUILD_EXTS}," == *",amd-modules,"* ) \
+     && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
+  BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/official-zImage"
+  BRP_OFF_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+
+  if [[ -f "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" ]]; then
+    pr_process "Using official-zImage (Ivy-Bridge compat) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
+    "${GZIP_PATH}" -dc "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
+      || pr_crit "Failed to decompress %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+    pr_process_ok
+  else
+    pr_warn "Official kernel requested but missing: %s (falling back to patched zImage)" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+    $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+  fi
 else
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
 fi
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
