@@ -362,25 +362,34 @@ fi
 
 # Track whether any extension provided a platform-specific "_amdgpu" override directory.
 # We detect this BEFORE the custom initramfs layer is packed/removed.
+BRP_HAS_EXT_ALL_DIR=0
+shopt -s nullglob
+for _d in "${BRP_USER_DIR}"/extensions/all-modules/; do
+  BRP_HAS_EXT_ALL_DIR=1
+  break
+done
+shopt -u nullglob
+pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DIR}"
+
 BRP_HAS_EXT_AMDGPU_DIR=0
 shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/*/*_amdgpu/; do
+for _d in "${BRP_USER_DIR}"/extensions/amd-modules/; do
   BRP_HAS_EXT_AMDGPU_DIR=1
   break
 done
 shopt -u nullglob
-pr_process "Found *_amdgpu extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
+pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
 
 # Track whether any extension provided a platform-specific "_custom" override directory.
 # We detect this BEFORE the custom initramfs layer is packed/removed.
 BRP_HAS_EXT_CUSTOM_DIR=0
 shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/*/*_custom/; do
+for _d in "${BRP_USER_DIR}"/extensions/custom-modules/; do
   BRP_HAS_EXT_CUSTOM_DIR=1
   break
 done
 shopt -u nullglob
-pr_process "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+pr_process "Found custom-modules extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
 
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
@@ -403,12 +412,6 @@ fi
 BRP_EFFECTIVE_EXTS+=","
 pr_dbg "Effective extensions for kernel branch: %s" "${BRP_EFFECTIVE_EXTS}"
 
-BRP_USE_OFFICIAL_ZIMG=0
-if [[ "${BRP_EFFECTIVE_EXTS}" == *",all-modules,"* || "${BRP_EFFECTIVE_EXTS}" == *",amd-modules,"* ]]; then
-  BRP_USE_OFFICIAL_ZIMG=1
-fi
-pr_process "all-modules/amd-modules active? %s" "${BRP_USE_OFFICIAL_ZIMG}"
-
 # Branch selection for the final zImage:
 #   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
 #   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
@@ -429,7 +432,7 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
   elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
-elif [[ "${BRP_USE_OFFICIAL_ZIMG}" -eq 1 \
+elif [[ "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 \
      && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
   # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
   BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/official-zImage"
