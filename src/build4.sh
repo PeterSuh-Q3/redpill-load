@@ -35,8 +35,102 @@ scripts/config --disable MODULE_SIG_ALL --disable MODULE_SIG_FORCE --disable MOD
 scripts/config --disable SYSTEM_TRUSTED_KEYS --disable SYSTEM_REVOCATION_KEYS
 scripts/config --disable DEBUG_INFO_BTF
 scripts/config --disable SYNO_RAMDISK_INTEGRITY_CHECK
-scripts/config --enable DEBUG_ATOMIC_SLEEP
+# DEBUG_ATOMIC_SLEEP=n 유지 (task_struct 레이아웃 보존 — 기존 모듈 오프셋 호환)
+# 대신 __might_sleep/__might_fault 를 소스 패치로 무조건 export
 # ★ STACK_VALIDATION / UNWINDER_ORC 는 원본 synoconfig 그대로 유지 (비활성화 안 함)
+
+# __might_sleep / __might_fault 무조건 export 패치
+# DEBUG_ATOMIC_SLEEP=n 일 때 kernel.h 에서 static inline 빈 함수로 정의됨
+# → static inline 은 EXPORT_SYMBOL 불가이므로 kernel.h 패치로 extern 선언으로 전환하고
+#   kernel/sched/might-sleep-export.c 별도 파일로 구현체+export 추가
+python3 - <<'PYEOF'
+marker = '/* EXPORT_ALWAYS patch */'
+
+# 1) include/linux/kernel.h 패치
+#    static inline void __might_sleep / ___might_sleep 를 extern 선언으로 교체
+import re
+path = 'include/linux/kernel.h'
+src = open(path).read()
+if marker not in src:
+    # DEBUG_ATOMIC_SLEEP=n 분기의 static inline stub 을 extern 선언으로 교체
+    old = (
+        "  static inline void ___might_sleep(const char *file, int line,\n"
+        "\t\t\t\t   int preempt_offset) { }\n"
+        "  static inline void __might_sleep(const char *file, int line,\n"
+        "\t\t\t\t   int preempt_offset) { }\n"
+    )
+    new = (
+        "  /* EXPORT_ALWAYS patch */\n"
+        "  void ___might_sleep(const char *file, int line, int preempt_offset);\n"
+        "  void __might_sleep(const char *file, int line, int preempt_offset);\n"
+    )
+    if old in src:
+        open(path, 'w').write(src.replace(old, new))
+        print("Patched include/linux/kernel.h (__might_sleep)")
+    else:
+        print("WARNING: kernel.h pattern not found — manual check needed")
+else:
+    print("include/linux/kernel.h already patched")
+
+# 2) mm/memory.c 의 static inline __might_fault 도 동일하게
+path2 = 'include/linux/kernel.h'  # __might_fault 는 kernel.h 에도 있는지 확인
+src2 = open(path2).read()
+# __might_fault 는 DEBUG_ATOMIC_SLEEP=n 분기에 static inline 으로 별도 있을수도 있음
+# → 이미 non-inline extern 선언이면 그냥 EXPORT_SYMBOL 만 추가하면 됨
+# mm/memory.c 에 EXPORT_SYMBOL 추가
+path3 = 'mm/memory.c'
+src3 = open(path3).read()
+if marker not in src3:
+    # 기존 __might_fault 함수 끝에 EXPORT_SYMBOL 붙이기
+    old3 = 'EXPORT_SYMBOL(__might_fault);'
+    if old3 in src3:
+        print("mm/memory.c __might_fault already exported")
+    else:
+        # 함수 정의 찾아서 뒤에 export 추가
+        src3_new = src3.replace(
+            'void __might_fault(const char *file, int line)\n{',
+            '/* EXPORT_ALWAYS patch */\nvoid __might_fault(const char *file, int line)\n{'
+        )
+        # EXPORT_SYMBOL 삽입 위치: #endif /* CONFIG_DEBUG_ATOMIC_SLEEP */ 직전
+        src3_new = re.sub(
+            r'(void __might_fault\(.*?\)\s*\{[^}]*\})',
+            r'\1\nEXPORT_SYMBOL(__might_fault);',
+            src3_new, count=1, flags=re.DOTALL
+        )
+        open(path3, 'w').write(src3_new)
+        print("Patched mm/memory.c (__might_fault export)")
+else:
+    print("mm/memory.c already patched")
+
+# 3) kernel/sched/might-sleep-export.c 생성 — 구현체 + EXPORT_SYMBOL
+path4 = 'kernel/sched/might-sleep-export.c'
+import os
+if not os.path.exists(path4):
+    content = """\
+// SPDX-License-Identifier: GPL-2.0
+/* Unconditional export of __might_sleep for out-of-tree modules */
+#include <linux/export.h>
+#include <linux/kernel.h>
+
+#ifndef CONFIG_DEBUG_ATOMIC_SLEEP
+void __might_sleep(const char *file, int line, int preempt_offset) { }
+EXPORT_SYMBOL(__might_sleep);
+void ___might_sleep(const char *file, int line, int preempt_offset) { }
+EXPORT_SYMBOL(___might_sleep);
+#endif
+"""
+    open(path4, 'w').write(content)
+    print("Created kernel/sched/might-sleep-export.c")
+
+    # Makefile 에 등록
+    mf = 'kernel/sched/Makefile'
+    mfsrc = open(mf).read()
+    if 'might-sleep-export' not in mfsrc:
+        open(mf, 'a').write('\nobj-y += might-sleep-export.o\n')
+        print("Registered in kernel/sched/Makefile")
+else:
+    print("might-sleep-export.c already exists")
+PYEOF
 
 make olddefconfig 2>&1 | tail -3
 
@@ -82,8 +176,8 @@ echo ""
 echo "=== __might_sleep export 여부 확인 ==="
 /opt/epyc7002/bin/x86_64-pc-linux-gnu-nm vmlinux 2>/dev/null | grep -E " [TtRrDd] (__might_sleep|__might_fault|___might_sleep)" | head -5
 
-cp vmlinux /work/vmlinux-ivybridge-v2
-cp arch/x86/boot/bzImage /work/bzImage-ivybridge-v2
-[ -f Module.symvers ] && cp Module.symvers /work/Module.symvers-ivybridge-v2 || echo "(Module.symvers not found — skip copy)"
-cp System.map /work/System.map-ivybridge-v2
-ls -la /work/*-ivybridge-v2
+cp vmlinux /work/vmlinux-ivybridge-v3
+cp arch/x86/boot/bzImage /work/bzImage-ivybridge-v3
+[ -f Module.symvers ] && cp Module.symvers /work/Module.symvers-ivybridge-v3 || echo "(Module.symvers not found — skip copy)"
+cp System.map /work/System.map-ivybridge-v3
+ls -la /work/*-ivybridge-v3
