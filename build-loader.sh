@@ -360,39 +360,52 @@ fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
-# Track whether any extension provided a platform-specific "_amdgpu" override directory.
-# We detect this BEFORE the custom initramfs layer is packed/removed.
-BRP_HAS_EXT_AMDGPU_DIR=0
-shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/*/*_amdgpu/; do
-  BRP_HAS_EXT_AMDGPU_DIR=1
-  break
-done
-shopt -u nullglob
-pr_process "Found *_amdgpu extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
+BRP_HAS_EXT_ALL_DIR=0
+[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=0
+pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DIR}"
 
-# Track whether any extension provided a platform-specific "_custom" override directory.
-# We detect this BEFORE the custom initramfs layer is packed/removed.
+BRP_HAS_EXT_AMDGPU_DIR=0
+[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=0
+pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
+
 BRP_HAS_EXT_CUSTOM_DIR=0
-shopt -s nullglob
-for _d in "${BRP_USER_DIR}"/extensions/*/*_custom/; do
-  BRP_HAS_EXT_CUSTOM_DIR=1
-  break
-done
-shopt -u nullglob
-pr_process "Found *_custom extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+[ -d "${BRP_USER_DIR}/extensions/custom-modules" ] && BRP_HAS_EXT_CUSTOM_DIR=1
+pr_process "Found custom-modules extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
 
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
 $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINUX_FILE}" "${BRP_CACHE_DIR}/vmlinux"
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
-# If an extension "_custom" directory is present and the repo provides a custom kernel image,
-# use it for zImage. Otherwise, fall back to the patched zImage.
+# Resolve the *effective* extension list. RPT_BUILD_EXTS is empty when the user
+# did not explicitly whitelist extensions, which means "all bundled extensions"
+# (see the `-z RPT_BUILD_EXTS` handling around extension update/dump). In that
+# case all-modules/amd-modules are still active via the bundled list, so an empty
+# RPT_BUILD_EXTS must be expanded to the bundled IDs before matching.
+BRP_EFFECTIVE_EXTS=""
+if [[ -z "${RPT_BUILD_EXTS}" ]]; then
+  # empty == all bundled extensions
+  for _eid in ${RPT_BUNDLED_EXTS_IDS[@]+"${RPT_BUNDLED_EXTS_IDS[@]}"}; do
+    BRP_EFFECTIVE_EXTS+=",${_eid}"
+  done
+else
+  BRP_EFFECTIVE_EXTS=",${RPT_BUILD_EXTS}"
+fi
+BRP_EFFECTIVE_EXTS+=","
+pr_dbg "Effective extensions for kernel branch: %s" "${BRP_EFFECTIVE_EXTS}"
+
+# Branch selection for the final zImage:
+#   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
+#   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
+#      (Ivy-Bridge-compatible kernel built from GPL source with KCFLAGS=-march=ivybridge.
+#       Cannot be combined with custom-modules; the (1) custom path takes precedence.)
+#   3) default: repack the kpatch'd vmlinux
 if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  pr_process "[zImg-branch] >>> ENTER branch (1) custom-modules -> ext/custom-zImage"
   BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_ZIMG_GZ=""
 
   BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+  pr_process "[zImg-branch] custom gz path = %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
 
   if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_process "Using custom bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
@@ -402,9 +415,29 @@ if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7
   elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
     pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
   fi
+elif [[ ( "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 ) \
+     && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
+  pr_process "[zImg-branch] >>> ENTER branch (2) all-modules/amd-modules -> ext/official-zImage"
+  # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
+  BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/official-zImage"
+  BRP_OFF_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+  pr_process "[zImg-branch] official gz path = %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+
+  if [[ -f "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" ]]; then
+    pr_process "Using official-zImage (Ivy-Bridge compat) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
+    "${GZIP_PATH}" -dc "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
+      || pr_crit "Failed to decompress %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+    pr_process_ok
+    pr_process "[zImg-branch] official zImage written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
+  else
+    pr_warn "Official kernel requested but missing: %s (falling back to patched zImage)" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+    $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+  fi
 else
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"  
+  pr_process "[zImg-branch] >>> ENTER branch (3) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
 fi
+pr_process "[zImg-branch] final zImage-patched = %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
 rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 ##### RAMDISK MODIFICATIONS ############################################################################################
