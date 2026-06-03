@@ -127,20 +127,29 @@ def decode(buf):
         (2,0,0xF7):"BEXTR", (2,0,0xF5):"BZHI",
         (2,2,0xF5):"PEXT",  (2,3,0xF5):"PDEP",
         (2,3,0xF6):"MULX",
-        (3,2,0xF0):"RORX",
+        (3,3,0xF0):"RORX",  # F2 prefix = pp=3 (not pp=2)
     }
     mnem = BMI2.get((mmap, pp, op))
     if mnem:
         mod, reg_r, rm_r, mlen, is_mem, mem_mod, mem_disp = _parse_modrm(buf, 4, B)
         reg_r |= (R<<3)
         length = 4 + mlen
-        if mnem == "RORX": length += 1   # imm8
-        # SHLX/SHRX/SARX: dst=reg, src=rm, count=vvvv
+        if mnem == "RORX":
+            imm8 = buf[4 + mlen]
+            length += 1
+            return dict(mnem="RORX", W=W, dst=reg_r,
+                        src_is_mem=is_mem, src=rm_r, imm8=imm8,
+                        mem_mod=mem_mod, mem_disp=mem_disp, length=length)
         if mnem in ("SHLX","SHRX","SARX"):
             return dict(mnem=mnem, W=W, dst=reg_r,
                         src_is_mem=is_mem, src=rm_r, count=vvvv,
                         mem_mod=mem_mod, mem_disp=mem_disp, length=length)
-        # Others: skip (complex semantics, rare in early boot)
+        if mnem == "MULX":
+            # dst_hi=vvvv, dst_lo=reg, src=rm, implicit src2=RDX
+            return dict(mnem="MULX", W=W, dst_hi=vvvv, dst_lo=reg_r,
+                        src_is_mem=is_mem, src=rm_r,
+                        mem_mod=mem_mod, mem_disp=mem_disp, length=length)
+        # BZHI/PEXT/PDEP/BEXTR: skip (no early-boot occurrence, handled by bmi2_emul.ko)
         return dict(mnem=mnem, W=W, length=length, _skip=True)
 
     # ---- BMI1 ANDN (map=2, pp=0, op=F2) ----
@@ -206,6 +215,88 @@ def make_trampoline(info):
             code += _load_src(dst, info)
             code += shift_cl(mnem, dst, W)
             code += pop_r(1)
+        code += b"\xC3"
+        return bytes(code)
+
+    # ---- RORX: dst = ROR(src, imm8)  (no flags) ----
+    if mnem == "RORX":
+        dst = info["dst"]; imm8 = info["imm8"] & 0xFF
+        code = bytearray()
+        code += _load_src(dst, info)   # dst = src
+        # ROR dst, imm8
+        if W:
+            code += bytes([0x48|(dst>=8), 0xC1, 0xC8|(dst&7), imm8])
+        elif dst >= 8:
+            code += bytes([0x41, 0xC1, 0xC8|(dst&7), imm8])
+        else:
+            code += bytes([0xC1, 0xC8|dst, imm8])
+        code += b"\xC3"
+        return bytes(code)
+
+    # ---- MULX: (dst_hi:dst_lo) = RDX * src  (no flags, RDX unchanged) ----
+    # Use x86-64 red zone ([rsp-8]/[rsp-16]) to save rax/rdx without touching RSP.
+    # Only restore rax/rdx if they are NOT used as output destinations.
+    if mnem == "MULX":
+        W = info["W"]; dst_hi = info["dst_hi"]; dst_lo = info["dst_lo"]
+        RAX = 0; RDX = 2
+
+        def mul_src(info, W):
+            """Emit MUL r/m (F7 /4) encoding."""
+            if not info["src_is_mem"]:
+                s = info["src"]
+                if W:   return bytes([0x48|(s>=8), 0xF7, 0xE0|(s&7)])
+                elif s>=8: return bytes([0x41, 0xF7, 0xE0|(s&7)])
+                else:   return bytes([0xF7, 0xE0|s])
+            else:
+                base=info["src"]; mod=info["mem_mod"]; disp=info["mem_disp"]
+                rex=(0x48 if W else 0x40)|(base>=8)
+                modrm=(mod<<6)|(4<<3)|(base&7)
+                b2=bytearray()
+                if rex!=0x40 or W: b2.append(rex)
+                b2.append(0xF7)
+                if (base&7)==4: b2.append(modrm); b2.append(0x24)
+                else: b2.append(modrm)
+                if   mod==1: b2.append(disp&0xFF)
+                elif mod==2: b2+=struct.pack("<i",disp)
+                elif mod==0 and (base&7)==5: b2+=struct.pack("<i",disp)
+                return bytes(b2)
+
+        def redzone_save(reg, slot, W):
+            """MOV [rsp+slot], reg  (slot is negative, e.g. -8)"""
+            disp8 = slot & 0xFF
+            if W:   return bytes([0x48|(reg>=8), 0x89, 0x44|(reg&7)<<3^(reg&7)<<3, 0x24, disp8])
+            else:   return bytes([0x89, 0x44|(reg&7)<<3^(reg&7)<<3, 0x24, disp8])
+
+        def redzone_load(reg, slot, W):
+            """MOV reg, [rsp+slot]"""
+            disp8 = slot & 0xFF
+            if W:   return bytes([0x48|(reg>=8), 0x8B, 0x44|(reg&7)<<3^(reg&7)<<3, 0x24, disp8])
+            else:   return bytes([0x8B, 0x44|(reg&7)<<3^(reg&7)<<3, 0x24, disp8])
+
+        # Simpler red zone encoding (fixed for rax=0 and rdx=2)
+        if W:
+            SAVE_RAX  = bytes([0x48, 0x89, 0x44, 0x24, 0xF8])  # mov [rsp-8],  rax
+            SAVE_RDX  = bytes([0x48, 0x89, 0x54, 0x24, 0xF0])  # mov [rsp-16], rdx
+            LOAD_RAX  = bytes([0x48, 0x8B, 0x44, 0x24, 0xF8])  # mov rax, [rsp-8]
+            LOAD_RDX  = bytes([0x48, 0x8B, 0x54, 0x24, 0xF0])  # mov rdx, [rsp-16]
+        else:
+            SAVE_RAX  = bytes([0x89, 0x44, 0x24, 0xF8])
+            SAVE_RDX  = bytes([0x89, 0x54, 0x24, 0xF0])
+            LOAD_RAX  = bytes([0x8B, 0x44, 0x24, 0xF8])
+            LOAD_RDX  = bytes([0x8B, 0x54, 0x24, 0xF0])
+
+        code = bytearray()
+        code += SAVE_RAX                   # save orig rax
+        code += SAVE_RDX                   # save orig rdx
+        code += mov_rr(RAX, RDX, W)        # rax = orig RDX (multiplier)
+        code += mul_src(info, W)           # rdx:rax = src * orig_RDX
+        code += mov_rr(dst_lo, RAX, W)     # dst_lo = low  (mov rr with src=rax)
+        code += mov_rr(dst_hi, RDX, W)     # dst_hi = high (mov rr with src=rdx)
+        # Restore rax/rdx only if not overwritten by dst
+        if dst_lo != RAX and dst_hi != RAX:
+            code += LOAD_RAX
+        if dst_lo != RDX and dst_hi != RDX:
+            code += LOAD_RDX
         code += b"\xC3"
         return bytes(code)
 
