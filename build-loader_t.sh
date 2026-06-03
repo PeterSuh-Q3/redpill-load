@@ -361,11 +361,11 @@ fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
 BRP_HAS_EXT_ALL_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=1
+[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=0
 pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DIR}"
 
 BRP_HAS_EXT_AMDGPU_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=1
+[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=0
 pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
 
 BRP_HAS_EXT_CUSTOM_DIR=0
