@@ -393,29 +393,6 @@ fi
 BRP_EFFECTIVE_EXTS+=","
 pr_dbg "Effective extensions for kernel branch: %s" "${BRP_EFFECTIVE_EXTS}"
 
-# ---- DEBUG: dump every input that drives the kernel-image branch selection ----
-pr_process "[zImg-branch] ===== kernel image branch decision ====="
-pr_process "[zImg-branch] BRP_USER_DIR            = %s" "${BRP_USER_DIR}"
-pr_process "[zImg-branch] BRP_EXT_DIR             = %s" "${BRP_EXT_DIR}"
-pr_process "[zImg-branch] BPR_LOWER_PLATFORM      = '%s'" "${BPR_LOWER_PLATFORM}"
-pr_process "[zImg-branch] BRP_DSM_VER_MM          = '%s'" "${BRP_DSM_VER_MM}"
-pr_process "[zImg-branch] BRP_HAS_EXT_ALL_DIR     = %s" "${BRP_HAS_EXT_ALL_DIR}"
-pr_process "[zImg-branch] BRP_HAS_EXT_AMDGPU_DIR  = %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
-pr_process "[zImg-branch] BRP_HAS_EXT_CUSTOM_DIR  = %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
-if [[ "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
-  pr_process "[zImg-branch] platform regex match    = YES (%s)" "${BPR_LOWER_PLATFORM}"
-else
-  pr_process "[zImg-branch] platform regex match    = NO  (%s)" "${BPR_LOWER_PLATFORM}"
-fi
-pr_process "[zImg-branch] expected gz filename     = bzImage-%s-%s-5.10.55.gz" "${BPR_LOWER_PLATFORM}" "${BRP_DSM_VER_MM}"
-pr_process "[zImg-branch] official gz full path    = %s" "${BRP_EXT_DIR}/official-zImage/bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
-if [[ -f "${BRP_EXT_DIR}/official-zImage/bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz" ]]; then
-  pr_process "[zImg-branch] official gz exists?       = YES"
-else
-  pr_process "[zImg-branch] official gz exists?       = NO"
-fi
-pr_process "[zImg-branch] ============================================"
-
 # Branch selection for the final zImage:
 #   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
 #   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
