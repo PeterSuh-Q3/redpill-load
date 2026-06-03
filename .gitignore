@@ -12,3 +12,7 @@ ext/rp-lkm/
 !ext/rp-lkm/.gitkeep
 custom/
 !custom/.gitkeep
+
+# Private — backed up to mshell-modules
+src/
+ext/official-zImage/
