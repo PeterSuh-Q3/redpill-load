@@ -72,39 +72,36 @@ if marker not in src:
 else:
     print("include/linux/kernel.h already patched")
 
-# 2) mm/memory.c 의 static inline __might_fault 도 동일하게
-path2 = 'include/linux/kernel.h'  # __might_fault 는 kernel.h 에도 있는지 확인
-src2 = open(path2).read()
-# __might_fault 는 DEBUG_ATOMIC_SLEEP=n 분기에 static inline 으로 별도 있을수도 있음
-# → 이미 non-inline extern 선언이면 그냥 EXPORT_SYMBOL 만 추가하면 됨
-# mm/memory.c 에 EXPORT_SYMBOL 추가
-path3 = 'mm/memory.c'
-src3 = open(path3).read()
-if marker not in src3:
-    # 기존 __might_fault 함수 끝에 EXPORT_SYMBOL 붙이기
-    old3 = 'EXPORT_SYMBOL(__might_fault);'
-    if old3 in src3:
-        print("mm/memory.c __might_fault already exported")
-    else:
-        # 함수 정의 찾아서 뒤에 export 추가
-        src3_new = src3.replace(
-            'void __might_fault(const char *file, int line)\n{',
-            '/* EXPORT_ALWAYS patch */\nvoid __might_fault(const char *file, int line)\n{'
-        )
-        # EXPORT_SYMBOL 삽입 위치: #endif /* CONFIG_DEBUG_ATOMIC_SLEEP */ 직전
-        src3_new = re.sub(
-            r'(void __might_fault\(.*?\)\s*\{[^}]*\})',
-            r'\1\nEXPORT_SYMBOL(__might_fault);',
-            src3_new, count=1, flags=re.DOTALL
-        )
-        open(path3, 'w').write(src3_new)
-        print("Patched mm/memory.c (__might_fault export)")
-else:
-    print("mm/memory.c already patched")
-
-# 3) kernel/sched/might-sleep-export.c 생성 — 구현체 + EXPORT_SYMBOL
-path4 = 'kernel/sched/might-sleep-export.c'
+# 2) mm/might-fault-export.c 생성 — __might_fault 무조건 export
+# mm/memory.c 의 __might_fault 는 CONFIG_PROVE_LOCKING||CONFIG_DEBUG_ATOMIC_SLEEP 조건부
+# → 둘 다 n 이므로 함수 자체가 컴파일 제외됨 → 별도 파일로 구현+export
 import os
+path_mf = 'mm/might-fault-export.c'
+if not os.path.exists(path_mf):
+    content_mf = """\
+// SPDX-License-Identifier: GPL-2.0
+/* Unconditional export of __might_fault for out-of-tree modules */
+#include <linux/export.h>
+#include <linux/uaccess.h>
+#include <linux/sched.h>
+
+#if !defined(CONFIG_PROVE_LOCKING) && !defined(CONFIG_DEBUG_ATOMIC_SLEEP)
+void __might_fault(const char *file, int line) { }
+EXPORT_SYMBOL(__might_fault);
+#endif
+"""
+    open(path_mf, 'w').write(content_mf)
+    # mm/Makefile 에 등록
+    mfmk = 'mm/Makefile'
+    mfmksrc = open(mfmk).read()
+    if 'might-fault-export' not in mfmksrc:
+        open(mfmk, 'a').write('\nobj-y += might-fault-export.o\n')
+        print("Created mm/might-fault-export.c + registered in mm/Makefile")
+else:
+    print("mm/might-fault-export.c already exists")
+
+# 3) kernel/sched/might-sleep-export.c 생성 — __might_sleep 무조건 export
+path4 = 'kernel/sched/might-sleep-export.c'
 if not os.path.exists(path4):
     content = """\
 // SPDX-License-Identifier: GPL-2.0
