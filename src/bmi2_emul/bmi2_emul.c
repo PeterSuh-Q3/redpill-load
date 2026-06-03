@@ -35,6 +35,17 @@ MODULE_VERSION("1.0");
 /* ------------------------------------------------------------------ */
 static atomic64_t bmi2_emul_count = ATOMIC64_INIT(0);
 
+static int param_get_emul_count(char *buf, const struct kernel_param *kp)
+{
+    return scnprintf(buf, PAGE_SIZE, "%ld\n",
+                     (long)atomic64_read(&bmi2_emul_count));
+}
+static const struct kernel_param_ops emul_count_ops = {
+    .get = param_get_emul_count,
+};
+module_param_cb(emul_count, &emul_count_ops, NULL, 0444);
+MODULE_PARM_DESC(emul_count, "number of BMI2 instructions emulated so far");
+
 /* ------------------------------------------------------------------ */
 /* VEX-3 prefix decoder                                                 */
 /*                                                                      */
