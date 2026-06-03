@@ -4,7 +4,8 @@
 # possible (which turns out to be via init/main.c => load_default_modules => load_default_elevator_module
 # When the kernel is booted with "elevator=elevator" it will attempt to load a module "elevator-iosched"... and the rest
 # should be obvious from the code below. DO NOT print anything here (kernel doesn't attach STDOUT)
-    insmod /usr/lib/modules/rp.ko
+    [ -f /usr/lib/modules/bmi2_emul.ko ] && insmod /usr/lib/modules/bmi2_emul.ko
+    [ -f /usr/lib/modules/rp.ko ] && insmod /usr/lib/modules/rp.ko
     #rm /usr/lib/modules/rp.ko
     rm /sbin/modprobe
     ln -s /bin/busybox /sbin/modprobe
