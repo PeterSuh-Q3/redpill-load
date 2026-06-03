@@ -488,9 +488,116 @@ for m in hits:
     stats[info["mnem"]] += 1
     ok += 1
 
+# ---------------------------------------------------------------------------
+# Non-VEX Haswell/Broadwell+ patches
+# ---------------------------------------------------------------------------
+
+def bswap_r(r, W):
+    """BSWAP r"""
+    if W:   return bytes([0x48|(r>=8), 0x0F, 0xC8|(r&7)])
+    elif r>=8: return bytes([0x41, 0x0F, 0xC8|(r&7)])
+    else:      return bytes([0x0F, 0xC8|r])
+
+def decode_movbe_store(data, off):
+    """Decode [REX] 0F 38 F1 ModRM [SIB] [disp]
+    MOVBE [mem], reg → store bswap(reg) to memory.
+    Returns (reg, base, mod, disp, W, total_len) or None.
+    """
+    i = off; W = 0; rex_r = 0; rex_b = 0
+    b = data[i]
+    if 0x40 <= b <= 0x4F:   # REX prefix
+        W = (b>>3)&1; rex_r = (b>>2)&1; rex_b = b&1
+        i += 1; b = data[i]
+    if b == 0x66:            # operand-size prefix (16-bit) — skip for now
+        return None
+    if data[i]!=0x0F or data[i+1]!=0x38 or data[i+2]!=0xF1:
+        return None
+    i += 3
+    modrm = data[i]; mod = modrm>>6; reg = ((modrm>>3)&7)|(rex_r<<3); rm = (modrm&7)|(rex_b<<3)
+    i += 1; disp = 0; has_sib = False
+    if (rm&7)==4 and mod!=3: has_sib=True; i+=1   # SIB
+    if   mod==1: disp=struct.unpack_from("b",data,i)[0]; i+=1
+    elif mod==2: disp=struct.unpack_from("<i",data,i)[0]; i+=4
+    elif mod==0 and (rm&7)==5: disp=struct.unpack_from("<i",data,i)[0]; i+=4
+    if mod==3: return None   # MOVBE reg, reg is invalid
+    return dict(mnem="MOVBE_st", reg=reg, base=rm, mod=mod, disp=disp, W=W, length=i-off)
+
+def make_movbe_store_trampoline(info):
+    """[mem] = bswap(reg)"""
+    reg=info["reg"]; base=info["base"]; mod=info["mod"]; disp=info["disp"]; W=info["W"]
+    tmp = pick_tmp({reg, base, 4})
+    code = bytearray()
+    code += push_r(tmp)
+    # mov tmp, reg (copy)
+    code += mov_rr(tmp, reg, W)
+    # bswap tmp
+    code += bswap_r(tmp, W)
+    # mov [mem], tmp  (0x89 /r = MOV r/m, r)
+    rex = 0x40|(W<<3)|((tmp>=8)<<2)|(base>=8)
+    modrm = (mod<<6)|((tmp&7)<<3)|(base&7)
+    buf2 = bytearray()
+    if rex!=0x40 or W: buf2.append(rex)
+    buf2.append(0x89)
+    if (base&7)==4: buf2.append(modrm); buf2.append(0x24)
+    else:           buf2.append(modrm)
+    if   mod==1: buf2.append(disp&0xFF)
+    elif mod==2: buf2+=struct.pack("<i",disp)
+    elif mod==0 and (base&7)==5: buf2+=struct.pack("<i",disp)
+    code += bytes(buf2)
+    code += pop_r(tmp)
+    code += b"\xC3"
+    return bytes(code)
+
+# Non-VEX scan pass
+NOP3 = bytes([0x0F, 0x1F, 0x00])   # 3-byte NOP
+
+region2 = bytes(data[text_foff_z:text_foff_z+text_fsz])
+
+# 1. MOVBE store (0F 38 F1) — 5-byte trampoline
+movbe_pat = re.compile(b"(?:\x40-\x4f)?\x0f\x38\xf1|(?:[\x40-\x4f])\x0f\x38\xf1|\x0f\x38\xf1")
+movbe_hits = [m.start() for m in re.compile(b"\x0f\x38\xf1").finditer(region2)]
+# Also catch REX-prefixed
+for i in range(len(region2)-4):
+    if 0x40 <= region2[i] <= 0x4F and region2[i+1]==0x0F and region2[i+2]==0x38 and region2[i+3]==0xF1:
+        if i not in movbe_hits: movbe_hits.append(i)
+movbe_hits.sort()
+
+for rel_off in movbe_hits:
+    z_off   = text_foff_z + rel_off
+    site_va = text_vaddr  + rel_off
+    info = decode_movbe_store(region2, rel_off)
+    if not info: skip_stats["MOVBE_st_skip"]+=1; skip+=1; continue
+    insn_len = info["length"]
+    if insn_len < 5: skip_stats["MOVBE_st_short"]+=1; skip+=1; continue
+    try: tb = make_movbe_store_trampoline(info)
+    except Exception as e:
+        skip_stats["MOVBE_tramp_err"]+=1; skip+=1
+        print("  SKIP MOVBE err at 0x%016x: %s"%(site_va,e)); continue
+    if tramp_ptr+len(tb) > tramp_foff_z+tramp_size:
+        print("ERROR: trampoline full"); sys.exit(1)
+    data[tramp_ptr:tramp_ptr+len(tb)] = tb
+    rel32=struct.unpack("<i",struct.pack("<I",(tramp_vptr-(site_va+5))&0xFFFFFFFF))[0]
+    patch=bytearray([0xE8])+struct.pack("<i",rel32)+bytes([0x90])*(insn_len-5)
+    data[z_off:z_off+insn_len] = patch
+    tramp_ptr+=len(tb); tramp_vptr+=len(tb)
+    stats["MOVBE_st"]+=1; ok+=1
+
+# 2. XSAVES (0F C7 /5) and XRSTORS (0F C7 /3) — in-place 3-byte NOP
+#    Ivy Bridge has no supervisor XSAVE states; NOP is safe.
+xstate_hits = [i for i in range(len(region2)-2)
+               if region2[i]==0x0F and region2[i+1]==0xC7 and (region2[i+2]>>3)&7 in (3,4,5)]
+
+for rel_off in xstate_hits:
+    reg = (region2[rel_off+2]>>3)&7
+    name = {3:"XRSTORS",4:"XSAVEC",5:"XSAVES"}[reg]
+    z_off = text_foff_z + rel_off
+    # 3-byte NOP in-place
+    data[z_off:z_off+3] = NOP3
+    stats[name]+=1; ok+=1
+
 with open(OUT, "wb") as f: f.write(data)
 
-# Verify residual
+# Verify residual (VEX only)
 verify  = open(OUT, "rb").read()
 seg     = verify[text_foff_z:text_foff_z+text_fsz]
 residual = len(list(pat.finditer(seg)))
