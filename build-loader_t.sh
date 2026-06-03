@@ -361,11 +361,11 @@ fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
 BRP_HAS_EXT_ALL_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=0
+[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=1
 pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DIR}"
 
 BRP_HAS_EXT_AMDGPU_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=0
+[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=1
 pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
 
 BRP_HAS_EXT_CUSTOM_DIR=0
@@ -403,7 +403,7 @@ elif [[ ( "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 ) 
      && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
   pr_process "[zImg-branch] >>> ENTER branch (2) all-modules/amd-modules -> ext/official-zImage"
   # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
-  BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/official-zImage"
+  BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_OFF_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
   pr_process "[zImg-branch] official gz path = %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
 
