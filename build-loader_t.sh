@@ -363,14 +363,21 @@ fi
 # Detect whether the host CPU supports BMI2 instruction set.
 # BRP_NO_BMI2=1 means BMI2 is NOT supported (e.g. Ivy Bridge) -> use GPL-built custom kernel.
 # BRP_NO_BMI2=0 means BMI2 IS supported -> use default patched zImage path.
+# NOTE: custom-kernel is only applicable for kernel 5.x and above.
+#       For kernel 3.x / 4.x this check is skipped and BRP_NO_BMI2 stays 0.
 BRP_NO_BMI2=0
-if grep -q "bmi2" /proc/cpuinfo 2>/dev/null; then
-  pr_process "[CPU-check] BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "0"
+BRP_KVER_MAJOR="$(echo "${BRP_KVER}" | cut -d'.' -f1)"
+if [[ "${BRP_KVER_MAJOR}" -ge 5 ]]; then
+  if grep -q "bmi2" /proc/cpuinfo 2>/dev/null; then
+    pr_process "[CPU-check] kernel=%s BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "0"
+  else
+    BRP_NO_BMI2=1
+    pr_process "[CPU-check] kernel=%s BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-kernel)" "${BRP_KVER}" "1"
+  fi
 else
-  BRP_NO_BMI2=1
-  pr_process "[CPU-check] BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-kernel)" "1"
+  pr_process "[CPU-check] kernel=%s < 5.x -> custom-kernel not applicable, BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "0"
 fi
-pr_info "[CPU-check] BRP_NO_BMI2=%s" "${BRP_NO_BMI2}"
+pr_info "[CPU-check] BRP_KVER=%s BRP_NO_BMI2=%s" "${BRP_KVER}" "${BRP_NO_BMI2}"
 
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
