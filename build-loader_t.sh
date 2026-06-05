@@ -360,17 +360,17 @@ fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
-BRP_HAS_EXT_ALL_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/all-modules" ] && BRP_HAS_EXT_ALL_DIR=1
-pr_process "Found all-modules extension override dirs? %s" "${BRP_HAS_EXT_ALL_DIR}"
-
-BRP_HAS_EXT_AMDGPU_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/amd-modules" ] && BRP_HAS_EXT_AMDGPU_DIR=1
-pr_process "Found amd-modules extension override dirs? %s" "${BRP_HAS_EXT_AMDGPU_DIR}"
-
-BRP_HAS_EXT_CUSTOM_DIR=0
-[ -d "${BRP_USER_DIR}/extensions/custom-modules" ] && BRP_HAS_EXT_CUSTOM_DIR=1
-pr_process "Found custom-modules extension override dirs? %s" "${BRP_HAS_EXT_CUSTOM_DIR}"
+# Detect whether the host CPU supports BMI2 instruction set.
+# BRP_NO_BMI2=1 means BMI2 is NOT supported (e.g. Ivy Bridge) -> use GPL-built custom kernel.
+# BRP_NO_BMI2=0 means BMI2 IS supported -> use default patched zImage path.
+BRP_NO_BMI2=0
+if grep -q "bmi2" /proc/cpuinfo 2>/dev/null; then
+  pr_process "[CPU-check] BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "0"
+else
+  BRP_NO_BMI2=1
+  pr_process "[CPU-check] BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-kernel)" "1"
+fi
+pr_info "[CPU-check] BRP_NO_BMI2=%s" "${BRP_NO_BMI2}"
 
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
@@ -378,47 +378,27 @@ $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINU
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 # Branch selection for the final zImage:
-#   1) custom-modules path: when an extension "_custom" directory exists -> use ext/custom-zImage
-#   2) all-modules / amd-modules path: when those extensions are enabled -> use ext/official-zImage
-#      (Ivy-Bridge-compatible kernel built from GPL source with KCFLAGS=-march=ivybridge.
-#       Cannot be combined with custom-modules; the (1) custom path takes precedence.)
-#   3) default: repack the kpatch'd vmlinux
-if [[ "${BRP_HAS_EXT_CUSTOM_DIR:-0}" -eq 1 && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
-  pr_process "[zImg-branch] >>> ENTER branch (1) custom-modules -> ext/custom-zImage"
-  BRP_CUST_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_CUST_ZIMG_GZ=""
+#   1) BRP_NO_BMI2=1 (CPU lacks BMI2): use GPL-built bzImage from ext/custom-kernel/
+#      Filename pattern: bzImage-<platform>-<dsm_ver>-5.10.55.gz
+#   2) default: repack the kpatch'd vmlinux
+if [[ "${BRP_NO_BMI2}" -eq 1 ]]; then
+  pr_process "[zImg-branch] >>> ENTER branch (1) no-BMI2 -> ext/custom-kernel"
+  BRP_CUST_KERNEL_DIR="${BRP_EXT_DIR}/custom-kernel"
+  BRP_CUST_KERNEL_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+  pr_process "[zImg-branch] custom-kernel gz path = %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
 
-  BRP_CUST_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
-  pr_process "[zImg-branch] custom gz path = %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
-
-  if [[ -n "${BRP_CUST_ZIMG_GZ}" ]] && [[ -f "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" ]]; then
-    pr_process "Using custom bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
-    "${GZIP_PATH}" -dc "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
-      || pr_crit "Failed to decompress %s" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
+  if [[ -f "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" ]]; then
+    pr_process "Using custom-kernel bzImage (BMI2-free) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
+    "${GZIP_PATH}" -dc "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
+      || pr_crit "Failed to decompress %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
     pr_process_ok
-  elif [[ -n "${BRP_CUST_ZIMG_GZ}" ]]; then
-    pr_warn "Custom kernel requested but missing: %s (falling back to patched zImage)" "${BRP_CUST_ZIMG_DIR}/${BRP_CUST_ZIMG_GZ}"
-  fi
-elif [[ ( "${BRP_HAS_EXT_ALL_DIR}" -eq 1 || "${BRP_HAS_EXT_AMDGPU_DIR}" -eq 1 ) \
-     && "${BPR_LOWER_PLATFORM}" =~ ^(epyc7002|geminilakenk)$ ]]; then
-  pr_process "[zImg-branch] >>> ENTER branch (2) all-modules/amd-modules -> ext/official-zImage"
-  # all-modules / amd-modules: Ivy-Bridge-compatible kernel (BMI2-free)
-  BRP_OFF_ZIMG_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_OFF_ZIMG_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
-  pr_process "[zImg-branch] official gz path = %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
-
-  if [[ -f "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" ]]; then
-    pr_process "Using official-zImage (Ivy-Bridge compat) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
-    "${GZIP_PATH}" -dc "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
-      || pr_crit "Failed to decompress %s" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
-    pr_process_ok
-    pr_process "[zImg-branch] official zImage written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
+    pr_process "[zImg-branch] custom-kernel written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
   else
-    pr_warn "Official kernel requested but missing: %s (falling back to patched zImage)" "${BRP_OFF_ZIMG_DIR}/${BRP_OFF_ZIMG_GZ}"
+    pr_warn "[zImg-branch] custom-kernel not found: %s (falling back to repack)" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
     $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
   fi
 else
-  pr_process "[zImg-branch] >>> ENTER branch (3) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
+  pr_process "[zImg-branch] >>> ENTER branch (2) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
   $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
 fi
 pr_process "[zImg-branch] final zImage-patched = %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
