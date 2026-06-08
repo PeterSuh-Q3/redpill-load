@@ -1,5 +1,5 @@
 {
-  "all-modules"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",
+  "all-modules"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/all-modules/rpext-index.json",  
   "acovermissingbin"      : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acovermissingbin/rpext-index.json",  
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/acpid/rpext-index.json",      
   "apppatch"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/apppatch/rpext-index.json",
@@ -15,6 +15,7 @@
   "misc"                  : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/misc/rpext-index.json",
   "reboottotcrp"          : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/reboottotcrp/rpext-index.json",
   "redpill"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/redpill/rpext-index.json",  
+  "sanmanager-repair"     : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/sanmanager-repair/rpext-index.json",
   "shr"                   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/shr/rpext-index.json",
   "synoconfbkp"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/synoconfbkp/rpext-index.json",  
   "nvmevolume-onthefly"   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/nvmevolume-onthefly/rpext-index.json",
