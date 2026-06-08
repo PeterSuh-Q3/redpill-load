@@ -363,9 +363,9 @@ fi
 # Detect whether the host CPU supports BMI2 instruction set.
 # BRP_NO_BMI2=1 means BMI2 is NOT supported (e.g. Ivy Bridge) -> use GPL-built custom kernel.
 # BRP_NO_BMI2=0 means BMI2 IS supported -> use default patched zImage path.
-# NOTE: custom-kernel is only applicable when BOTH conditions are met:
+# NOTE: custom-zImage is only applicable when BOTH conditions are met:
 #       1) kernel 5.x and above
-#       2) DSM version >= 7.3 (custom-kernel bzImages are built from DSM 7.3 GPL source)
+#       2) DSM version >= 7.3 (custom-zImage bzImages are built from DSM 7.3 GPL source)
 BRP_NO_BMI2=0
 BRP_KVER_MAJOR="$(echo "${BRP_KVER}" | cut -d'.' -f1)"
 BRP_DSM_VER_MAJOR="$(echo "${BRP_DSM_VER_MM}" | cut -d'.' -f1)"
@@ -376,10 +376,10 @@ if [[ "${BRP_KVER_MAJOR}" -ge 5 ]] && \
     pr_process "[CPU-check] kernel=%s DSM=%s BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
   else
     BRP_NO_BMI2=1
-    pr_process "[CPU-check] kernel=%s DSM=%s BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-kernel)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
+    pr_process "[CPU-check] kernel=%s DSM=%s BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
   fi
 else
-  pr_process "[CPU-check] kernel=%s DSM=%s -> custom-kernel not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
+  pr_process "[CPU-check] kernel=%s DSM=%s -> custom-zImage not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
 fi
 pr_info "[CPU-check] BRP_KVER=%s BRP_DSM_VER_MM=%s BRP_NO_BMI2=%s" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_NO_BMI2}"
 
@@ -389,23 +389,23 @@ $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINU
 $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 # Branch selection for the final zImage:
-#   1) BRP_NO_BMI2=1 (CPU lacks BMI2): use GPL-built bzImage from ext/custom-kernel/
+#   1) BRP_NO_BMI2=1 (CPU lacks BMI2): use GPL-built bzImage from ext/custom-zImage/
 #      Filename pattern: bzImage-<platform>-<dsm_ver>-5.10.55.gz
 #   2) default: repack the kpatch'd vmlinux
 if [[ "${BRP_NO_BMI2}" -eq 1 ]]; then
-  pr_process "[zImg-branch] >>> ENTER branch (1) no-BMI2 -> ext/custom-kernel"
-  BRP_CUST_KERNEL_DIR="${BRP_EXT_DIR}/custom-kernel"
+  pr_process "[zImg-branch] >>> ENTER branch (1) no-BMI2 -> ext/custom-zImage"
+  BRP_CUST_KERNEL_DIR="${BRP_EXT_DIR}/custom-zImage"
   BRP_CUST_KERNEL_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
-  pr_process "[zImg-branch] custom-kernel gz path = %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
+  pr_process "[zImg-branch] custom-zImage gz path = %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
 
   if [[ -f "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" ]]; then
-    pr_process "Using custom-kernel bzImage (BMI2-free) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
+    pr_process "Using custom-zImage bzImage (BMI2-free) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
     "${GZIP_PATH}" -dc "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
       || pr_crit "Failed to decompress %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
     pr_process_ok
-    pr_process "[zImg-branch] custom-kernel written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
+    pr_process "[zImg-branch] custom-zImage written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
   else
-    pr_warn "[zImg-branch] custom-kernel not found: %s (falling back to repack)" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
+    pr_warn "[zImg-branch] custom-zImage not found: %s (falling back to repack)" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
     $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
   fi
 else
