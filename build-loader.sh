@@ -360,9 +360,10 @@ fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
-# Detect whether the host CPU supports BMI2 instruction set.
-# BRP_NO_BMI2=1 means BMI2 is NOT supported (e.g. Ivy Bridge) -> use GPL-built custom kernel.
-# BRP_NO_BMI2=0 means BMI2 IS supported -> use default patched zImage path.
+# Determine whether to use GPL-built custom-zImage.
+# BRP_NO_BMI2=1 -> use ext/custom-zImage (GPL-built kernel)
+# BRP_NO_BMI2=0 -> use default patched zImage path
+# Criterion: user_config.json general.modulename == "custom-modules"
 # NOTE: custom-zImage is only applicable when BOTH conditions are met:
 #       1) kernel 5.x and above
 #       2) DSM version >= 7.3 (custom-zImage bzImages are built from DSM 7.3 GPL source)
@@ -372,16 +373,17 @@ BRP_DSM_VER_MAJOR="$(echo "${BRP_DSM_VER_MM}" | cut -d'.' -f1)"
 BRP_DSM_VER_MINOR="$(echo "${BRP_DSM_VER_MM}" | cut -d'.' -f2)"
 if [[ "${BRP_KVER_MAJOR}" -ge 5 ]] && \
    [[ "${BRP_DSM_VER_MAJOR}" -gt 7 || ( "${BRP_DSM_VER_MAJOR}" -eq 7 && "${BRP_DSM_VER_MINOR}" -ge 3 ) ]]; then
-  if grep -q "bmi2" /proc/cpuinfo 2>/dev/null; then
-    pr_process "[CPU-check] kernel=%s DSM=%s BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
-  else
+  BRP_UCF_MODULENAME="$(brp_json_get_field "${BRP_USER_CFG}" 'general.modulename' 1)"
+  if [[ "${BRP_UCF_MODULENAME}" == "custom-modules" ]]; then
     BRP_NO_BMI2=1
-    pr_process "[CPU-check] kernel=%s DSM=%s BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
+    pr_process "[zImg-check] kernel=%s DSM=%s modulename=custom-modules -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
+  else
+    pr_process "[zImg-check] kernel=%s DSM=%s modulename=%s -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_UCF_MODULENAME:-n/a}" "0"
   fi
 else
-  pr_process "[CPU-check] kernel=%s DSM=%s -> custom-zImage not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
+  pr_process "[zImg-check] kernel=%s DSM=%s -> custom-zImage not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
 fi
-pr_info "[CPU-check] BRP_KVER=%s BRP_DSM_VER_MM=%s BRP_NO_BMI2=%s" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_NO_BMI2}"
+pr_info "[zImg-check] BRP_KVER=%s BRP_DSM_VER_MM=%s BRP_NO_BMI2=%s modulename=%s" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_NO_BMI2}" "${BRP_UCF_MODULENAME:-n/a}"
 
 pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
 chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
