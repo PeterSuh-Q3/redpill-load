@@ -361,11 +361,9 @@ fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
 # Determine whether to use GPL-built custom-zImage.
-# BRP_NO_BMI2=1 -> use ext/custom-zImage (GPL-built kernel, BMI2-free)
+# BRP_NO_BMI2=1 -> use ext/custom-zImage (GPL-built kernel)
 # BRP_NO_BMI2=0 -> use default patched zImage path
-# Decision priority:
-#   1) user_config.json general.modulename == "custom-modules" -> BRP_NO_BMI2=1 (explicit opt-in)
-#   2) fallback: /proc/cpuinfo BMI2 absence check (legacy, host-CPU-based)
+# Criterion: user_config.json general.modulename == "custom-modules"
 # NOTE: custom-zImage is only applicable when BOTH conditions are met:
 #       1) kernel 5.x and above
 #       2) DSM version >= 7.3 (custom-zImage bzImages are built from DSM 7.3 GPL source)
@@ -379,11 +377,8 @@ if [[ "${BRP_KVER_MAJOR}" -ge 5 ]] && \
   if [[ "${BRP_UCF_MODULENAME}" == "custom-modules" ]]; then
     BRP_NO_BMI2=1
     pr_process "[zImg-check] kernel=%s DSM=%s modulename=custom-modules -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
-  elif grep -q "bmi2" /proc/cpuinfo 2>/dev/null; then
-    pr_process "[zImg-check] kernel=%s DSM=%s BMI2 supported -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
   else
-    BRP_NO_BMI2=1
-    pr_process "[zImg-check] kernel=%s DSM=%s BMI2 NOT supported (Ivy Bridge or older) -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
+    pr_process "[zImg-check] kernel=%s DSM=%s modulename=%s -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_UCF_MODULENAME:-n/a}" "0"
   fi
 else
   pr_process "[zImg-check] kernel=%s DSM=%s -> custom-zImage not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
