@@ -39,6 +39,10 @@
     "7.3.2-86009-0": {
       "sum": "798bf57f7240859586bc7c6b45ccd704",
       "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DS1019%2B_86009.pat"
+    },
+    "7.4.0-90075-0": {
+      "sum": "0cbc9ef25e147306ce58a1a6132b3780",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_DS1019%2B_90075.pat"
     }
   },
   "DS111": {
