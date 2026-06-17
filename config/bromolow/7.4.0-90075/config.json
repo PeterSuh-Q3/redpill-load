@@ -17,32 +17,23 @@
       ""
     ],
     "ramdisk": [
-      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
   "synoinfo": {
     "supportext4": "yes",
     "support_uasp": "yes",
-    "support_printer": "yes",
-    "support_usb_printer": "yes",
+    "maxdisks": "24",
+    "maxlanport": "4",
+    "netif_seq": "0 1 2 3",
     "support_disk_compatibility": "no",
-    "support_memory_compatibility": "no",
-    "support_led_brightness_adjustment": "no",
-    "support_leds_atmega1608": "no",
-    "support_leds_lp3943": "no",
-    "support_oob_ctl": "no",
     "support_syno_hybrid_raid": "no",
     "supportraidgroup": "no",
-    "enableRCPower": "yes",
-    "support_fan": "no",
-    "supportadt7490": "no",
-    "maxlanport": "8",
-    "netif_seq": "0 1 2 3 4 5 6 7",
-    "buzzeroffen": "0xffff",
-    "maxdisks": "24"
+    "supportsas": "no"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
@@ -52,19 +43,19 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-      "SMBusHddDynamicPower": 1,
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
-      "synoboot2": null,
       "elevator": "elevator",
-      "syno_ttyS0": "serial,0x3f8",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
       "root": "/dev/md0",
       "earlycon": "uart8250,io,0x3f8,115200n8",
-      "withefi": null,
-      "syno_ttyS1": "serial,0x2f8"
+      "withefi": null
     },
     "menu_entries": {
-      "RedPill avoton v7.3.2-86009 (USB, Verbose)": {
+      "RedPill bromlow v7.4.0-90075 (USB, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -80,7 +71,7 @@
           "log_buf_len": "32M"
         }
       },
-      "RedPill avoton v7.3.2-86009 (SATA, Verbose)": {
+      "RedPill bromlow v7.4.0-90075 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3",
@@ -103,7 +94,7 @@
     "compress_rd": false,
     "ramdisk_copy": {
       "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.108.ko": "usr/lib/modules/rp.ko",
-      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+      "@@@COMMON@@@/iosched-trampoline5.sh": "usr/sbin/modprobe"
     },
     "bootp1_copy": {
       "@@@PAT@@@/GRUB_VER": "GRUB_VER",
