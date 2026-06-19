@@ -188,6 +188,33 @@ RPT_USER_EXTS=''
 if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   RPT_USER_EXTS=$(rpt_load_user_extensions "${BRP_USER_CFG}") || exit 1
   rpt_load_bundled_extensions "${RPT_BUNDLED_EXTS_CFG}" RPT_BUNDLED_EXTS_IDS RPT_BUNDLED_EXTS
+
+  # ── modulename 기반 모듈팩 정규화 ────────────────────────────────────────────
+  # bundled-exts.json 에는 기본 모듈팩(통상 all-modules)이 정적으로 박혀 있다.
+  # user_config.json 의 general.modulename 이 다른 모듈팩(amd-/custom-/nodrm-modules)을
+  # 지정하면, 정적 키를 modulename 으로 치환해 의도한 모듈팩이 실제로 번들되게 한다.
+  # (menu_m.sh::syncBundledExtsModule 과 동일 효과를 빌드측에서 강제 — 메뉴 치환이
+  #  누락되어도 GRUB 표기(modulename)와 실제 번들 모듈팩이 어긋나지 않도록 보장)
+  BRP_UCF_MDLNAME="$(brp_json_get_field "${BRP_USER_CFG}" 'general.modulename' 1)"
+  case "${BRP_UCF_MDLNAME}" in
+    all-modules|amd-modules|custom-modules|nodrm-modules)
+      _mod_url="https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/${BRP_UCF_MDLNAME}/rpext-index.json"
+      _new_ids=()
+      for _id in ${RPT_BUNDLED_EXTS_IDS[@]+"${RPT_BUNDLED_EXTS_IDS[@]}"}; do
+        case "${_id}" in
+          all-modules|amd-modules|custom-modules|nodrm-modules)
+            unset 'RPT_BUNDLED_EXTS[${_id}]' ;;
+          *) _new_ids+=("${_id}") ;;
+        esac
+      done
+      RPT_BUNDLED_EXTS_IDS=("${BRP_UCF_MDLNAME}" ${_new_ids[@]+"${_new_ids[@]}"})
+      RPT_BUNDLED_EXTS["${BRP_UCF_MDLNAME}"]="${_mod_url}"
+      pr_process "[modules] bundled module pack normalized to '%s'" "${BRP_UCF_MDLNAME}"
+      pr_empty_nl
+      ;;
+  esac
+  # ─────────────────────────────────────────────────────────────────────────────
+
   if [[ ! -z "${RPT_USER_EXTS}" ]]; then # if user defined some extensions we need to whitelist bundled + user picked
     for ext_id in ${RPT_BUNDLED_EXTS_IDS[@]+"${RPT_BUNDLED_EXTS_IDS[@]}"}; do
       if [[ ! -z "${RPT_BUILD_EXTS}" ]]; then
