@@ -13,6 +13,7 @@
   "hdddb"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/hdddb/rpext-index.json",  
   "localrss"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/localrss/rpext-index.json",
   "misc"                  : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/misc/rpext-index.json",
+  "patch-md0"             : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/patch-md0/rpext-index.json",    
   "reboottotcrp"          : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/reboottotcrp/rpext-index.json",
   "redpill"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/redpill/rpext-index.json",  
   "sanmanager-repair"     : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/master/sanmanager-repair/rpext-index.json",
