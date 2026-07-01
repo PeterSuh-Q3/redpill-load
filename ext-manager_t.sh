@@ -21,7 +21,7 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 readonly BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 readonly MRP_SRC_NAME=${MRP_SRC_NAME:-$(basename "$0")}
 readonly RPT_EXTS_DIR=${RPT_EXTS_DIR:-"$PWD/custom/extensions"}
-readonly kver5platforms="epyc7002 v1000nk r1000nk geminilakenk"
+readonly kver5platforms="epyc7002 icelaked v1000nk r1000nk geminilakenk"
 ########################################################################################################################
 
 ##### INCLUDES #########################################################################################################
@@ -805,7 +805,7 @@ __action__update_platform_exts()
   local platform_dir;
   local hard_fail=0;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
-    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" ]]; then
+    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" || "${ext_id}" == "anodrm-modules" ]]; then
         platform_id="${1}_${2}_${3}"
     else    
         if echo ${kver5platforms} | grep -qw ${1}; then
@@ -957,7 +957,7 @@ __action__dump_exts()
   local kmod_counter;
   for ext_id in ${extensions[@]+"${extensions[@]}"}; do
     ((ext_counter++))
-    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" ]]; then
+    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "amd-modules" || "${ext_id}" == "anodrm-modules" ]]; then
         platform_id="${1}_${2}_${3}"
     else    
         if echo ${kver5platforms} | grep -qw ${1}; then
