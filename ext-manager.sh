@@ -21,7 +21,7 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 readonly BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 readonly MRP_SRC_NAME=${MRP_SRC_NAME:-$(basename "$0")}
 readonly RPT_EXTS_DIR=${RPT_EXTS_DIR:-"$PWD/custom/extensions"}
-readonly kver5platforms="epyc7002 icelaked v1000nk r1000nk geminilakenk"
+readonly kver5platforms="epyc7002 epyc7003ntb icelaked v1000nk r1000nk geminilakenk"
 ########################################################################################################################
 
 ##### INCLUDES #########################################################################################################
