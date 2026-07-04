@@ -3957,6 +3957,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/6.2.4/25556/DSM_NVR216_25556.pat"
     }
   },
+  "PAS7700": {
+    "7.4.0-101188-0": {
+      "sum": "4f2bc9018ff047caa3944d1314598a34",
+      "url": "https://global.synologydownload.com/download/DSM_Enterprise/release/1.0/101188/DSM_Enterprise_PAS7700_101188.pat"
+    }
+  },
   "RC18015xs+": {
     "6.2.4-25556-0": {
       "sum": "6ad93bfe4a4893b5ace7565a12569ae3",
