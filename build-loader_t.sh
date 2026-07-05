@@ -456,8 +456,8 @@ if [[ "${BRP_NO_BMI2}" -eq 1 ]]; then
     $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
   fi
 elif echo "epyc7003ntb" | grep -wq "${BPR_LOWER_PLATFORM}"; then
-  pr_process "[zImg-branch] >>> ENTER branch (2b) epyc7003ntb -> large-template repack (vmlinux-to-bzImage-large.sh)"
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-large.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+  pr_process "[zImg-branch] >>> ENTER branch (2b) epyc7003ntb -> recompress repack (vmlinux-to-bzImage-recompress.sh)"
+  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-recompress.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_FILE}" "${BRP_ZLINUX_PATCHED_FILE}"
 else
   pr_process "[zImg-branch] >>> ENTER branch (2) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
   $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
