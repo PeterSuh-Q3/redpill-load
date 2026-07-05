@@ -1,0 +1,10 @@
+--- a/usr/syno/sbin/syno_feature_check.sh
++++ b/usr/syno/sbin/syno_feature_check.sh
+@@ -1,7 +1,6 @@
+ #!/bin/sh
+ 
+ EXPORTED_DEFINE="
+-SYNO_PRODUCT_FSDN
+ SYNO_FEA_DISABLE_NON_SYNO_PACKAGE_SOURCE
+ SYNO_FEA_SUPPORT_ENTERPRISE_STORAGE_LICENSE
+ "
