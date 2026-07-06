@@ -99,8 +99,7 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "log_buf_len": "32M",
-          "synoboot_satadom": 2
+          "log_buf_len": "32M"
         }
       }
     }
