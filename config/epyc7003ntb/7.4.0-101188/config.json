@@ -44,7 +44,8 @@
     "netif_seq": "",
     "buzzeroffen": "0xffff",
     "maxdisks": "24",
-    "netif_seq_by_dts": "no"
+    "netif_seq_by_dts": "no",
+    "support_multipath": "yes"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
