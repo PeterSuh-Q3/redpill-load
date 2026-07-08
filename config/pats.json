@@ -3911,6 +3911,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_FS6400_90075.pat"
     }
   },
+  "FS6420": {
+    "7.4.0-90075-0": {
+      "sum": "efc8839385a6abaae57e31653d768573",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_FS6420_90075.pat"
+    }
+  },
   "HD6500": {
     "7.1.0-42661-0": {
       "sum": "8f0ad20b9cc30f391c12a5bbfd268cda",
