@@ -20,7 +20,8 @@
       "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
-      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-004-disable-fsdn-feature.patch"
     ]
   },
   "synoinfo": {
