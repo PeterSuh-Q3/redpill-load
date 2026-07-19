@@ -198,7 +198,7 @@ if [[ "${BRP_DEV_DISABLE_EXTS}" -ne 1 ]]; then
   BRP_UCF_MDLNAME="$(brp_json_get_field "${BRP_USER_CFG}" 'general.modulename' 1)"
   case "${BRP_UCF_MDLNAME}" in
     all-modules|custom-modules|anodrm-modules)
-      _mod_url="https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/master/${BRP_UCF_MDLNAME}/rpext-index.json"
+      _mod_url="https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/${BRP_UCF_MDLNAME}/rpext-index.json"
       # 기존 모듈팩 키를 IDS 와 연관배열 양쪽에서 모두 제거 후 modulename 만 재주입.
       # (force_add 는 ${!RPT_BUNDLED_EXTS[@]} 키 전체를 순회하므로 연관배열에서
       #  반드시 제거되어야 함. unset 은 변수 첨자가 확장되도록 큰따옴표 사용.)
