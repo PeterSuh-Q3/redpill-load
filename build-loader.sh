@@ -353,7 +353,46 @@ if [ ! -d "${BRP_UPAT_DIR}" ]; then
 
   #remark 2025.04.08 for issue loader build
   #brp_verify_file_md5 "${BRP_PAT_FILE}" "$(brp_json_get_like_field "${BRP_PAT_MD5_JSON}" "${BRP_HW_PLATFORM}" "${BRP_SW_VERSION}" "sum")"
-  brp_unpack_tar "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
+  #
+  # 2026-07-22: .pat 전체(보통 300~400MB, 대부분 hda1.tgz=DSM 전체 OS 루트파일시스템 +
+  # 각종 .spk 패키지 - 로더 빌드엔 전혀 쓰이지 않음)를 tmpfs에 통째로 풀어놓던 것을
+  # 선택적 추출로 변경. redpill-load 전체 config/**/config.json(325개)을 실측 스캔한
+  # 결과, 로더 빌드가 pat 내부에서 실제로 참조하는 파일은 zImage/rd.gz(files.zlinux.name,
+  # files.ramdisk.name - 모든 플랫폼에서 값 고정)와 @@@PAT@@@/GRUB_VER,
+  # @@@PAT@@@/grub_cksum.syno(bootp1_copy/bootp2_copy) 4개뿐임을 확인(ds918p_90075.pat
+  # 실측: 전체 398MB 중 이 4개 합계 약 9MB, 나머지 97.7%는 미사용).
+  # 혹시 이 4개 목록에 없는 파일을 향후 어떤 config.json이 추가로 참조하게 되더라도
+  # 빌드가 조용히 깨지지 않도록, tar 목록에서 4개 전부의 존재를 먼저 확인하고 하나라도
+  # 없으면 안전하게 기존 방식(전체 추출)으로 자동 폴백한다.
+  # 2026-07-22 실기 검증: grep으로 "있다"고 확인해도 실제 tar -xf 인자 매칭은
+  # 아카이브에 저장된 멤버명과 정확히 일치해야 해서(예: "./zImage"로 저장돼
+  # 있으면 "zImage"만으론 tar 구현체에 따라 실패) 확인과 추출이 어긋나는
+  # 사고가 실측 확인됨(sa6400_86009.pat, "zImage: not found in archive").
+  # tar -tf 목록에서 실제 매칭된 "정확한 멤버명"을 그대로 추출 인자로 써서
+  # 확인/추출 불일치를 원천 차단한다.
+  BRP_PAT_SELECTIVE_FILES=(zImage rd.gz GRUB_VER grub_cksum.syno)
+  BRP_PAT_LISTING="$("${TAR_PATH}" -tf "${BRP_PAT_FILE}" 2>/dev/null)"
+  BRP_PAT_SELECTIVE_OK=1
+  BRP_PAT_RESOLVED=()
+  for _brp_pat_f in "${BRP_PAT_SELECTIVE_FILES[@]}"; do
+    _brp_pat_resolved="$(echo "${BRP_PAT_LISTING}" | grep -E "(^|/)${_brp_pat_f}\$" | head -1)"
+    if [ -z "${_brp_pat_resolved}" ]; then
+      pr_warn "[pat-selective] %s not found in %s - falling back to full unpack" "${_brp_pat_f}" "${BRP_PAT_FILE}"
+      BRP_PAT_SELECTIVE_OK=0
+      break
+    fi
+    BRP_PAT_RESOLVED+=("${_brp_pat_resolved}")
+  done
+  if [[ "${BRP_PAT_SELECTIVE_OK}" -eq 1 ]]; then
+    pr_process "[pat-selective] Unpacking only %s from %s to %s" "${BRP_PAT_RESOLVED[*]}" "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
+    "${TAR_PATH}" -xf "${BRP_PAT_FILE}" -C "${BRP_UPAT_DIR}" "${BRP_PAT_RESOLVED[@]}" \
+      || { pr_warn "[pat-selective] selective extraction failed - falling back to full unpack"; BRP_PAT_SELECTIVE_OK=0; }
+  fi
+  if [[ "${BRP_PAT_SELECTIVE_OK}" -eq 0 ]]; then
+    brp_unpack_tar "${BRP_PAT_FILE}" "${BRP_UPAT_DIR}"
+  else
+    pr_process_ok
+  fi
 else
   pr_info "Found unpacked PAT at \"%s\" - skipping unpacking" "${BRP_UPAT_DIR}"
 fi
