@@ -1,4 +1,5 @@
 {
+  "aeudev"                : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/aeudev/rpext-index.json", 
   "all-modules"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/all-modules/rpext-index.json",  
   "acovermissingbin"      : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/acovermissingbin/rpext-index.json",  
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/acpid/rpext-index.json",      
