@@ -21,6 +21,10 @@ cd "${BASH_SOURCE%/*}/" || exit 1
 readonly BRP_DEBUG=${BRP_DEBUG:-0} # whether you want to see debug messages
 readonly MRP_SRC_NAME=${MRP_SRC_NAME:-$(basename "$0")}
 readonly RPT_EXTS_DIR=${RPT_EXTS_DIR:-"$PWD/custom/extensions"}
+# Path to the runtime configuration that receives the module provenance.
+# The build environment normally uses /home/tc; callers producing a loader on
+# a mounted system can override this with MODULE_USER_CONFIG.
+readonly MODULE_USER_CONFIG=${MODULE_USER_CONFIG:-/home/tc/user_config.json}
 readonly kver5platforms="epyc7002 epyc7003ntb epyc7003 icelaked v1000nk r1000nk geminilakenk"
 ########################################################################################################################
 
@@ -703,6 +707,65 @@ mrp_fill_recipe()
   pr_info "Successfully processed recipe for extension %s platform %s" "${ext_id}" "${platform_id}"
 }
 
+# Persist the exact module-pack inputs used for a successful build.  The
+# recipe is the source of truth: it already contains the immutable URL and
+# SHA256 for every downloaded file, including optional DRM packs.
+#
+# Args: $1 extension id | $2 recipe platform id | $3 platform | $4 DSM major.minor
+mrp_record_module_provenance()
+{
+  local ext_id="${1}"
+  local platform_id="${2}"
+  local platform="${3}"
+  local dsm_major_minor="${4}"
+  local recipe_file="${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json"
+  local config_file="${MODULE_USER_CONFIG}"
+  local tmp_config
+  local packs_json
+
+  if [[ ! -f "${config_file}" ]]; then
+    pr_dbg "Module provenance skipped: user config %s does not exist" "${config_file}"
+    return 0
+  fi
+  if [[ ! -r "${recipe_file}" ]]; then
+    pr_warn "Module provenance skipped: recipe %s is not readable" "${recipe_file}"
+    return 1
+  fi
+
+  packs_json=$(jq -c '[.files[]
+    | select((.name | endswith(".tgz")) and ((.name | startswith("firmware")) | not))
+    | {
+    role: (if (.name | endswith("-drm.tgz")) then "drm" else "regular" end),
+    name, url, sha256
+  }]' "${recipe_file}") || {
+    pr_warn "Module provenance skipped: failed to parse recipe %s" "${recipe_file}"
+    return 1
+  }
+
+  tmp_config="${config_file}.modules.tmp.$$"
+  if ! jq --arg type "${ext_id}" \
+          --arg platform "${platform}" \
+          --arg dsm_version "${dsm_major_minor}" \
+          --argjson packs "${packs_json}" \
+          '.modules = {
+             type: $type,
+             platform: $platform,
+             dsm_version: $dsm_version,
+             packs: $packs
+           }' "${config_file}" > "${tmp_config}"; then
+    "${RM_PATH}" -f "${tmp_config}"
+    pr_warn "Failed to update module provenance in %s" "${config_file}"
+    return 1
+  fi
+
+  if ! mv -f "${tmp_config}" "${config_file}"; then
+    "${RM_PATH}" -f "${tmp_config}"
+    pr_warn "Failed to install updated user config %s" "${config_file}"
+    return 1
+  fi
+  pr_info "Recorded module provenance in %s" "${config_file}"
+}
+
 # Args: $1 list of extensions [optional, if not specified it will update all]
 __action_update()
 {
@@ -899,6 +962,12 @@ __action__update_platform_exts()
 
     mrp_fill_recipe "${ext_id}" "${platform_id}" "${new_recipe_file}"
     "${RM_PATH}" "${new_recipe_file}" || pr_warn "Failed to remove temp file %s" "${new_recipe_file}"
+
+    # Record only after every file in the recipe was downloaded and verified.
+    # build-loader passes DSM major/minor as e.g. 74; user_config.json stores 7.4.
+    if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "anodrm-modules" || "${ext_id}" == "custom-modules" ]]; then
+      mrp_record_module_provenance "${ext_id}" "${platform_id}" "${1}" "${2:0:1}.${2:1}"
+    fi
         
     # Modify storagepanel addon scripts & sha256 2023.08.24
     if [[ "${ext_id}" == "storagepanel" ]]; then
