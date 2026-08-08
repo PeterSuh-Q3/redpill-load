@@ -732,7 +732,9 @@ mrp_record_module_provenance()
     return 1
   fi
 
-  packs_json=$(jq -c '[.files[] | {
+  packs_json=$(jq -c '[.files[]
+    | select((.name | endswith(".tgz")) and ((.name | startswith("firmware")) | not))
+    | {
     role: (if (.name | endswith("-drm.tgz")) then "drm" else "regular" end),
     name, url, sha256
   }]' "${recipe_file}") || {
