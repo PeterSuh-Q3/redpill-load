@@ -711,14 +711,13 @@ mrp_fill_recipe()
 # recipe is the source of truth: it already contains the immutable URL and
 # SHA256 for every downloaded file, including optional DRM packs.
 #
-# Args: $1 extension id | $2 recipe platform id | $3 platform | $4 DSM major.minor | $5 kernel
+# Args: $1 extension id | $2 recipe platform id | $3 platform | $4 DSM major.minor
 mrp_record_module_provenance()
 {
   local ext_id="${1}"
   local platform_id="${2}"
   local platform="${3}"
   local dsm_major_minor="${4}"
-  local kernel="${5}"
   local recipe_file="${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json"
   local config_file="${MODULE_USER_CONFIG}"
   local tmp_config
@@ -745,13 +744,11 @@ mrp_record_module_provenance()
   if ! jq --arg type "${ext_id}" \
           --arg platform "${platform}" \
           --arg dsm_version "${dsm_major_minor}" \
-          --arg kernel "${kernel}" \
           --argjson packs "${packs_json}" \
           '.modules = {
              type: $type,
              platform: $platform,
              dsm_version: $dsm_version,
-             kernel: $kernel,
              packs: $packs
            }' "${config_file}" > "${tmp_config}"; then
     "${RM_PATH}" -f "${tmp_config}"
@@ -967,7 +964,7 @@ __action__update_platform_exts()
     # Record only after every file in the recipe was downloaded and verified.
     # build-loader passes DSM major/minor as e.g. 74; user_config.json stores 7.4.
     if [[ "${ext_id}" == "all-modules" || "${ext_id}" == "anodrm-modules" || "${ext_id}" == "custom-modules" ]]; then
-      mrp_record_module_provenance "${ext_id}" "${platform_id}" "${1}" "${2:0:1}.${2:1}" "${3}"
+      mrp_record_module_provenance "${ext_id}" "${platform_id}" "${1}" "${2:0:1}.${2:1}"
     fi
         
     # Modify storagepanel addon scripts & sha256 2023.08.24
