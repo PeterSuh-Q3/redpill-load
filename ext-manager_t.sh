@@ -734,7 +734,7 @@ mrp_record_module_provenance()
   fi
 
   packs_json=$(jq -c '[.files[] | {
-    role: (if (.name | test("-drm\\.tgz$")) then "drm" else "regular" end),
+    role: (if (.name | endswith("-drm.tgz")) then "drm" else "regular" end),
     name, url, sha256
   }]' "${recipe_file}") || {
     pr_warn "Module provenance skipped: failed to parse recipe %s" "${recipe_file}"
