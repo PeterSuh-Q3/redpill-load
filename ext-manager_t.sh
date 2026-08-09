@@ -763,6 +763,13 @@ mrp_record_module_provenance()
     pr_warn "Failed to install updated user config %s" "${config_file}"
     return 1
   fi
+
+  # build-loader may run ext-manager as root.  The atomic mv above then
+  # replaces /home/tc/user_config.json with a root-owned inode, preventing
+  # later menu writes by tc. Restore the runtime configuration owner.
+  if [[ "${config_file}" == "/home/tc/user_config.json" && "$(id -u)" -eq 0 ]]; then
+    chown tc:staff "${config_file}" || pr_warn "Failed to restore ownership of %s" "${config_file}"
+  fi
   pr_info "Recorded module provenance in %s" "${config_file}"
 }
 
