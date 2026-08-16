@@ -758,17 +758,31 @@ mrp_record_module_provenance()
     return 1
   fi
 
-  if ! mv -f "${tmp_config}" "${config_file}"; then
+  if [[ -L "${config_file}" ]]; then
+    # tinycore-redpill (테스트 트랙) 는 /home/tc/user_config.json 을
+    # 파티션 상의 실제 파일을 가리키는 심볼릭 링크로 바꿔 사용할 수 있다
+    # (mshellSymlinkUserConfig() in functions_t.sh). mv 는 목적지가
+    # 심볼릭 링크여도 링크 자체를 새 일반 파일로 교체해버려 링크가
+    # 끊어지므로, cp 로 링크를 따라가 타깃 내용만 덮어쓴다.
+    if ! cp -f "${tmp_config}" "${config_file}"; then
+      "${RM_PATH}" -f "${tmp_config}"
+      pr_warn "Failed to install updated user config %s" "${config_file}"
+      return 1
+    fi
     "${RM_PATH}" -f "${tmp_config}"
-    pr_warn "Failed to install updated user config %s" "${config_file}"
-    return 1
-  fi
+  else
+    if ! mv -f "${tmp_config}" "${config_file}"; then
+      "${RM_PATH}" -f "${tmp_config}"
+      pr_warn "Failed to install updated user config %s" "${config_file}"
+      return 1
+    fi
 
-  # build-loader may run ext-manager as root.  The atomic mv above then
-  # replaces /home/tc/user_config.json with a root-owned inode, preventing
-  # later menu writes by tc. Restore the runtime configuration owner.
-  if [[ "${config_file}" == "/home/tc/user_config.json" && "$(id -u)" -eq 0 ]]; then
-    chown tc:staff "${config_file}" || pr_warn "Failed to restore ownership of %s" "${config_file}"
+    # build-loader may run ext-manager as root.  The atomic mv above then
+    # replaces /home/tc/user_config.json with a root-owned inode, preventing
+    # later menu writes by tc. Restore the runtime configuration owner.
+    if [[ "${config_file}" == "/home/tc/user_config.json" && "$(id -u)" -eq 0 ]]; then
+      chown tc:staff "${config_file}" || pr_warn "Failed to restore ownership of %s" "${config_file}"
+    fi
   fi
   pr_info "Recorded module provenance in %s" "${config_file}"
 }
