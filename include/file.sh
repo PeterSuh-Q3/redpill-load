@@ -317,6 +317,7 @@ brp_cp_flat()
   pr_dbg "Copying %s to %s" "${1}" "${2}"
 
   local out;
+  local cp_rc;
   if [[ "${2: -1}" == '/' ]]; then
     brp_mkdir "${2}"
   else
@@ -324,10 +325,20 @@ brp_cp_flat()
   fi
   if [ "$FRKRNL" = "YES" ]; then
     out="$(sudo "${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
+    cp_rc=$?
+    # sudo cp leaves the copy root-owned and unreadable to the caller's
+    # own user (tc), which later steps read without sudo - e.g. the
+    # extension index/recipe files ext-manager.sh persists via this
+    # same helper. Loosen read/traverse only; ownership and the
+    # FRKRNL=YES/NO branching above are untouched, so every existing
+    # caller keeps working exactly as before, just with one fewer way
+    # to fail on a later unprivileged read.
+    [ ${cp_rc} -eq 0 ] && sudo "${CHMOD_PATH}" -R a+rX "${2}" &> /dev/null
   else
     out="$("${CP_PATH}" --recursive --dereference "${1}" "${2}" 2>&1)"
-  fi  
-  if [ $? -ne 0 ]; then
+    cp_rc=$?
+  fi
+  if [ ${cp_rc} -ne 0 ]; then
     pr_process_err
     pr_crit "Failed to copy %s to %s\n\n%s" "${1}" "${2}" "${out}"
   fi
