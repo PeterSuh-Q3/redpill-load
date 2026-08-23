@@ -16,3 +16,6 @@ custom/
 # Private — backed up to mshell-modules
 src/
 ext/official-zImage/
+
+# macOS Finder metadata
+.DS_Store
