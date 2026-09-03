@@ -10,6 +10,7 @@
   "cpuinfo"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/cpuinfo/rpext-index.json",
   "ddsml"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/ddsml/rpext-index.json",    
   "disks"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/disks/rpext-index.json",
+  "etc-modules-load"      : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/etc-modules-load/rpext-index.json",    
   "eudev"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-modules/main/eudev/rpext-index.json",  
   "hdddb"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/hdddb/rpext-index.json",  
   "localrss"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/localrss/rpext-index.json",
