@@ -16,7 +16,6 @@
   "localrss"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/localrss/rpext-index.json",
   "misc"                  : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/misc/rpext-index.json",
   "patch-md0"             : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/patch-md0/rpext-index.json",    
-  "reboottotcrp"          : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/reboottotcrp/rpext-index.json",
   "redpill"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/redpill/rpext-index.json",  
   "sanmanager-repair"     : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/sanmanager-repair/rpext-index.json",
   "shr"                   : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/shr/rpext-index.json",
