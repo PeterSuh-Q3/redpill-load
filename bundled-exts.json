@@ -5,6 +5,7 @@
   "acpid"                 : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/acpid/rpext-index.json",      
   "apppatch"              : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/apppatch/rpext-index.json",
   "automount"             : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/automount/rpext-index.json",
+  "beep"                  : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/beep/rpext-index.json",
   "autorecover"           : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/autorecover/rpext-index.json",  
   "cpufreq-scaler"        : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/cpufreq-scaler/rpext-index.json",
   "cpuinfo"               : "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/cpuinfo/rpext-index.json",
