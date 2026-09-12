@@ -3833,6 +3833,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DVA3221_90080.pat"
     }
   },
+  "DVA7400": {
+    "7.4.1-90080-0": {
+      "sum": "48066378da0c8bc9d709737c0038b1db",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DVA7400_90080.pat"
+    }
+  },
   "FS1018": {
     "6.2.4-25556-0": {
       "sum": "313b0f69e322921f2373e05064ea7888",
