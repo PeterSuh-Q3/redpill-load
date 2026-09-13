@@ -24,9 +24,12 @@ config/_common/ramdisk/
     7.2.1-plus/
     7.4.1/
   init-post/
-    family-a/
-    family-b/
-    family-c/
+    family-a-6.2.4/
+    family-b-7.0.1/
+    family-c-7.1.0-7.2.0/
+    family-d-7.2.1-7.3.1/
+    family-e-7.3.0/
+    family-f-7.3.2-7.4.0/
   root-password/
     <context-family>/
   platform/
@@ -129,11 +132,12 @@ so an exception remains reviewable in its platform `config.json`.
 
 1. Use platform configuration paths only; do not recreate model-name paths.
 2. Preserve the exact existing patch application order.
-3. A new DSM build gets explicit family paths even when an older patch is
-   byte-identical. This prevents a later build-specific edit changing an older
-   build.
-4. Retain `config/_common/v*` and direct arrays until a separate removal
-   change has passed validation. Do not restore removed model-name paths.
+3. A version range is named only after the source patch body was compared. The
+   initial migration preserves every distinct source body, including the
+   ds3615xs init-post exceptions, as a separate atomic set.
+4. A configuration must contain only `ramdisk_sets` after migration; direct
+   arrays are reserved for a genuinely release-local patch introduced later.
+   Do not restore removed model-name or legacy `config/_common/v*` paths.
 
 ## Baseline inventory and implementation map
 
@@ -156,9 +160,9 @@ deleted merely because its filename looks version-specific.
 
 ### Confirmed unused patch files
 
-These 23 paths have zero references in every remaining platform configuration
-and are removal candidates. They are deleted only in the full migration commit
-after a final reference scan.
+These 23 paths had zero references in every remaining platform configuration
+and were deleted in commit `93e9958`. The subsequent full migration removes
+the remaining referenced legacy paths only after the byte-equivalence check.
 
 ```text
 ramdisk-002-init-script-NEW-name.patch
@@ -197,11 +201,12 @@ the original-ramdisk dry-run before the range is declared compatible.
    patch family, preserving content and patch order.
 2. Add atomic named patch sets for each independently selectable capability.
 3. Convert every platform `config.json` to an ordered composition of atomic
-   `patches.ramdisk_sets`, plus only genuinely release-local direct entries.
-4. Compare each expanded list with the pre-migration platform list and run the
-   original-ramdisk dry-run matrix.
-5. Delete the 23 confirmed-unused files, then delete obsolete `v*` copies only
-   when their reference count reaches zero.
+   `patches.ramdisk_sets`.
+4. Compare each expanded list with the pre-migration platform list by
+   position and patch-file bytes. `docs/ramdisk-patch-baseline.json` records
+   that immutable 179-configuration baseline.
+5. Delete obsolete direct files and `v*` copies only after the comparison
+   reports no differences.
 
 ## Required validation
 

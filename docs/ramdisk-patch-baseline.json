@@ -1,0 +1,1677 @@
+[
+  {
+    "path": "config/apollolake/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/apollolake/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/avoton/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/braswell/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwell/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnk/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellnkv2/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/broadwellntbap/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/bromolow/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/cedarview/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/cedarview/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/denverton/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7002/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7003/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7003/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/epyc7003ntb/7.4.0-101188/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-004-disable-fsdn-feature.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilake/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/geminilakenk/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/grantley/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/grantley/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/grantley/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-ds3615xs.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/grantley/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/grantley/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/icelaked/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/icelaked/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/purley/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/r1000nk/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/6.2.4-25556/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v6.2.4/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v6.2.4/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.0.1-42218/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.1.0-42661/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.1.1-42962/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.2.0-64570/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.2.1-69057/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.2.2-72806/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.3.0-81180/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.3.1-86003/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.3.2-86009/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.4.0-90075/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/v7.4.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.4.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  {
+    "path": "config/v1000nk/7.4.1-90080/config.json",
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk/root-password/7.4.1/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-006-skip-fresh-install-disk-ready-wait.patch",
+      "@@@COMMON@@@/ramdisk/init-post/family-c/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk/global/common-etc-rc.patch"
+    ]
+  }
+]

@@ -16,11 +16,12 @@
     "zlinux": [
       ""
     ],
-    "ramdisk": [
-      "@@@COMMON@@@/v7.3.2/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.3.2/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.3.2/ramdisk-003-post-init-script-noatime.patch",
-      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    "ramdisk": [],
+    "ramdisk_sets": [
+      "root-password-7.3.2",
+      "linuxrc-7.3.2",
+      "init-post-family-f-7.3.2-7.4.0",
+      "global-common-etc-rc"
     ]
   },
   "synoinfo": {
@@ -61,7 +62,7 @@
       "syno_port_thaw": 1,
       "root": "/dev/md0",
       "earlycon": "uart8250,io,0x3f8,115200n8",
-      "sataboot2": null,      
+      "sataboot2": null,
       "syno_ttyS0": "serial,0x3f8",
       "syno_ttyS1": "serial,0x2f8"
     },

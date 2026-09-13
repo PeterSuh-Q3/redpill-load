@@ -17,11 +17,12 @@
     "zlinux": [
       ""
     ],
-    "ramdisk": [
-      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
-      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    "ramdisk": [],
+    "ramdisk_sets": [
+      "root-password-legacy",
+      "linuxrc-7.0.1",
+      "init-post-family-b-7.0.1",
+      "global-common-etc-rc"
     ]
   },
   "synoinfo": {
