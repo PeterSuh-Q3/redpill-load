@@ -48,15 +48,54 @@ The existing `patches.ramdisk` array remains supported. The opt-in
 `config/_common/ramdisk/patch-sets.json`, followed by any direct entries.
 Duplicate paths are errors.
 
-`patch-sets.json` composes, in order, the selected root-password, linuxrc,
-init-post, optional platform, and global patches. Set names identify the
-release combination, not the physical location of a patch.
+`patch-sets.json` defines *atomic* ordered patch sets. Each set represents one
+target-file compatibility decision: a root-password context, one linuxrc
+family, one init-post family, one platform exception, or one global patch.
+Set names identify that single capability and family, not a complete release.
 
 Version names are only starting hypotheses. The linuxrc groups `6.2.4`, `7.0`,
 `7.1.1`, `7.2.0`, `7.2.1-plus`, and `7.4.1`, and the init-post families A/B/C,
 must be validated independently. A patch becomes global only after it applies
 unchanged to every target ramdisk in its declared support range. Root-password
 patches are not currently global because their passwd context differs.
+
+## Atomic patch-set composition
+
+Release configurations compose the required capabilities directly in
+`patches.ramdisk_sets`; they must not select a monolithic
+`dsm-<version>-base` set that hides its components.
+
+```json
+{
+  "patches": {
+    "ramdisk_sets": [
+      "root-password-7.4.1",
+      "linuxrc-7.4.1",
+      "init-post-family-c",
+      "global-common-etc-rc"
+    ],
+    "ramdisk": []
+  }
+}
+```
+
+For a platform that must exclude only the linuxrc patch, such as a hypothetical
+`epyc7002` exception, it omits only `linuxrc-7.4.1` while retaining the other
+sets:
+
+```json
+"ramdisk_sets": [
+  "root-password-7.4.1",
+  "init-post-family-c",
+  "global-common-etc-rc"
+]
+```
+
+Platform-specific inclusion is equally explicit: add a narrowly scoped set
+such as `platform-epyc7002-<purpose>` at the required point in the array. Do
+not create a duplicate release-wide set merely to add or remove one patch.
+The resolver preserves the declared order and rejects a duplicate patch path,
+so an exception remains reviewable in its platform `config.json`.
 
 ## Migration rules
 
@@ -128,9 +167,9 @@ the original-ramdisk dry-run before the range is declared compatible.
 
 1. Add canonical copies under the target-file hierarchy for every referenced
    patch family, preserving content and patch order.
-2. Add named patch sets that reproduce each platform release's current list.
-3. Convert every platform `config.json` to `patches.ramdisk_sets` plus only
-   genuinely release-local direct entries.
+2. Add atomic named patch sets for each independently selectable capability.
+3. Convert every platform `config.json` to an ordered composition of atomic
+   `patches.ramdisk_sets`, plus only genuinely release-local direct entries.
 4. Compare each expanded list with the pre-migration platform list and run the
    original-ramdisk dry-run matrix.
 5. Delete the 23 confirmed-unused files, then delete obsolete `v*` copies only

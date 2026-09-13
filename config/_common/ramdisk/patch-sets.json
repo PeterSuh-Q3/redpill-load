@@ -1,7 +1,14 @@
 {
-  "dsm-7.4.1-versioned-base": [
-    "@@@COMMON@@@/ramdisk/root-password/7.4.1/ramdisk-001-disable-root-pwd.patch",
-    "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch",
+  "root-password-7.4.1": [
+    "@@@COMMON@@@/ramdisk/root-password/7.4.1/ramdisk-001-disable-root-pwd.patch"
+  ],
+  "linuxrc-7.4.1": [
+    "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch"
+  ],
+  "init-post-family-c": [
     "@@@COMMON@@@/ramdisk/init-post/family-c/ramdisk-003-post-init-script-noatime.patch"
+  ],
+  "global-common-etc-rc": [
+    "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
   ]
 }

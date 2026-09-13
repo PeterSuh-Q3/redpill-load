@@ -17,11 +17,12 @@
       ""
     ],
     "ramdisk_sets": [
-      "dsm-7.4.1-versioned-base"
+      "root-password-7.4.1",
+      "linuxrc-7.4.1",
+      "init-post-family-c",
+      "global-common-etc-rc"
     ],
-    "ramdisk": [
-      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
-    ]
+    "ramdisk": []
   },
   "synoinfo": {
     "supportext4": "yes",
