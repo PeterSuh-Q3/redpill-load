@@ -65,8 +65,76 @@ patches are not currently global because their passwd context differs.
 3. A new DSM build gets explicit family paths even when an older patch is
    byte-identical. This prevents a later build-specific edit changing an older
    build.
-4. Retain `config/_common/v*`, direct arrays, and legacy model paths until a
-   separate removal change has passed validation.
+4. Retain `config/_common/v*` and direct arrays until a separate removal
+   change has passed validation. Do not restore removed model-name paths.
+
+## Baseline inventory and implementation map
+
+The following inventory was taken after removal of top-level model paths and
+uses the remaining 179 platform release configurations as the only reference
+set. It is the required input to the full migration; no patch is moved or
+deleted merely because its filename looks version-specific.
+
+| Category | Current evidence | Destination and action |
+| --- | --- | --- |
+| Common root-password patch | 175 platform references | Classify its `/etc/passwd` context, then move into `root-password/<family>/`; it is not automatically global. |
+| `v7.2.0` root-password patch | 22 references | Separate root-password family after dry-run validation. |
+| `v7.2.2` root-password patch | 17 references | Separate root-password family after dry-run validation. |
+| `v7.3.0`, `v7.3.1`, `v7.3.2`, `v7.4.0` root-password patches | 16, 15, 16, 36 references | Group only when original passwd context and patch content both match; otherwise retain separate root-password families. |
+| `ramdisk-002-init-script` | 11–38 references per DSM release | Move by content and dry-run result to `linuxrc/6.2.4`, `7.0`, `7.1.1`, `7.2.0`, `7.2.1-plus`, or `7.4.1`. |
+| `ramdisk-003-post-init-script*` | 1–38 references per DSM release | Move independently to `init-post/family-a`, `family-b`, or `family-c`; special variants stay separate until their target context is proven identical. |
+| `ramdisk-005-disable-disabled-ports` | 65 references | Move to `global/` only after the matrix proves it applies to every declared target; otherwise preserve an explicit compatibility set. |
+| `ramdisk-common-etc-rc` | 179 references | First global-patch candidate; validate across the complete platform matrix before moving. |
+| `v7.4.0/ramdisk-004-disable-fsdn-feature` | 1 reference | Keep as a platform/release-specific patch; do not generalize it. |
+
+### Confirmed unused patch files
+
+These 23 paths have zero references in every remaining platform configuration
+and are removal candidates. They are deleted only in the full migration commit
+after a final reference scan.
+
+```text
+ramdisk-002-init-script-NEW-name.patch
+ramdisk-002-init-script-OLD-name.patch
+ramdisk-003-post-init-script-LOWER.patch
+ramdisk-003-post-init-script-UPPER.patch
+ramdisk-004-network-hosts.patch
+v6.2.4/ramdisk-003-post-init-script-ds3615xs.patch
+v6.2.4/ramdisk-004-network-hosts.patch
+v6.2.4/ramdisk-004-rc-script.patch
+v7.0.1/ramdisk-004-network-hosts.patch
+v7.0.1/ramdisk-004-rc-script.patch
+v7.1.0/ramdisk-003-post-init-script-ds3615xs.patch
+v7.1.0/ramdisk-004-network-hosts.patch
+v7.1.0/ramdisk-004-rc-script.patch
+v7.1.1/ramdisk-004-network-hosts.patch
+v7.1.1/ramdisk-004-rc-script.patch
+v7.2.0/ramdisk-004-network-hosts.patch
+v7.2.0/ramdisk-004-rc-script.patch
+v7.2.1/ramdisk-000-loop.patch
+v7.2.2/ramdisk-000-loop.patch
+v7.3.0/ramdisk-000-loop.patch
+v7.3.1/ramdisk-000-loop.patch
+v7.3.2/ramdisk-000-loop.patch
+v7.4.0/ramdisk-000-loop.patch
+```
+
+The `init-script` content audit already shows that `v7.0.1` and `v7.1.0` are
+identical, while `v7.2.1` through `v7.4.0` share one patch body. The latter is
+not automatically a `7.2.1-plus` family: every platform/build must still pass
+the original-ramdisk dry-run before the range is declared compatible.
+
+### Full migration sequence
+
+1. Add canonical copies under the target-file hierarchy for every referenced
+   patch family, preserving content and patch order.
+2. Add named patch sets that reproduce each platform release's current list.
+3. Convert every platform `config.json` to `patches.ramdisk_sets` plus only
+   genuinely release-local direct entries.
+4. Compare each expanded list with the pre-migration platform list and run the
+   original-ramdisk dry-run matrix.
+5. Delete the 23 confirmed-unused files, then delete obsolete `v*` copies only
+   when their reference count reaches zero.
 
 ## Required validation
 
