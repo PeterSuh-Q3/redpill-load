@@ -73,18 +73,24 @@ global-common-etc-rc
 global-disable-disabled-ports
 ```
 
-The fresh-install wait workaround is deliberately separate:
+The fresh-install wait workaround is deliberately separate. Select its source
+family rather than inferring support from a build number:
 
 ```text
-linuxrc-fresh-install-skip-disk-ready-wait-90080-plus
-config/_common/ramdisk/linuxrc/7.4.1/
+linuxrc-fresh-install-skip-disk-ready-wait-7.0.1-7.2.2
+config/_common/ramdisk/linuxrc/fresh-7.0.1-7.2.2/
+  ramdisk-006-skip-fresh-install-disk-ready-wait.patch
+
+linuxrc-fresh-install-skip-disk-ready-wait-7.3.0-7.4.1
+config/_common/ramdisk/linuxrc/fresh-7.3.0-7.4.1/
   ramdisk-006-skip-fresh-install-disk-ready-wait.patch
 ```
 
-For DSM 7.4.2, verify both the `CheckAllDiskReady()` function signature and
-the exact main call site before selecting `ramdisk-006`. Never enable it just
-because the DSM build number is later than 90080. A changed signature requires
-a new, separately reviewed linuxrc exception set.
+For DSM 7.4.2 or any other new release, verify both the
+`CheckAllDiskReady()` function signature and the exact main call site before
+selecting `ramdisk-006`. Never enable it merely because it is later than an
+existing release. A changed signature requires a new, separately reviewed
+linuxrc exception set.
 
 ## Required validation before merge
 

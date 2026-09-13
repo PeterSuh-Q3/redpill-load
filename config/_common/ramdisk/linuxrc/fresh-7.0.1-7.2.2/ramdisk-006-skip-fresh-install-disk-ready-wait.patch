@@ -1,0 +1,35 @@
+--- a/linuxrc.syno.impl
++++ b/linuxrc.syno.impl
+@@ -303,4 +303,19 @@
+ # We wait here until all drive already or timeout exceeded.
+ #
+ 
++IsFreshInstallWithoutSystemPartitions()
++{
++	local installable device partition
++	[ ! -d /sys/block/md0 ] || return 1
++	installable=$(/usr/syno/bin/synodiskport -installable_disk_list 2>/dev/null)
++	[ -n "$installable" ] || return 1
++	for device in $installable; do
++		[ -d "/sys/block/$device" ] || return 1
++		for partition in /sys/block/$device/$device*; do
++			[ -f "$partition/partition" ] && return 1
++		done
++	done
++	return 0
++}
++
+ CheckAllDiskReady()
+ {
+ 	IsAnyDiskRetry=0
+@@ -333,4 +348,8 @@
+ 	fi
+ }
+-CheckAllDiskReady
++if IsFreshInstallWithoutSystemPartitions; then
++	echo "Fresh install disks have no partitions; skip disk-ready recovery wait"
++else
++	CheckAllDiskReady
++fi
+ if [ "$SupportSAS" = "yes" ]; then
+ 	echo "Disable all invalid HBA PHY!"

@@ -22,7 +22,8 @@ config/_common/ramdisk/
     7.1.1/
     7.2.0/
     7.2.1-7.4.1/
-    7.4.1/               # revision-90080-plus exception only
+    fresh-7.0.1-7.2.2/    # fresh-install disk-ready-wait exception
+    fresh-7.3.0-7.4.1/    # fresh-install disk-ready-wait exception
   init-post/
     family-a-6.2.4/
     family-b-7.0.1/
@@ -45,17 +46,19 @@ only patches for `/usr/sbin/init.post`; `root-password` contains only patches
 for `/etc/passwd`. A directory such as `ramdisk/dsm-7.4.1` is forbidden because
 it mixes target files and hides independently changing compatibility boundaries.
 
-### DSM 7.4.1-90080 fresh-install disk-ready wait exception
+### Fresh-install disk-ready wait exception
 
-DSM 7.4.1-90080 adds `CheckAllDiskReady()`, a 120 × 5-second retry before md0
-assembly. This protects an existing system whose disks appear late, but is a
-deterministic 600-second delay on a first installation with blank installable
-disks: md0 cannot exist before DSM creates its system partitions.
+`CheckAllDiskReady()` has a 120 × 5-second retry before md0 assembly. This
+protects an existing system whose disks appear late, but is a deterministic
+600-second delay on a first installation with blank installable disks: md0
+cannot exist before DSM creates its system partitions.
 
-The canonical patch location and name are:
+The exception has two source-compatible families:
 
 ```text
-config/_common/ramdisk/linuxrc/7.4.1/
+config/_common/ramdisk/linuxrc/fresh-7.0.1-7.2.2/
+  ramdisk-006-skip-fresh-install-disk-ready-wait.patch
+config/_common/ramdisk/linuxrc/fresh-7.3.0-7.4.1/
   ramdisk-006-skip-fresh-install-disk-ready-wait.patch
 ```
 
@@ -65,8 +68,14 @@ replaces only the exact `CheckAllDiskReady` call site. It skips the wait only
 when `/sys/block/md0` is absent, `synodiskport -installable_disk_list` returns
 one or more non-loader disks, and every returned disk exists without a sysfs
 partition entry. Any existing partition, empty installable-disk result, or
-unknown disk state retains the vendor wait. It applies only to revision 90080+
-with the verified `CheckAllDiskReady` source signature.
+unknown disk state retains the vendor wait.
+
+The `7.0.1-7.2.2` family matches the older direct call immediately after
+`CheckAllDiskReady()`; the `7.3.0-7.4.1` family matches the later
+`WaitForUsbEunitReady` and `ActivateSynoDpm` call sequence. Both were dry-run
+verified against representative 7.0.1, 7.1.0, 7.1.1, 7.2.0, 7.2.1, 7.2.2,
+7.3.0, 7.3.1, 7.3.2, 7.4.0, and 7.4.1 originals. DSM 6.2.4 remains excluded
+until its original script is inspected.
 
 ## Compatibility and patch sets
 
@@ -87,10 +96,12 @@ per-release use. The linuxrc groups are `6.2.4`, `7.0.1-7.1.0`, `7.1.1`,
 becomes global only after it applies unchanged to every target ramdisk in its
 declared support range.
 
-The fresh-install wait exception is a separate atomic set, not part of
-`linuxrc-7.2.1-7.4.1`: `linuxrc-fresh-install-skip-disk-ready-wait-90080-plus`.
-Platforms can select it independently after the original ramdisk passes the
-signature and dry-run checks.
+The fresh-install wait exception is represented by two separate atomic sets,
+not by `linuxrc-7.2.1-7.4.1`:
+`linuxrc-fresh-install-skip-disk-ready-wait-7.0.1-7.2.2` and
+`linuxrc-fresh-install-skip-disk-ready-wait-7.3.0-7.4.1`. Platforms select
+the one matching their DSM release; a new DSM source signature needs a
+separately reviewed set.
 
 ## Atomic patch-set composition
 

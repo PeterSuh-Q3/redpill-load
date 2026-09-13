@@ -1669,7 +1669,7 @@
     "ramdisk": [
       "@@@COMMON@@@/ramdisk/root-password/7.4.1/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-006-skip-fresh-install-disk-ready-wait.patch",
+      "@@@COMMON@@@/ramdisk/linuxrc/fresh-7.3.0-7.4.1/ramdisk-006-skip-fresh-install-disk-ready-wait.patch",
       "@@@COMMON@@@/ramdisk/init-post/family-c/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/ramdisk/global/common-etc-rc.patch"
     ]
