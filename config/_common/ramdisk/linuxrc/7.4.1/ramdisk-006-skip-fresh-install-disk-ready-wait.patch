@@ -1,6 +1,7 @@
 --- a/linuxrc.syno.impl
 +++ b/linuxrc.syno.impl
-@@ -1,1 +1,17 @@
+@@ -360,4 +360,19 @@
+ 
 +IsFreshInstallWithoutSystemPartitions()
 +{
 +	local installable device partition
@@ -17,10 +18,15 @@
 +}
 +
  WaitForUsbEunitReady()
-@@ -1,1 +1,5 @@
+ {
+ 	# Some platforms don't support this feature. Check before other procedure.
+@@ -428,4 +443,8 @@
+ WaitForUsbEunitReady
+ ActivateSynoDpm
 -CheckAllDiskReady
 +if IsFreshInstallWithoutSystemPartitions; then
 +	echo "Fresh install disks have no partitions; skip disk-ready recovery wait"
 +else
 +	CheckAllDiskReady
 +fi
+ if [ "$SupportSAS" = "yes" ]; then
