@@ -1,0 +1,7 @@
+{
+  "dsm-7.4.1-versioned-base": [
+    "@@@COMMON@@@/ramdisk/root-password/7.4.1/ramdisk-001-disable-root-pwd.patch",
+    "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch",
+    "@@@COMMON@@@/ramdisk/init-post/family-c/ramdisk-003-post-init-script-noatime.patch"
+  ]
+}

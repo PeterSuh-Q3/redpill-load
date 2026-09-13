@@ -58,6 +58,56 @@ brp_apply_text_patches()
   pr_process_ok
 }
 
+# Resolves reusable ramdisk patch sets followed by legacy direct patch entries.
+# Args: $1 release config JSON | $2 patch-set JSON
+brp_get_ramdisk_patch_list()
+{
+  local config_json="$1"
+  local patch_sets_json="$2"
+  local patch_set_names patch_set_name patch_list patch_file jq_status
+  local -A seen_patches=()
+
+  if [ ! -f "${patch_sets_json}" ]; then
+    pr_err "Ramdisk patch-set file %s does not exist" "${patch_sets_json}"
+    return 1
+  fi
+
+  patch_set_names=$("${JQ_PATH}" -e -r '.patches.ramdisk_sets // [] | .[]' "${config_json}")
+  jq_status=$?
+  if [[ ${jq_status} -ne 0 && ${jq_status} -ne 4 ]]; then
+    pr_err "Failed to read patches.ramdisk_sets from %s" "${config_json}"
+    return 1
+  fi
+
+  while IFS= read -r patch_set_name; do
+    [ -n "${patch_set_name}" ] || continue
+    patch_list=$("${JQ_PATH}" -e -r --arg name "${patch_set_name}" '.[$name] | .[]' "${patch_sets_json}") || {
+      pr_err "Ramdisk patch set %s is not defined in %s" "${patch_set_name}" "${patch_sets_json}"
+      return 1
+    }
+    while IFS= read -r patch_file; do
+      [ -n "${patch_file}" ] || continue
+      if [[ -n "${seen_patches[${patch_file}]+x}" ]]; then
+        pr_err "Ramdisk patch %s is included more than once" "${patch_file}"
+        return 1
+      fi
+      seen_patches[${patch_file}]=1
+      echo "${patch_file}"
+    done <<< "${patch_list}"
+  done <<< "${patch_set_names}"
+
+  patch_list=$(brp_json_get_array_values "${config_json}" 'patches.ramdisk') || return 1
+  while IFS= read -r patch_file; do
+    [ -n "${patch_file}" ] || continue
+    if [[ -n "${seen_patches[${patch_file}]+x}" ]]; then
+      pr_err "Ramdisk patch %s is included more than once" "${patch_file}"
+      return 1
+    fi
+    seen_patches[${patch_file}]=1
+    echo "${patch_file}"
+  done <<< "${patch_list}"
+}
+
 
 # Generates calls to _set_conf_kv() from this tool's JSON config file
 #

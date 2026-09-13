@@ -538,10 +538,13 @@ if [ ! -f "${BRP_RD_REPACK}" ]; then # do we even need to unpack-modify-repack t
     popd
   fi
 
-  # Applies all static .patch files to the ramdisk
+  # Resolves and applies all static .patch files to the ramdisk
+  if ! BRP_RAMDISK_PATCH_LIST=$(brp_get_ramdisk_patch_list "${BRP_REL_CONFIG_JSON}" "${BRP_COMMON_CFG_BASE}/ramdisk/patch-sets.json"); then
+    pr_crit "Failed to resolve ramdisk patch list for %s" "${BRP_REL_CONFIG_JSON}"
+  fi
   brp_apply_text_patches \
     "${BRP_URD_DIR}" \
-    "$(brp_json_get_array_values "${BRP_REL_CONFIG_JSON}" 'patches.ramdisk')" \
+    "${BRP_RAMDISK_PATCH_LIST}" \
     BRP_RELEASE_PATHS
 
   # Now we apply dynamic patches for configs
