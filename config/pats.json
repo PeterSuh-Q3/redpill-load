@@ -6596,6 +6596,10 @@
     }
   },
   "SA6400": {
+    "7.1.1-42962-0": {
+      "sum": "7bb63d65829b2ad4bcfda3b37e0ac1b1",
+      "url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-6/DSM_SA6400_42962.pat"
+    },
     "7.2.0-64570-0": {
       "sum": "83b591bfb240c51b2feff8f02eac8bde",
       "url": "https://global.synologydownload.com/download/DSM/release/7.2/64570-1/DSM_SA6400_64570.pat"
