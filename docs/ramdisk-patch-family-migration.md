@@ -41,6 +41,29 @@ only patches for `/usr/sbin/init.post`; `root-password` contains only patches
 for `/etc/passwd`. A directory such as `ramdisk/dsm-7.4.1` is forbidden because
 it mixes target files and hides independently changing compatibility boundaries.
 
+### DSM 7.4.1-90080 fresh-install disk-ready wait exception
+
+DSM 7.4.1-90080 adds `CheckAllDiskReady()`, a 120 × 5-second retry before md0
+assembly. This protects an existing system whose disks appear late, but is a
+deterministic 600-second delay on a first installation with blank installable
+disks: md0 cannot exist before DSM creates its system partitions.
+
+The canonical patch location and name are:
+
+```text
+config/_common/ramdisk/linuxrc/7.4.1/
+  ramdisk-006-skip-fresh-install-disk-ready-wait.patch
+```
+
+`006` is reserved for this new behavior; existing patch numbers are not
+renumbered. The patch introduces `IsFreshInstallWithoutSystemPartitions()` and
+replaces only the exact `CheckAllDiskReady` call site. It skips the wait only
+when `/sys/block/md0` is absent, `synodiskport -installable_disk_list` returns
+one or more non-loader disks, and every returned disk exists without a sysfs
+partition entry. Any existing partition, empty installable-disk result, or
+unknown disk state retains the vendor wait. It applies only to revision 90080+
+with the verified `CheckAllDiskReady` source signature.
+
 ## Compatibility and patch sets
 
 The existing `patches.ramdisk` array remains supported. The opt-in
@@ -58,6 +81,11 @@ Version names are only starting hypotheses. The linuxrc groups `6.2.4`, `7.0`,
 must be validated independently. A patch becomes global only after it applies
 unchanged to every target ramdisk in its declared support range. Root-password
 patches are not currently global because their passwd context differs.
+
+The fresh-install wait exception is a separate atomic set, not part of
+`linuxrc-7.4.1`: `linuxrc-fresh-install-skip-disk-ready-wait-90080-plus`.
+Platforms can select it independently after the original ramdisk passes the
+signature and dry-run checks.
 
 ## Atomic patch-set composition
 

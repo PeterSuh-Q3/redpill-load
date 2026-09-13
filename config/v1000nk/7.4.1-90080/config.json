@@ -19,6 +19,7 @@
     "ramdisk_sets": [
       "root-password-7.4.1",
       "linuxrc-7.4.1",
+      "linuxrc-fresh-install-skip-disk-ready-wait-90080-plus",
       "init-post-family-c",
       "global-common-etc-rc"
     ],

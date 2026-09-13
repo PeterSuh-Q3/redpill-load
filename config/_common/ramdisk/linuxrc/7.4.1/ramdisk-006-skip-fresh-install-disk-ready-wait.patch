@@ -1,0 +1,26 @@
+--- a/linuxrc.syno.impl
++++ b/linuxrc.syno.impl
+@@ -1,1 +1,17 @@
++IsFreshInstallWithoutSystemPartitions()
++{
++	local installable device partition
++	[ ! -d /sys/block/md0 ] || return 1
++	installable=$(/usr/syno/bin/synodiskport -installable_disk_list 2>/dev/null)
++	[ -n "$installable" ] || return 1
++	for device in $installable; do
++		[ -d "/sys/block/$device" ] || return 1
++		for partition in /sys/block/$device/$device*; do
++			[ -f "$partition/partition" ] && return 1
++		done
++	done
++	return 0
++}
++
+ WaitForUsbEunitReady()
+@@ -1,1 +1,5 @@
+-CheckAllDiskReady
++if IsFreshInstallWithoutSystemPartitions; then
++	echo "Fresh install disks have no partitions; skip disk-ready recovery wait"
++else
++	CheckAllDiskReady
++fi

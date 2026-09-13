@@ -5,6 +5,9 @@
   "linuxrc-7.4.1": [
     "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-002-init-script.patch"
   ],
+  "linuxrc-fresh-install-skip-disk-ready-wait-90080-plus": [
+    "@@@COMMON@@@/ramdisk/linuxrc/7.4.1/ramdisk-006-skip-fresh-install-disk-ready-wait.patch"
+  ],
   "init-post-family-c": [
     "@@@COMMON@@@/ramdisk/init-post/family-c/ramdisk-003-post-init-script-noatime.patch"
   ],
