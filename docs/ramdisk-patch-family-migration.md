@@ -88,7 +88,7 @@ becomes global only after it applies unchanged to every target ramdisk in its
 declared support range.
 
 The fresh-install wait exception is a separate atomic set, not part of
-`linuxrc-7.4.1`: `linuxrc-fresh-install-skip-disk-ready-wait-90080-plus`.
+`linuxrc-7.2.1-7.4.1`: `linuxrc-fresh-install-skip-disk-ready-wait-90080-plus`.
 Platforms can select it independently after the original ramdisk passes the
 signature and dry-run checks.
 
@@ -102,8 +102,8 @@ Release configurations compose the required capabilities directly in
 {
   "patches": {
     "ramdisk_sets": [
-      "root-password-7.4.1",
-      "linuxrc-7.4.1",
+      "root-password-7.2.0-7.4.1",
+      "linuxrc-7.2.1-7.4.1",
       "init-post-family-f-7.3.2-7.4.1",
       "global-common-etc-rc"
     ],
@@ -113,12 +113,12 @@ Release configurations compose the required capabilities directly in
 ```
 
 For a platform that must exclude only the linuxrc patch, such as a hypothetical
-`epyc7002` exception, it omits only `linuxrc-7.4.1` while retaining the other
+`epyc7002` exception, it omits only `linuxrc-7.2.1-7.4.1` while retaining the other
 sets:
 
 ```json
 "ramdisk_sets": [
-  "root-password-7.4.1",
+  "root-password-7.2.0-7.4.1",
   "init-post-family-f-7.3.2-7.4.1",
   "global-common-etc-rc"
 ]
