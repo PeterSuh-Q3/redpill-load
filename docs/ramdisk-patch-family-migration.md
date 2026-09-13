@@ -4,8 +4,9 @@
 
 Patch files are owned by the file they modify and by a verified compatibility
 family, never by a model name and never by an all-purpose DSM-version folder.
-New release configurations are platform configurations only. Model-name paths
-remain legacy inputs and receive no new patches or patch-set references.
+Release configurations are platform configurations only. Top-level model-name
+paths have been removed; the loader resolves its release configuration from
+the selected Synology platform.
 
 ## Canonical layout
 
@@ -59,7 +60,7 @@ patches are not currently global because their passwd context differs.
 
 ## Migration rules
 
-1. Migrate platform configuration paths first; do not add or edit model paths.
+1. Use platform configuration paths only; do not recreate model-name paths.
 2. Preserve the exact existing patch application order.
 3. A new DSM build gets explicit family paths even when an older patch is
    byte-identical. This prevents a later build-specific edit changing an older
