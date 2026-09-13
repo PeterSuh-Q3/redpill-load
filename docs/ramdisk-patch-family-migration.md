@@ -18,20 +18,21 @@ config/_common/ramdisk/
     disable-disabled-ports.patch
   linuxrc/
     6.2.4/
-    7.0/
+    7.0.1-7.1.0/
     7.1.1/
     7.2.0/
-    7.2.1-plus/
-    7.4.1/
+    7.2.1-7.4.1/
+    7.4.1/               # revision-90080-plus exception only
   init-post/
     family-a-6.2.4/
     family-b-7.0.1/
     family-c-7.1.0-7.2.0/
     family-d-7.2.1-7.3.1/
     family-e-7.3.0/
-    family-f-7.3.2-7.4.0/
+    family-f-7.3.2-7.4.1/
   root-password/
-    <context-family>/
+    legacy/
+    7.2.0-7.4.1/
   platform/
     epyc7002/
     v1000nk/
@@ -79,11 +80,12 @@ target-file compatibility decision: a root-password context, one linuxrc
 family, one init-post family, one platform exception, or one global patch.
 Set names identify that single capability and family, not a complete release.
 
-Version names are only starting hypotheses. The linuxrc groups `6.2.4`, `7.0`,
-`7.1.1`, `7.2.0`, `7.2.1-plus`, and `7.4.1`, and the init-post families A/B/C,
-must be validated independently. A patch becomes global only after it applies
-unchanged to every target ramdisk in its declared support range. Root-password
-patches are not currently global because their passwd context differs.
+Version names are compatibility claims backed by byte comparison and existing
+per-release use. The linuxrc groups are `6.2.4`, `7.0.1-7.1.0`, `7.1.1`,
+`7.2.0`, and `7.2.1-7.4.1`; the root-password groups are `legacy` and
+`7.2.0-7.4.1`. Init-post families remain independently classified. A patch
+becomes global only after it applies unchanged to every target ramdisk in its
+declared support range.
 
 The fresh-install wait exception is a separate atomic set, not part of
 `linuxrc-7.4.1`: `linuxrc-fresh-install-skip-disk-ready-wait-90080-plus`.
@@ -102,7 +104,7 @@ Release configurations compose the required capabilities directly in
     "ramdisk_sets": [
       "root-password-7.4.1",
       "linuxrc-7.4.1",
-      "init-post-family-c",
+      "init-post-family-f-7.3.2-7.4.1",
       "global-common-etc-rc"
     ],
     "ramdisk": []
@@ -117,7 +119,7 @@ sets:
 ```json
 "ramdisk_sets": [
   "root-password-7.4.1",
-  "init-post-family-c",
+  "init-post-family-f-7.3.2-7.4.1",
   "global-common-etc-rc"
 ]
 ```
@@ -153,7 +155,7 @@ deleted merely because its filename looks version-specific.
 | `v7.2.2` root-password patch | 17 references | Separate root-password family after dry-run validation. |
 | `v7.3.0`, `v7.3.1`, `v7.3.2`, `v7.4.0` root-password patches | 16, 15, 16, 36 references | Group only when original passwd context and patch content both match; otherwise retain separate root-password families. |
 | `ramdisk-002-init-script` | 11–38 references per DSM release | Move by content and dry-run result to `linuxrc/6.2.4`, `7.0`, `7.1.1`, `7.2.0`, `7.2.1-plus`, or `7.4.1`. |
-| `ramdisk-003-post-init-script*` | 1–38 references per DSM release | Move independently to `init-post/family-a`, `family-b`, or `family-c`; special variants stay separate until their target context is proven identical. |
+| `ramdisk-003-post-init-script*` | 1–38 references per DSM release | Move independently to `init-post/family-a` through `family-f`; special variants stay separate until their target context is proven identical. |
 | `ramdisk-005-disable-disabled-ports` | 65 references | Move to `global/` only after the matrix proves it applies to every declared target; otherwise preserve an explicit compatibility set. |
 | `ramdisk-common-etc-rc` | 179 references | First global-patch candidate; validate across the complete platform matrix before moving. |
 | `v7.4.0/ramdisk-004-disable-fsdn-feature` | 1 reference | Keep as a platform/release-specific patch; do not generalize it. |
@@ -191,9 +193,9 @@ v7.4.0/ramdisk-000-loop.patch
 ```
 
 The `init-script` content audit already shows that `v7.0.1` and `v7.1.0` are
-identical, while `v7.2.1` through `v7.4.0` share one patch body. The latter is
-not automatically a `7.2.1-plus` family: every platform/build must still pass
-the original-ramdisk dry-run before the range is declared compatible.
+identical, while the confirmed `v7.3.2` through `v7.4.1` compatibility range
+uses the same init-post patch body. It is represented explicitly as
+`family-f-7.3.2-7.4.1`; special variants remain separate.
 
 ### Full migration sequence
 

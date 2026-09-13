@@ -24,7 +24,7 @@
     "ramdisk": [],
     "ramdisk_sets": [
       "root-password-legacy",
-      "linuxrc-7.0.1",
+      "linuxrc-7.0.1-7.1.0",
       "init-post-family-b-7.0.1-ds3615xs",
       "global-common-etc-rc"
     ]

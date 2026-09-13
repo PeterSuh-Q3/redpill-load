@@ -18,9 +18,9 @@
     ],
     "ramdisk": [],
     "ramdisk_sets": [
-      "root-password-7.3.2",
-      "linuxrc-7.3.2",
-      "init-post-family-f-7.3.2-7.4.0",
+      "root-password-7.2.0-7.4.1",
+      "linuxrc-7.2.1-7.4.1",
+      "init-post-family-f-7.3.2-7.4.1",
       "global-disable-disabled-ports",
       "global-common-etc-rc"
     ]

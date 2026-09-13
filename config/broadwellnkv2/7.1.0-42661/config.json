@@ -19,7 +19,7 @@
     "ramdisk": [],
     "ramdisk_sets": [
       "root-password-legacy",
-      "linuxrc-7.1.0",
+      "linuxrc-7.0.1-7.1.0",
       "init-post-family-c-7.1.0-7.2.0",
       "global-disable-disabled-ports",
       "global-common-etc-rc"
