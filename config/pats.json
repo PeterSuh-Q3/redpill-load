@@ -6629,6 +6629,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_SA6400_90080.pat"
     }
   },
+  "RS11626xs+": {
+    "7.4.1-90080-0": {
+      "sum": "51053fc04caedf8942770ae218b60379",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS11626xs%2B_90080.pat"
+    }
+  },
   "VirtualDSM": {
     "6.2.4-25556-0": {
       "sum": "eb9977b9bb22b0ae7c07a3e8bf7d0b4d",
