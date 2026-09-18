@@ -4233,16 +4233,6 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_FS6400_90080.pat"
     }
   },
-  "FS6420": {
-    "7.4.0-90075-0": {
-      "sum": "efc8839385a6abaae57e31653d768573",
-      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_FS6420_90075.pat"
-    },
-    "7.4.1-90080-0": {
-      "sum": "72a73c589192915ecde0a68feac1883e",
-      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_FS6420_90080.pat"
-    }
-  },
   "HD6500": {
     "7.1.0-42661-0": {
       "sum": "8f0ad20b9cc30f391c12a5bbfd268cda",
@@ -6627,6 +6617,12 @@
     "7.4.1-90080-0": {
       "sum": "18bebfc6579d142221d3a9168a1dd537",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_SA6400_90080.pat"
+    }
+  },
+  "FS6420": {
+    "7.4.1-90080-0": {
+      "sum": "e25e9747afad6b350db27d12e7e23e31",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_FS6420_90080.pat"
     }
   },
   "RS11626xs+": {
