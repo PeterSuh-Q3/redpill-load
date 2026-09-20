@@ -990,16 +990,23 @@ __action__update_platform_exts()
       mrp_record_module_provenance "${ext_id}" "${platform_id}" "${1}" "${2:0:1}.${2:1}"
     fi
         
-    # Modify storagepanel addon scripts & sha256 2023.08.24
+    # The Storage Panel addon is tailored to the selected bay layout.  Its
+    # recipe SHA must be refreshed after changing install.sh, without relying
+    # on a historical checksum or the removed scheduler command.
     if [[ "${ext_id}" == "storagepanel" ]]; then
       BAYSIZE=$(jq -r -e '.general.bay' "/home/tc/user_config.json")
-      pr_dbg "Storage Panel(Bay Size) is ${BAYSIZE}, Modify storagepanel addon scripts & sha256 2023.11.07"
+      pr_dbg "Storage Panel(Bay Size) is ${BAYSIZE}, modify install script and recipe SHA256"
       sed -i 's/HDD_BAY="'"RACK_60_Bay"'"/HDD_BAY="'"${BAYSIZE}"'"/g' "${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh"
-      sed -i "s/storagepanel.sh RACK_60_Bay 1X2/storagepanel.sh ${BAYSIZE} 1X4/g" "${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh"
-      shell_sha256=$(sha256sum ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh | awk '{print $1}')
+      shell_sha256=$(sha256sum "${RPT_EXTS_DIR}/${ext_id}/${platform_id}/install.sh" | awk '{print $1}')
       pr_dbg "storagepanel install.sh file  sha256sum is : $shell_sha256"
-      pr_dbg "Editing ${platform_id}.json file !!!"
-      sed -i "s/a724bd74ae136a77719c4443c810b35da7896ebd7b6393cf2cc9551bd043cd1e/$shell_sha256/g" ${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json
+      recipe_file="${RPT_EXTS_DIR}/${ext_id}/${platform_id}/${platform_id}.json"
+      recipe_tmp="${recipe_file}.tmp"
+      if jq --arg sha "${shell_sha256}" '(.files[] | select(.name == "install.sh") | .sha256) = $sha' "${recipe_file}" > "${recipe_tmp}"; then
+        mv -f "${recipe_tmp}" "${recipe_file}"
+      else
+        rm -f "${recipe_tmp}"
+        pr_crit "Failed to update Storage Panel install.sh SHA256 in %s" "${recipe_file}"
+      fi
     fi
 
   done
