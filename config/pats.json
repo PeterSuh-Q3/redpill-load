@@ -641,6 +641,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS1525%2B_90080.pat"
     }
   },
+  "DS1525neo+": {
+    "7.4.1-90080-0": {
+      "sum": "21bfea6784c16cddd1059d1d92797483",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS1525neo%2B_90080.pat"
+    }
+  },
   "DS1618+": {
     "6.2.4-25556-0": {
       "sum": "81aa75622941fbc27cfb10cc4b9dd062",
@@ -1091,6 +1097,12 @@
     "7.4.1-90080-0": {
       "sum": "9ff897718e0a679921a78cb6b721a9a4",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS1825%2B_90080.pat"
+    }
+  },
+  "DS1825neo+": {
+    "7.4.1-90080-0": {
+      "sum": "295f9df0f176d9d2f25bb4a3ebe0dd55",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS1825neo%2B_90080.pat"
     }
   },
   "DS2015xs": {
@@ -3481,6 +3493,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS725%2B_90080.pat"
     }
   },
+  "DS725neo+": {
+    "7.4.1-90080-0": {
+      "sum": "57b75ed9a3aaae2b2d18d452c69a444f",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS725neo%2B_90080.pat"
+    }
+  },
   "DS916+": {
     "6.2.4-25556-0": {
       "sum": "03b17f09626d77a3f99078380c930597",
@@ -3691,6 +3709,12 @@
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS925%2B_90080.pat"
     }
   },
+  "DS925neo+": {
+    "7.4.1-90080-0": {
+      "sum": "a756af69cfff0e17b242ddae1a86a27e",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DS925neo%2B_90080.pat"
+    }
+  },
   "DVA1622": {
     "7.1.0-42661-0": {
       "sum": "27515a2e7c2f2113ccf8955bf22f3974",
@@ -3887,6 +3911,20 @@
     "7.4.1-90080-0": {
       "sum": "8a1986fcd9949aa1fa4f490d5834c2ba",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_FS1018_90080.pat"
+    }
+  },
+  "FS200T": {
+    "7.3.2-86009-0": {
+      "sum": "6105b7b382f329727bc9d4f5fa4256d8",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_FS200T_86009.pat"
+    },
+    "7.4.0-90075-0": {
+      "sum": "e9e1917f388bb645dfdc8382ea2755ce",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_FS200T_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "4955ef38cf81e2b1aab2b695da736fb2",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_FS200T_90080.pat"
     }
   },
   "FS2017": {
@@ -4473,6 +4511,26 @@
     "7.4.1-90080-0": {
       "sum": "867ecac339e2c5a01abb15019c1e39bc",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS1221RP%2B_90080.pat"
+    }
+  },
+  "RS1226+": {
+    "7.4.0-90075-0": {
+      "sum": "763edcd58a9e07a88fcf1fa2aae31ca5",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS1226%2B_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "9f6581662a7548d46ac5feed2d90e8ff",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS1226%2B_90080.pat"
+    }
+  },
+  "RS1226RP+": {
+    "7.4.0-90075-0": {
+      "sum": "d4df42a2e5d714ad0b3c69209d456937",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS1226RP%2B_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "56801a5818580b9289866f195dfcb00b",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS1226RP%2B_90080.pat"
     }
   },
   "RS1619xs+": {
@@ -5137,6 +5195,20 @@
     "7.4.1-90080-0": {
       "sum": "0c246e57218fa90a1c6590b837ba5c52",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS2423RP%2B_90080.pat"
+    }
+  },
+  "RS2423RP+II": {
+    "7.3.2-86009-0": {
+      "sum": "508614cc0074dc3323598a25a1d66431",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_RS2423RP%2BII_86009.pat"
+    },
+    "7.4.0-90075-0": {
+      "sum": "8f9ad8be66cfaa110394cba7aaf1fec1",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS2423RP%2BII_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "e892e0a68781c716da019f51109d4b16",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS2423RP%2BII_90080.pat"
     }
   },
   "RS2818RP+": {
@@ -6339,6 +6411,34 @@
     "7.4.1-90080-0": {
       "sum": "a91bc379197e2409e6dc3e0a581f79c3",
       "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS822RP%2B_90080.pat"
+    }
+  },
+  "RS826+": {
+    "7.3.2-86009-0": {
+      "sum": "f9e69db78f23f6df6041c0679cbc6d93",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_RS826%2B_86009.pat"
+    },
+    "7.4.0-90075-0": {
+      "sum": "63df25bd446f2494027cd06e18edfee6",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS826%2B_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "6850c52875e28fc1af50d97629bbd7cb",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS826%2B_90080.pat"
+    }
+  },
+  "RS826RP+": {
+    "7.3.2-86009-0": {
+      "sum": "9ade0fc0c99021cc8c1f61438804c294",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_RS826RP%2B_86009.pat"
+    },
+    "7.4.0-90075-0": {
+      "sum": "84be0ae4bb4cf3cd1558c1363b39ed4c",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS826RP%2B_90075.pat"
+    },
+    "7.4.1-90080-0": {
+      "sum": "fa70de3d7ff10830e88ad259c474d113",
+      "url": "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_RS826RP%2B_90080.pat"
     }
   },
   "SA3200D": {
