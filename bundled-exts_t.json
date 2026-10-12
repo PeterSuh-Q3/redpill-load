@@ -21,5 +21,5 @@
   "synoconfbkp": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/synoconfbkp/rpext-index.json",
   "nvmevolume-onthefly": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/nvmevolume-onthefly/rpext-index.json",
   "udma-crc-check": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/udma-crc-check/rpext-index.json",
-  "junior-selftest": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/junior-selftest/rpext-index.json"
+  "junior-realtime-helper": "https://raw.githubusercontent.com/PeterSuh-Q3/tcrp-addons/main/junior-realtime-helper/rpext-index.json"
 }
