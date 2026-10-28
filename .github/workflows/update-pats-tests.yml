@@ -1,0 +1,19 @@
+name: DSM PAT intake tests
+on:
+  pull_request:
+    paths:
+      - 'tools/update_pats_from_archive.py'
+      - 'tools/test_update_pats_from_archive.py'
+      - '.github/workflows/update-pats-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python -m unittest tools/test_update_pats_from_archive.py -v

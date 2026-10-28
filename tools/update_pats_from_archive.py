@@ -45,6 +45,12 @@ def version_key(release):
     return f"{version}-{revision}-0"
 
 
+def validate_release(release):
+    if not re.fullmatch(r"[0-9]+\.[0-9]+(?:\.[0-9]+)?-[0-9]+", release):
+        raise ValueError(f"Invalid DSM release; expected X.Y[.Z]-BUILD: {release}")
+    return release
+
+
 def collect(release, models):
     parser = PatLinks()
     parser.feed(fetch(f"{ARCHIVE}/{release}"))
@@ -71,12 +77,17 @@ def main():
     args_parser = argparse.ArgumentParser(description=__doc__)
     args_parser.add_argument("models", nargs="+", help="Exact Synology model names")
     args_parser.add_argument("--file", type=Path, default=Path("config/pats.json"))
+    args_parser.add_argument(
+        "--release", action="append", type=validate_release, dest="releases",
+        help="Exact DSM version-build in the Synology archive, repeatable; defaults to the legacy release set",
+    )
     args_parser.add_argument("--dry-run", action="store_true")
     args = args_parser.parse_args()
 
     original = json.loads(args.file.read_text())
+    releases = list(dict.fromkeys(args.releases or RELEASES))
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        batches = list(executor.map(lambda release: collect(release, set(args.models)), RELEASES))
+        batches = list(executor.map(lambda release: collect(release, set(args.models)), releases))
         entries = [entry for batch in batches for entry in batch]
         results = list(executor.map(checksum, entries))
 
