@@ -113,6 +113,13 @@ BRP_KVER="$5"
 BRP_SYNOMODEL="$6"
 
 BPR_LOWER_PLATFORM=$(echo ${BRP_ORG_PLATFORM} | tr '[:upper:]' '[:lower:]')
+platform_policy="${MSHELL_PLATFORM_POLICY:-$PWD/config/platform-policy.v1.json}"
+if ! jq -e '.version == 1 and (.excluded_platforms|type)=="array" and (.excluded_platforms|index("epyc7003ntb")) != null' "$platform_policy" >/dev/null 2>&1; then
+    echo "Platform policy missing or invalid: $platform_policy" >&2; exit 1
+fi
+if jq -e --arg platform "$BPR_LOWER_PLATFORM" '.excluded_platforms | index($platform) != null' "$platform_policy" >/dev/null; then
+    echo "Unsupported platform: $BPR_LOWER_PLATFORM" >&2; exit 1
+fi
 BRP_NKVER="$(echo ${BRP_KVER} | sed 's/\.//g')"
 echo "BRP_NKVER = ${BRP_NKVER}"
 

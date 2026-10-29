@@ -25,7 +25,8 @@ readonly RPT_EXTS_DIR=${RPT_EXTS_DIR:-"$PWD/custom/extensions"}
 # The build environment normally uses /home/tc; callers producing a loader on
 # a mounted system can override this with MODULE_USER_CONFIG.
 readonly MODULE_USER_CONFIG=${MODULE_USER_CONFIG:-/home/tc/user_config.json}
-readonly kver5platforms="epyc7002 epyc7003ntb epyc7003 icelaked v1000nk r1000nk geminilakenk"
+readonly platform_policy="${MSHELL_PLATFORM_POLICY:-$PWD/config/platform-policy.v1.json}"
+kver5platforms=$(jq -er 'if .version == 1 and (.kernel5_platforms|type)=="array" and (.kernel5_platforms|length)>0 and (.excluded_platforms|type)=="array" and (.excluded_platforms|index("epyc7003ntb")) != null and ((.kernel5_platforms - .excluded_platforms)|length)==(.kernel5_platforms|length) then .kernel5_platforms | join(" ") else error("invalid policy") end' "$platform_policy") || { echo "Platform policy missing or invalid: $platform_policy" >&2; exit 1; }
 ########################################################################################################################
 
 ##### INCLUDES #########################################################################################################
@@ -866,6 +867,9 @@ __action__update_platform_exts()
   fi
 
   pr_process "Updating %s platforms extensions" "${1} ${2} ${3}"
+  if jq -e --arg platform "$1" '.excluded_platforms | index($platform) != null' "$platform_policy" >/dev/null; then
+    pr_err "Unsupported platform: %s" "$1"; return 1
+  fi
   local platform_id="${1}_${2}_${3}"
   if ! mrp_validate_platform_id "${platform_id}"; then
     pr_err "Platform ID %s is not valid" "${platform_id}"
@@ -1020,6 +1024,9 @@ __action__dump_exts()
     pr_crit "\"%s _dump\" expected 4-5 arguments - got %d. See \"%s help\" for details" "${MRP_SRC_NAME}" "${#}" "${MRP_SRC_NAME}"
   fi
 
+  if jq -e --arg platform "$1" '.excluded_platforms | index($platform) != null' "$platform_policy" >/dev/null; then
+    pr_err "Unsupported platform: %s" "$1"; return 1
+  fi
   local platform_id="${1}_${2}_${3}"
   local dump_dir="${4}"
   pr_process "Dumping %s platform extensions to %s" "${platform_id}" "${dump_dir}"
