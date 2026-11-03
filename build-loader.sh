@@ -96,6 +96,7 @@ BRP_DEV_DISABLE_EXTS=${BRP_DEV_DISABLE_EXTS:-0} # when set 1 all extensions will
 . include/patch.sh # helpers for patching files using patch(1) and bspatch(1)
 . include/boot-image.sh # helper functions for dealing with the boot image
 . include/ext-bridge.sh # helper to interact with extensions manager
+. include/kernel-image-routing.sh # independent official/custom/detour kernel selection
 ########################################################################################################################
 
 ##### CONFIGURATION VALIDATION##########################################################################################
@@ -451,65 +452,54 @@ fi
 fi
 # Add ARPL's vmlinux kernel patch 2023.10.26
 
-# Determine whether to use GPL-built custom-zImage.
-# BRP_NO_BMI2=1 -> use ext/custom-zImage (GPL-built kernel)
-# BRP_NO_BMI2=0 -> use default patched zImage path
-# Criterion: user_config.json general.modulename == "custom-modules"
-# NOTE: custom-zImage is only applicable when BOTH conditions are met:
-#       1) kernel 5.x and above
-#       2) DSM version >= 7.3 (custom-zImage bzImages are built from DSM 7.3 GPL source)
-BRP_NO_BMI2=0
-BRP_KVER_MAJOR="$(echo "${BRP_KVER}" | cut -d'.' -f1)"
-BRP_DSM_VER_MAJOR="$(echo "${BRP_DSM_VER_MM}" | cut -d'.' -f1)"
-BRP_DSM_VER_MINOR="$(echo "${BRP_DSM_VER_MM}" | cut -d'.' -f2)"
-if [[ "${BRP_KVER_MAJOR}" -ge 5 ]] && \
-   [[ "${BRP_DSM_VER_MAJOR}" -gt 7 || ( "${BRP_DSM_VER_MAJOR}" -eq 7 && "${BRP_DSM_VER_MINOR}" -ge 3 ) ]]; then
-  BRP_UCF_MODULENAME="$(brp_json_get_field "${BRP_USER_CFG}" 'general.modulename' 1)"
-  if [[ "${BRP_UCF_MODULENAME}" == "custom-modules" ]]; then
-    BRP_NO_BMI2=1
-    pr_process "[zImg-check] kernel=%s DSM=%s modulename=custom-modules -> BRP_NO_BMI2=%s (will use custom-zImage)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "1"
-  else
-    pr_process "[zImg-check] kernel=%s DSM=%s modulename=%s -> BRP_NO_BMI2=%s (will use default kernel path)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_UCF_MODULENAME:-n/a}" "0"
-  fi
+# Resolve kernel selection independently from the module pack. The default profile
+# preserves the existing official/custom-modules behavior; detourbmi2 is explicit.
+BRP_KERNEL_PROFILE="${BRP_KERNEL_PROFILE:-official}"
+BRP_UCF_MODULENAME="$(brp_json_get_field "${BRP_USER_CFG}" 'general.modulename' 1)"
+BRP_KERNEL_ROUTE="$(brp_kernel_route_resolve "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_UCF_MODULENAME}" "${BRP_KERNEL_PROFILE}")" \
+  || pr_crit "Invalid kernel selection: profile=%s modulename=%s" "${BRP_KERNEL_PROFILE}" "${BRP_UCF_MODULENAME:-n/a}"
+pr_info "[zImg-route] kernel=%s DSM=%s model=%s platform=%s module_pack=%s profile=%s route=%s" \
+  "${BRP_KVER}" "${BRP_SW_VERSION}" "${BRP_SYNOMODEL}" "${BPR_LOWER_PLATFORM}" "${BRP_UCF_MODULENAME:-n/a}" "${BRP_KERNEL_PROFILE}" "${BRP_KERNEL_ROUTE}"
+
+if [[ "${BRP_KERNEL_ROUTE}" == "detourbmi2" ]]; then
+  # This branch never modifies module selection or the initrd. It supplies only
+  # the final zImage-dsm payload and fails closed if the pinned asset is absent.
+  BRP_DETOURBMI2_DIR="${BRP_DETOURBMI2_DIR:-${BRP_EXT_DIR}/detourbmi2-zImage}"
+  BRP_DETOURBMI2_IMAGE="$(brp_detourbmi2_install_asset \
+    "${BRP_DETOURBMI2_DIR}" "${BRP_DETOURBMI2_MANIFEST_SHA256:-}" "${BRP_HW_PLATFORM}" "${BPR_LOWER_PLATFORM}" "${BRP_SW_VERSION}" "${BRP_KVER}" "${BRP_ZLINUX_PATCHED_FILE}")" \
+    || pr_crit "Cannot install verified detourbmi2 kernel asset"
+  pr_process "[zImg-branch] detourbmi2 -> zImage only; all-modules/initrd path retained (%s)" "${BRP_DETOURBMI2_IMAGE}"
 else
-  pr_process "[zImg-check] kernel=%s DSM=%s -> custom-zImage not applicable (requires kernel>=5 and DSM>=7.3), BRP_NO_BMI2=%s (skipped)" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "0"
-fi
-pr_info "[zImg-check] BRP_KVER=%s BRP_DSM_VER_MM=%s BRP_NO_BMI2=%s modulename=%s" "${BRP_KVER}" "${BRP_DSM_VER_MM}" "${BRP_NO_BMI2}" "${BRP_UCF_MODULENAME:-n/a}"
+  # Keep the existing PAT-kernel kpatch path intact for official and
+  # custom-modules routes. detourbmi2 never enters this block.
+  pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
+  chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
+  $PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINUX_FILE}" "${BRP_CACHE_DIR}/vmlinux"
+  $PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
-pr_info "Found patched zImage at \"%s\" - skipping patching & repacking" "${BRP_ZLINUX_PATCHED_FILE}"
-chmod -R a+x $PWD/buildroot/board/syno/rootfs-overlay/root
-$PWD/buildroot/board/syno/rootfs-overlay/root/bzImage-to-vmlinux.sh "${BRP_ZLINUX_FILE}" "${BRP_CACHE_DIR}/vmlinux"
-$PWD/buildroot/board/syno/rootfs-overlay/root/kpatch "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
-
-# Branch selection for the final zImage:
-#   1) BRP_NO_BMI2=1 (CPU lacks BMI2): use GPL-built bzImage from ext/custom-zImage/
-#      Filename pattern: bzImage-<platform>-<dsm_ver>-5.10.55.gz
-#   2) default: repack the kpatch'd vmlinux
-if [[ "${BRP_NO_BMI2}" -eq 1 ]]; then
-  pr_process "[zImg-branch] >>> ENTER branch (1) no-BMI2 -> ext/custom-zImage"
-  BRP_CUST_KERNEL_DIR="${BRP_EXT_DIR}/custom-zImage"
-  BRP_CUST_KERNEL_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
-  pr_process "[zImg-branch] custom-zImage gz path = %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
-
-  if [[ -f "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" ]]; then
-    pr_process "Using custom-zImage bzImage (BMI2-free) for %s" "${BRP_ZLINUX_PATCHED_FILE}"
-    "${GZIP_PATH}" -dc "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
-      || pr_crit "Failed to decompress %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
-    pr_process_ok
-    pr_process "[zImg-branch] custom-zImage written -> %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
+  if [[ "${BRP_KERNEL_ROUTE}" == "custom" ]]; then
+    pr_process "[zImg-branch] >>> ENTER existing custom-modules -> ext/custom-zImage"
+    BRP_CUST_KERNEL_DIR="${BRP_EXT_DIR}/custom-zImage"
+    BRP_CUST_KERNEL_GZ="bzImage-${BPR_LOWER_PLATFORM}-${BRP_DSM_VER_MM}-5.10.55.gz"
+    if [[ -f "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" ]]; then
+      pr_process "Using existing custom-zImage bzImage for %s" "${BRP_ZLINUX_PATCHED_FILE}"
+      "${GZIP_PATH}" -dc "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}" > "${BRP_ZLINUX_PATCHED_FILE}" \
+        || pr_crit "Failed to decompress %s" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
+      pr_process_ok
+    else
+      pr_warn "[zImg-branch] custom-zImage not found: %s (falling back to repack)" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
+      $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+    fi
+  elif echo "epyc7003ntb" | grep -wq "${BPR_LOWER_PLATFORM}"; then
+    pr_process "[zImg-branch] >>> ENTER branch (2b) epyc7003ntb -> recompress repack"
+    $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-recompress.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_FILE}" "${BRP_ZLINUX_PATCHED_FILE}"
   else
-    pr_warn "[zImg-branch] custom-zImage not found: %s (falling back to repack)" "${BRP_CUST_KERNEL_DIR}/${BRP_CUST_KERNEL_GZ}"
+    pr_process "[zImg-branch] >>> ENTER branch (2) default -> repack kpatch'd vmlinux"
     $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
   fi
-elif echo "epyc7003ntb" | grep -wq "${BPR_LOWER_PLATFORM}"; then
-  pr_process "[zImg-branch] >>> ENTER branch (2b) epyc7003ntb -> recompress repack (vmlinux-to-bzImage-recompress.sh)"
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage-recompress.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_FILE}" "${BRP_ZLINUX_PATCHED_FILE}"
-else
-  pr_process "[zImg-branch] >>> ENTER branch (2) default -> repack kpatch'd vmlinux (vmlinux-to-bzImage.sh)"
-  $PWD/buildroot/board/syno/rootfs-overlay/root/vmlinux-to-bzImage.sh "${BRP_CACHE_DIR}/vmlinux-mod" "${BRP_ZLINUX_PATCHED_FILE}"
+  rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 fi
 pr_process "[zImg-branch] final zImage-patched = %s (%s bytes)" "${BRP_ZLINUX_PATCHED_FILE}" "$(stat -c%s "${BRP_ZLINUX_PATCHED_FILE}" 2>/dev/null || echo '?')"
-rm -f "${BRP_CACHE_DIR}/vmlinux" "${BRP_CACHE_DIR}/vmlinux-mod"
 
 ##### RAMDISK MODIFICATIONS ############################################################################################
 # here we have a ready kernel in BRP_ZLINUX_PATCHED_FILE which makes the end of playing with the kernel
