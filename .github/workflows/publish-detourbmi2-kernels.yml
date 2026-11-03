@@ -1,0 +1,201 @@
+name: Publish detourBMI2 kernel assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_commit:
+        description: Exact 40-character commit in PeterSuh-Q3/dsm-kernel-compat
+        required: true
+        type: string
+      release_tag:
+        description: New public release tag
+        required: true
+        default: detourbmi2-kernels-v1.0.1
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: detourbmi2-kernel-release-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release request
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          WORKFLOW_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          [[ "${WORKFLOW_REF}" == "refs/heads/master" ]] || {
+            echo "Publish this workflow from the master branch" >&2
+            exit 1
+          }
+          [[ "${SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]] || {
+            echo "source_commit must be a full lowercase commit SHA" >&2
+            exit 1
+          }
+          [[ "${RELEASE_TAG}" =~ ^detourbmi2-kernels-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "release_tag must look like detourbmi2-kernels-v1.0.1" >&2
+            exit 1
+          }
+
+      - name: Check out the selected private asset revision
+        uses: actions/checkout@v4
+        with:
+          repository: PeterSuh-Q3/dsm-kernel-compat
+          ref: ${{ inputs.source_commit }}
+          token: ${{ secrets.DSM_KERNEL_COMPAT_READ_TOKEN }}
+          path: private-assets
+          persist-credentials: false
+
+      - name: Validate and stage release payload
+        id: validate
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import gzip
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import shutil
+
+          source = pathlib.Path("private-assets/ext/detourbmi2-zImage")
+          output = pathlib.Path("release-assets")
+          manifest_path = source / "manifest.json"
+          manifest_bytes = manifest_path.read_bytes()
+          manifest = json.loads(manifest_bytes)
+          assets = manifest.get("assets")
+          if not isinstance(assets, list) or not assets:
+              raise SystemExit("manifest must contain a non-empty assets list")
+
+          name_re = re.compile(r"^bzImage-[a-z0-9]+-7\.[34]-5\.10\.55\.gz$")
+          release_re = re.compile(r"^7\.[34]\.\d+-\d+$")
+          sha_re = re.compile(r"^[0-9a-f]{64}$")
+          seen_names = set()
+          seen_targets = set()
+          output.mkdir(parents=True, exist_ok=False)
+          shutil.copyfile(manifest_path, output / "manifest.json")
+
+          checksums = []
+          for entry in assets:
+              filename = entry.get("filename", "")
+              if pathlib.PurePosixPath(filename).name != filename or not name_re.fullmatch(filename):
+                  raise SystemExit(f"invalid asset filename: {filename!r}")
+              if filename in seen_names:
+                  raise SystemExit(f"duplicate asset filename: {filename}")
+              seen_names.add(filename)
+
+              model = entry.get("model", "")
+              platform = entry.get("platform", "")
+              dsm_release = entry.get("dsm_release", "")
+              kernel_release = entry.get("kernel_release", "")
+              target = (model, platform, dsm_release, kernel_release)
+              if not all(target) or target in seen_targets:
+                  raise SystemExit(f"missing or duplicate target record: {target}")
+              seen_targets.add(target)
+              if not release_re.fullmatch(dsm_release) or kernel_release != "5.10.55+":
+                  raise SystemExit(f"unsupported DSM/kernel release: {dsm_release}/{kernel_release}")
+              expected_name = f"bzImage-{platform}-{'.'.join(dsm_release.split('.')[:2])}-5.10.55.gz"
+              if filename != expected_name:
+                  raise SystemExit(f"filename does not match target metadata: {filename}")
+
+              expected_gzip_sha = entry.get("sha256", "")
+              expected_image_sha = entry.get("image_sha256", "")
+              if not sha_re.fullmatch(expected_gzip_sha) or not sha_re.fullmatch(expected_image_sha):
+                  raise SystemExit(f"invalid digest in manifest: {filename}")
+              source_file = source / filename
+              if not source_file.is_file() or source_file.is_symlink():
+                  raise SystemExit(f"asset file missing or not regular: {filename}")
+              digest = hashlib.sha256()
+              with source_file.open("rb") as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b""):
+                      digest.update(block)
+              if digest.hexdigest() != expected_gzip_sha:
+                  raise SystemExit(f"compressed SHA-256 mismatch: {filename}")
+
+              image_digest = hashlib.sha256()
+              try:
+                  with gzip.open(source_file, "rb") as image:
+                      for block in iter(lambda: image.read(1024 * 1024), b""):
+                          image_digest.update(block)
+              except OSError as exc:
+                  raise SystemExit(f"invalid gzip asset {filename}: {exc}")
+              if image_digest.hexdigest() != expected_image_sha:
+                  raise SystemExit(f"decompressed SHA-256 mismatch: {filename}")
+
+              shutil.copyfile(source_file, output / filename)
+              checksums.append(f"{expected_gzip_sha}  {filename}")
+
+          (output / "SHA256SUMS").write_text("\n".join(checksums) + "\n", encoding="ascii")
+          manifest_sha = hashlib.sha256(manifest_bytes).hexdigest()
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"manifest_sha256={manifest_sha}\n")
+              out.write(f"asset_count={len(assets)}\n")
+          print(f"Validated {len(assets)} gzip kernels; manifest SHA-256 {manifest_sha}")
+          PY
+
+      - name: Refuse an existing release or tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release already exists: ${RELEASE_TAG}" >&2
+            exit 1
+          fi
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
+            echo "Git tag already exists: ${RELEASE_TAG}" >&2
+            exit 1
+          fi
+
+      - name: Publish public release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          MANIFEST_SHA256: ${{ steps.validate.outputs.manifest_sha256 }}
+        run: |
+          set -euo pipefail
+          notes="$(cat <<EOF
+          detourBMI2 compatibility kernel assets copied from private source commit \`${SOURCE_COMMIT}\`.
+
+          Contains \`${{ steps.validate.outputs.asset_count }}\` gzip kernels for the exact model/DSM targets listed in \`manifest.json\`. The MSHELL loader verifies the pinned manifest, compressed kernel, and decompressed kernel before use. This is a compatibility build, not an official Synology kernel release. Some targets still need bare-metal validation.
+
+          Manifest SHA-256: \`${MANIFEST_SHA256}\`
+
+          Private source commit: \`${SOURCE_COMMIT}\`
+          EOF
+          )"
+          args=(release create "${RELEASE_TAG}" release-assets/*
+            --repo "${GITHUB_REPOSITORY}"
+            --target "${GITHUB_SHA}"
+            --latest
+            --title "detourBMI2 kernel assets ${RELEASE_TAG}"
+            --notes "${notes}")
+          gh "${args[@]}"
+
+          release_state="$(gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" --json isLatest,isPrerelease)"
+          jq -e '.isLatest == true and .isPrerelease == false' <<<"${release_state}" >/dev/null
+
+          {
+            echo "### Published detourBMI2 kernel assets"
+            echo "- Release: ${RELEASE_TAG}"
+            echo "- Release status: latest, non-prerelease"
+            echo "- Source commit: ${SOURCE_COMMIT}"
+            echo "- Manifest SHA-256: ${MANIFEST_SHA256}"
+            echo "- Assets: ${{ steps.validate.outputs.asset_count }}"
+          } >> "${GITHUB_STEP_SUMMARY}"
