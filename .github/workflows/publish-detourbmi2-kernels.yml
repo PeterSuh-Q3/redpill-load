@@ -188,8 +188,8 @@ jobs:
             --notes "${notes}")
           gh "${args[@]}"
 
-          release_state="$(gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" --json isLatest,isPrerelease)"
-          jq -e '.isLatest == true and .isPrerelease == false' <<<"${release_state}" >/dev/null
+          release_state="$(gh release list --repo "${GITHUB_REPOSITORY}" --limit 100 --json tagName,isLatest,isPrerelease)"
+          jq -e --arg tag "${RELEASE_TAG}" 'any(.[]; .tagName == $tag and .isLatest == true and .isPrerelease == false)' <<<"${release_state}" >/dev/null
 
           {
             echo "### Published detourBMI2 kernel assets"
