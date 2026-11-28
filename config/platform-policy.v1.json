@@ -19,7 +19,7 @@
     "r1000nk",
     "geminilakenk"
   ],
-  "catalog_id": "5e11b50e40b11214ac581c89db1b5048ef33fb1a7ae45eb98e5f06a5fc3425b1",
+  "catalog_id": "28c5c137ab9d2cf06b80b6d7c6bce57e7a8ab61b24d00eac959fb514c17f56bd",
   "legacy_kernels": {
     "epyc7002": {
       "42962": "5.10.55",
